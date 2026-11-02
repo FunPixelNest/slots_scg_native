@@ -1,0 +1,557 @@
+{
+ "id": "farm",
+ "name": "Happy Farm",
+ "order": 12,
+ "unityFolder": "14_FarmTheme",
+ "source": "generated",
+ "reels": 5,
+ "rows": 3,
+ "mode": "ways",
+ "background": "sprites_fa/gamescreen/background",
+ "frame": "sprites_fa/gamescreen/reels/slotmachine_3x5",
+ "reelBackground": null,
+ "title": null,
+ "symbols": [
+  {
+   "key": "apple",
+   "name": "Apple",
+   "image": "sprites_fa/gamescreen/symbols/apple",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/appleblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/applesheet"
+   }
+  },
+  {
+   "key": "beet",
+   "name": "Beet",
+   "image": "sprites_fa/gamescreen/symbols/beet",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/beetblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/beetsheet"
+   }
+  },
+  {
+   "key": "cow",
+   "name": "Cow",
+   "image": "sprites_fa/gamescreen/symbols/cow",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/cowblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/cowsheet"
+   }
+  },
+  {
+   "key": "hen",
+   "name": "Hen",
+   "image": "sprites_fa/gamescreen/symbols/hen",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/henblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/hensheet"
+   }
+  },
+  {
+   "key": "pig",
+   "name": "Pig",
+   "image": "sprites_fa/gamescreen/symbols/pig",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/pigblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/pigsheet"
+   }
+  },
+  {
+   "key": "pumpkin",
+   "name": "Pumpkin",
+   "image": "sprites_fa/gamescreen/symbols/pumpkin",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/pumpkinblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/pumpkinsheet"
+   }
+  },
+  {
+   "key": "sheep",
+   "name": "Sheep",
+   "image": "sprites_fa/gamescreen/symbols/sheep",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/sheepblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/sheepsheet"
+   }
+  },
+  {
+   "key": "tomato",
+   "name": "Tomato",
+   "image": "sprites_fa/gamescreen/symbols/tomato",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/tomatoblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/tomatosheet"
+   }
+  },
+  {
+   "key": "wild",
+   "name": "Wild",
+   "image": "sprites_fa/gamescreen/symbols/wild",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/wildblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/wildsheet"
+   }
+  },
+  {
+   "key": "scatter",
+   "name": "Scatter",
+   "image": "sprites_fa/gamescreen/symbols/scatter",
+   "blur": "sprites_fa/gamescreen/symbolsblurred/scatterblurred",
+   "anim": {
+    "sheet": "sprites_fa/animations/scattersheet"
+   }
+  }
+ ],
+ "wildId": 8,
+ "scatterId": 9,
+ "_comment": "Slot math shared by the Unity Holiday Slot scenes (Christmas/Valentine/Witch). Symbol ids 0-3 low, 4-7 high, 8 wild, 9 scatter.",
+ "reelStrips": [
+  [
+   2,
+   3,
+   4,
+   1,
+   5,
+   8,
+   6,
+   0,
+   7,
+   0
+  ],
+  [
+   1,
+   0,
+   8,
+   2,
+   5,
+   3,
+   4,
+   8,
+   6,
+   7,
+   8,
+   0
+  ],
+  [
+   1,
+   8,
+   6,
+   2,
+   5,
+   0,
+   3,
+   4,
+   8,
+   9,
+   7,
+   8
+  ],
+  [
+   2,
+   3,
+   8,
+   4,
+   5,
+   1,
+   8,
+   6,
+   7,
+   8,
+   9,
+   0,
+   9
+  ],
+  [
+   0,
+   8,
+   1,
+   2,
+   3,
+   4,
+   8,
+   5,
+   7,
+   8,
+   9,
+   6,
+   9
+  ]
+ ],
+ "payTable": [
+  {
+   "line": [
+    0,
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "pay": 4,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "pay": 5,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "pay": 6,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "pay": 7,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "pay": 17,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "pay": 19,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    -1
+   ],
+   "pay": 14,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    6
+   ],
+   "pay": 20,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    -1
+   ],
+   "pay": 15,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    7
+   ],
+   "pay": 25,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pay": 50,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "scatterPays": [
+  {
+   "count": 5,
+   "pay": 0,
+   "freeSpins": 5,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "wildInFirstPosition": false,
+ "bet": {
+  "defaultLineBet": 1,
+  "maxLineBet": 20
+ },
+ "wildSubstitute": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "ui": {
+  "spin": "sprites_fa/gamescreen/buttons/buttonspin",
+  "plus": "sprites_fa/gamescreen/buttons/buttonplus",
+  "minus": "sprites_fa/gamescreen/buttons/buttonminus",
+  "menu": "sprites_fa/gamescreen/buttons/buttonmenu",
+  "info": "sprites_fa/gamescreen/buttons/buttoninfo",
+  "settings": "sprites_fa/gamescreen/buttons/buttonsettings",
+  "panelBalance": "sprites_fa/gamescreen/panels/panelbalance",
+  "panelWin": "sprites_fa/gamescreen/panels/panelwin",
+  "panelBet": "sprites_fa/gamescreen/panels/paneltotalbet",
+  "popupPanel": "sprites_fa/popups/panels/messagepanel",
+  "popupMegaWin": "sprites_fa/popups/panels/megawinpanel",
+  "popupHugeWin": "sprites_fa/popups/panels/hugewinpanel",
+  "popupFreeSpins": "sprites_fa/popups/panels/freespinpanel",
+  "popupInfo": "sprites_fa/popups/panels/infopanel",
+  "popupSettings": "sprites_fa/popups/panels/settingspanel",
+  "buttonLong": "sprites_fa/popups/buttons/longbutton",
+  "exit": "sprites_fa/popups/buttons/exitbutton"
+ },
+ "uiLabeled": [
+  "spin"
+ ],
+ "fonts": []
+}

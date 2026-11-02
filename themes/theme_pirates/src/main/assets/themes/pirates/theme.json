@@ -1,0 +1,520 @@
+{
+ "id": "pirates",
+ "name": "Pirates",
+ "order": 9,
+ "unityFolder": "11_Pirates",
+ "source": "generated",
+ "reels": 5,
+ "rows": 3,
+ "mode": "ways",
+ "background": "sprites_pirates/game_screen/background",
+ "frame": null,
+ "reelBackground": null,
+ "title": null,
+ "symbols": [
+  {
+   "key": "cross",
+   "name": "Cross",
+   "image": "sprites_pirates/game_screen/symbols/cross"
+  },
+  {
+   "key": "diamonds",
+   "name": "Diamonds",
+   "image": "sprites_pirates/game_screen/symbols/diamonds"
+  },
+  {
+   "key": "hearts",
+   "name": "Hearts",
+   "image": "sprites_pirates/game_screen/symbols/hearts"
+  },
+  {
+   "key": "peaks",
+   "name": "Peaks",
+   "image": "sprites_pirates/game_screen/symbols/peaks"
+  },
+  {
+   "key": "bag",
+   "name": "Bag",
+   "image": "sprites_pirates/game_screen/symbols/bag"
+  },
+  {
+   "key": "pistol",
+   "name": "Pistol",
+   "image": "sprites_pirates/game_screen/symbols/pistol"
+  },
+  {
+   "key": "saber",
+   "name": "Saber",
+   "image": "sprites_pirates/game_screen/symbols/saber"
+  },
+  {
+   "key": "smoke",
+   "name": "Smoke",
+   "image": "sprites_pirates/game_screen/symbols/smoke"
+  },
+  {
+   "key": "wild",
+   "name": "Wild",
+   "image": "sprites_pirates/game_screen/symbols/wild"
+  },
+  {
+   "key": "scatter",
+   "name": "Scatter",
+   "image": "sprites_pirates/game_screen/symbols/scatter"
+  }
+ ],
+ "wildId": 8,
+ "scatterId": 9,
+ "_comment": "Slot math shared by the Unity Holiday Slot scenes (Christmas/Valentine/Witch). Symbol ids 0-3 low, 4-7 high, 8 wild, 9 scatter.",
+ "reelStrips": [
+  [
+   2,
+   3,
+   4,
+   1,
+   5,
+   8,
+   6,
+   0,
+   7,
+   0
+  ],
+  [
+   1,
+   0,
+   8,
+   2,
+   5,
+   3,
+   4,
+   8,
+   6,
+   7,
+   8,
+   0
+  ],
+  [
+   1,
+   8,
+   6,
+   2,
+   5,
+   0,
+   3,
+   4,
+   8,
+   9,
+   7,
+   8
+  ],
+  [
+   2,
+   3,
+   8,
+   4,
+   5,
+   1,
+   8,
+   6,
+   7,
+   8,
+   9,
+   0,
+   9
+  ],
+  [
+   0,
+   8,
+   1,
+   2,
+   3,
+   4,
+   8,
+   5,
+   7,
+   8,
+   9,
+   6,
+   9
+  ]
+ ],
+ "payTable": [
+  {
+   "line": [
+    0,
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "pay": 4,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "pay": 5,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "pay": 6,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "pay": 7,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "pay": 17,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "pay": 19,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    -1
+   ],
+   "pay": 14,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    6
+   ],
+   "pay": 20,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    -1
+   ],
+   "pay": 15,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    7
+   ],
+   "pay": 25,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pay": 50,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "scatterPays": [
+  {
+   "count": 5,
+   "pay": 0,
+   "freeSpins": 5,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "wildInFirstPosition": false,
+ "bet": {
+  "defaultLineBet": 1,
+  "maxLineBet": 20
+ },
+ "wildSubstitute": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "ui": {
+  "spin": "sprites_pirates/game_screen/buttons/button_spin_normal",
+  "autoSpin": "sprites_pirates/game_screen/buttons/button_max_auto_normal",
+  "maxBet": "sprites_pirates/game_screen/buttons/button_max_auto_normal",
+  "plus": "sprites_pirates/game_screen/buttons/plus_button_normal",
+  "minus": "sprites_pirates/game_screen/buttons/minus_button_normal",
+  "menu": "sprites_pirates/game_screen/buttons/buttons_menus_normal",
+  "info": "sprites_pirates/game_screen/icons/icon_information_normal",
+  "settings": "sprites_pirates/game_screen/icons/icon_settings_normal",
+  "panelBalance": "sprites_pirates/game_screen/panels/balance_plate",
+  "panelBet": "sprites_pirates/game_screen/panels/total_bet_plate",
+  "popupPanel": "sprites_pirates/pop_ups/panels/messageplate",
+  "popupBigWin": "sprites_pirates/pop_ups/panels/flag_big_win",
+  "popupMegaWin": "sprites_pirates/pop_ups/panels/flag_mega_win",
+  "popupHugeWin": "sprites_pirates/pop_ups/panels/flag_huge_win",
+  "popupFreeSpins": "sprites_pirates/pop_ups/panels/freespinbox",
+  "popupInfo": "sprites_pirates/pop_ups/panels/helpflag",
+  "popupSettings": "sprites_pirates/pop_ups/panels/pop_up_settings",
+  "buttonLong": "sprites_pirates/pop_ups/buttons/button_long_green_normal",
+  "exit": "sprites_pirates/pop_ups/buttons/exit_icon_normal"
+ },
+ "uiLabeled": [
+  "panelBalance",
+  "panelBet"
+ ],
+ "fonts": []
+}

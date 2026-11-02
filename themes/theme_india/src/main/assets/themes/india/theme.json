@@ -1,0 +1,574 @@
+{
+ "id": "india",
+ "name": "India",
+ "order": 20,
+ "unityFolder": "22_IndianTheme",
+ "source": "generated",
+ "reels": 5,
+ "rows": 3,
+ "mode": "ways",
+ "background": "sprites_indian/game_screen/background/background_day",
+ "frame": null,
+ "reelBackground": null,
+ "title": null,
+ "symbols": [
+  {
+   "key": "j",
+   "name": "J",
+   "image": "sprites_indian/game_screen/symbols/j"
+  },
+  {
+   "key": "q",
+   "name": "Q",
+   "image": "sprites_indian/game_screen/symbols/q"
+  },
+  {
+   "key": "k",
+   "name": "K",
+   "image": "sprites_indian/game_screen/symbols/k"
+  },
+  {
+   "key": "a",
+   "name": "A",
+   "image": "sprites_indian/game_screen/symbols/a"
+  },
+  {
+   "key": "elephant",
+   "name": "Elephant",
+   "image": "sprites_indian/game_screen/symbols/elephant",
+   "anim": {
+    "frames": [
+     "sprites_indian/animations/elephant/elephant_body",
+     "sprites_indian/animations/elephant/elephant_ear_far",
+     "sprites_indian/animations/elephant/elephant_head",
+     "sprites_indian/animations/elephant/elephant_rog_far",
+     "sprites_indian/animations/elephant/elephant_rog_near",
+     "sprites_indian/animations/elephant/elephant_rope_1",
+     "sprites_indian/animations/elephant/elephant_rope_2"
+    ]
+   }
+  },
+  {
+   "key": "monkey",
+   "name": "Monkey",
+   "image": "sprites_indian/game_screen/symbols/monkey",
+   "anim": {
+    "frames": [
+     "sprites_indian/animations/monkey/monkey_main",
+     "sprites_indian/animations/monkey/monkey_main_head",
+     "sprites_indian/animations/monkey/monkey_small",
+     "sprites_indian/animations/monkey/monkey_small_hand_far",
+     "sprites_indian/animations/monkey/monkey_small_hand_near",
+     "sprites_indian/animations/monkey/monkey_small_or",
+     "sprites_indian/animations/monkey/shadow"
+    ]
+   }
+  },
+  {
+   "key": "peacock",
+   "name": "Peacock",
+   "image": "sprites_indian/game_screen/symbols/peacock",
+   "anim": {
+    "frames": [
+     "sprites_indian/animations/peacock/peacock_body",
+     "sprites_indian/animations/peacock/peacock_feather_far",
+     "sprites_indian/animations/peacock/peacock_feathers",
+     "sprites_indian/animations/peacock/peacock_feathers_round",
+     "sprites_indian/animations/peacock/peacock_holka",
+     "sprites_indian/animations/peacock/peacock_kluv_main",
+     "sprites_indian/animations/peacock/peacock_kluv_second"
+    ]
+   }
+  },
+  {
+   "key": "tiger",
+   "name": "Tiger",
+   "image": "sprites_indian/game_screen/symbols/tiger",
+   "anim": {
+    "frames": [
+     "sprites_indian/animations/tiger/tiger_body",
+     "sprites_indian/animations/tiger/tiger_hand_left",
+     "sprites_indian/animations/tiger/tiger_hand_right",
+     "sprites_indian/animations/tiger/tiger_head",
+     "sprites_indian/animations/tiger/tiger_mask"
+    ]
+   }
+  },
+  {
+   "key": "wild",
+   "name": "Wild",
+   "image": "sprites_indian/game_screen/symbols/wild",
+   "anim": {
+    "frames": [
+     "sprites_indian/animations/wild/wild_dot",
+     "sprites_indian/animations/wild/wild_feather",
+     "sprites_indian/animations/wild/wild_gems",
+     "sprites_indian/animations/wild/wild_hat",
+     "sprites_indian/animations/wild/wild_i",
+     "sprites_indian/animations/wild/wild_wild"
+    ]
+   }
+  },
+  {
+   "key": "scatter",
+   "name": "Scatter",
+   "image": "sprites_indian/game_screen/symbols/scatter",
+   "anim": {
+    "frames": [
+     "sprites_indian/animations/scatter/scatter_c",
+     "sprites_indian/animations/scatter/scatter_cap",
+     "sprites_indian/animations/scatter/scatter_chest",
+     "sprites_indian/animations/scatter/scatter_scatter",
+     "sprites_indian/animations/scatter/wild_dot"
+    ]
+   }
+  }
+ ],
+ "wildId": 8,
+ "scatterId": 9,
+ "_comment": "Slot math shared by the Unity Holiday Slot scenes (Christmas/Valentine/Witch). Symbol ids 0-3 low, 4-7 high, 8 wild, 9 scatter.",
+ "reelStrips": [
+  [
+   2,
+   3,
+   4,
+   1,
+   5,
+   8,
+   6,
+   0,
+   7,
+   0
+  ],
+  [
+   1,
+   0,
+   8,
+   2,
+   5,
+   3,
+   4,
+   8,
+   6,
+   7,
+   8,
+   0
+  ],
+  [
+   1,
+   8,
+   6,
+   2,
+   5,
+   0,
+   3,
+   4,
+   8,
+   9,
+   7,
+   8
+  ],
+  [
+   2,
+   3,
+   8,
+   4,
+   5,
+   1,
+   8,
+   6,
+   7,
+   8,
+   9,
+   0,
+   9
+  ],
+  [
+   0,
+   8,
+   1,
+   2,
+   3,
+   4,
+   8,
+   5,
+   7,
+   8,
+   9,
+   6,
+   9
+  ]
+ ],
+ "payTable": [
+  {
+   "line": [
+    0,
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "pay": 4,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "pay": 5,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "pay": 6,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "pay": 7,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "pay": 17,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "pay": 19,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    -1
+   ],
+   "pay": 14,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    6
+   ],
+   "pay": 20,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    -1
+   ],
+   "pay": 15,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    7
+   ],
+   "pay": 25,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pay": 50,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "scatterPays": [
+  {
+   "count": 5,
+   "pay": 0,
+   "freeSpins": 5,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "wildInFirstPosition": false,
+ "bet": {
+  "defaultLineBet": 1,
+  "maxLineBet": 20
+ },
+ "wildSubstitute": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "ui": {
+  "spin": "sprites_indian/game_screen/button/button_spin_normal",
+  "autoSpin": "sprites_indian/game_screen/button/button_auto_spin",
+  "maxBet": "sprites_indian/game_screen/button/button_max_bet",
+  "plus": "sprites_indian/game_screen/button/plus_normal",
+  "minus": "sprites_indian/game_screen/button/minus_normal",
+  "menu": "sprites_indian/game_screen/icon/icon_menu",
+  "info": "sprites_indian/game_screen/icon/icon_information",
+  "settings": "sprites_indian/game_screen/icon/icon_settings",
+  "popupPanel": "sprites_indian/pop_ups/panels/message_pop_up",
+  "popupMegaWin": "sprites_indian/pop_ups/panels/coins_mega",
+  "popupHugeWin": "sprites_indian/pop_ups/panels/coins_huge",
+  "popupFreeSpins": "sprites_indian/pop_ups/panels/free_spin_pop_up",
+  "popupSettings": "sprites_indian/pop_ups/panels/settings_pop_up",
+  "buttonLong": "sprites_indian/pop_ups/buttons/long_button_normal",
+  "exit": "sprites_indian/pop_ups/buttons/exit_button_normal"
+ },
+ "uiLabeled": [],
+ "fonts": []
+}

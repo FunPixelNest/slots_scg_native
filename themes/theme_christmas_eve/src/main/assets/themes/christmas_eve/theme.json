@@ -1,0 +1,770 @@
+{
+ "id": "christmas_eve",
+ "name": "Christmas Eve",
+ "order": 0,
+ "unityFolder": "2_ChristmasEve",
+ "source": "unity-scene:01h_Christmas_3X5Hor_243ways.unity",
+ "reels": 5,
+ "rows": 3,
+ "mode": "ways",
+ "background": "sprites_christmaseve/game_screen/png/background",
+ "frame": null,
+ "reelBackground": null,
+ "title": "sprites_christmaseve/load_screen/png/game_title",
+ "symbols": [
+  {
+   "key": "j",
+   "name": "J",
+   "image": "sprites_christmaseve/game_screen/png/symbols/j",
+   "blur": "sprites_christmaseve/game_screen/png/symbols_blurred/blurred_j",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/j/j_01",
+     "sprites_christmaseve/animations/j/j_02",
+     "sprites_christmaseve/animations/j/j_03",
+     "sprites_christmaseve/animations/j/j_04",
+     "sprites_christmaseve/animations/j/j_05",
+     "sprites_christmaseve/animations/j/j_06",
+     "sprites_christmaseve/animations/j/j_07",
+     "sprites_christmaseve/animations/j/j_08",
+     "sprites_christmaseve/animations/j/j_09",
+     "sprites_christmaseve/animations/j/j_10",
+     "sprites_christmaseve/animations/j/j_11",
+     "sprites_christmaseve/animations/j/j_12",
+     "sprites_christmaseve/animations/j/j_13",
+     "sprites_christmaseve/animations/j/j_14",
+     "sprites_christmaseve/animations/j/j_15",
+     "sprites_christmaseve/animations/j/j_16"
+    ]
+   }
+  },
+  {
+   "key": "q",
+   "name": "Q",
+   "image": "sprites_christmaseve/game_screen/png/symbols/q",
+   "blur": "sprites_christmaseve/game_screen/png/symbols_blurred/blurred_q",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/q/q_01",
+     "sprites_christmaseve/animations/q/q_02",
+     "sprites_christmaseve/animations/q/q_03",
+     "sprites_christmaseve/animations/q/q_04",
+     "sprites_christmaseve/animations/q/q_05",
+     "sprites_christmaseve/animations/q/q_06",
+     "sprites_christmaseve/animations/q/q_07",
+     "sprites_christmaseve/animations/q/q_08",
+     "sprites_christmaseve/animations/q/q_09",
+     "sprites_christmaseve/animations/q/q_10",
+     "sprites_christmaseve/animations/q/q_11",
+     "sprites_christmaseve/animations/q/q_12",
+     "sprites_christmaseve/animations/q/q_13",
+     "sprites_christmaseve/animations/q/q_14",
+     "sprites_christmaseve/animations/q/q_15",
+     "sprites_christmaseve/animations/q/q_16"
+    ]
+   }
+  },
+  {
+   "key": "k",
+   "name": "K",
+   "image": "sprites_christmaseve/game_screen/png/symbols/k",
+   "blur": "sprites_christmaseve/game_screen/png/symbols_blurred/blurred_k",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/k/k_01",
+     "sprites_christmaseve/animations/k/k_02",
+     "sprites_christmaseve/animations/k/k_03",
+     "sprites_christmaseve/animations/k/k_04",
+     "sprites_christmaseve/animations/k/k_05",
+     "sprites_christmaseve/animations/k/k_06",
+     "sprites_christmaseve/animations/k/k_07",
+     "sprites_christmaseve/animations/k/k_08",
+     "sprites_christmaseve/animations/k/k_09",
+     "sprites_christmaseve/animations/k/k_10",
+     "sprites_christmaseve/animations/k/k_11",
+     "sprites_christmaseve/animations/k/k_12",
+     "sprites_christmaseve/animations/k/k_13",
+     "sprites_christmaseve/animations/k/k_14",
+     "sprites_christmaseve/animations/k/k_15",
+     "sprites_christmaseve/animations/k/k_16"
+    ]
+   }
+  },
+  {
+   "key": "a",
+   "name": "A",
+   "image": "sprites_christmaseve/game_screen/png/symbols/a",
+   "blur": "sprites_christmaseve/game_screen/png/symbols_blurred/blurred_a",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/a/a_01",
+     "sprites_christmaseve/animations/a/a_02",
+     "sprites_christmaseve/animations/a/a_03",
+     "sprites_christmaseve/animations/a/a_04",
+     "sprites_christmaseve/animations/a/a_05",
+     "sprites_christmaseve/animations/a/a_06",
+     "sprites_christmaseve/animations/a/a_07",
+     "sprites_christmaseve/animations/a/a_08",
+     "sprites_christmaseve/animations/a/a_09",
+     "sprites_christmaseve/animations/a/a_10",
+     "sprites_christmaseve/animations/a/a_11",
+     "sprites_christmaseve/animations/a/a_12",
+     "sprites_christmaseve/animations/a/a_13",
+     "sprites_christmaseve/animations/a/a_14",
+     "sprites_christmaseve/animations/a/a_15",
+     "sprites_christmaseve/animations/a/a_16"
+    ]
+   }
+  },
+  {
+   "key": "bell",
+   "name": "Bell",
+   "image": "sprites_christmaseve/game_screen/png/symbols/bell",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/bells/bells_01",
+     "sprites_christmaseve/animations/bells/bells_02",
+     "sprites_christmaseve/animations/bells/bells_03",
+     "sprites_christmaseve/animations/bells/bells_04",
+     "sprites_christmaseve/animations/bells/bells_05",
+     "sprites_christmaseve/animations/bells/bells_06",
+     "sprites_christmaseve/animations/bells/bells_07",
+     "sprites_christmaseve/animations/bells/bells_08",
+     "sprites_christmaseve/animations/bells/bells_09",
+     "sprites_christmaseve/animations/bells/bells_10",
+     "sprites_christmaseve/animations/bells/bells_11",
+     "sprites_christmaseve/animations/bells/bells_12",
+     "sprites_christmaseve/animations/bells/bells_13",
+     "sprites_christmaseve/animations/bells/bells_14",
+     "sprites_christmaseve/animations/bells/bells_15",
+     "sprites_christmaseve/animations/bells/bells_16",
+     "sprites_christmaseve/animations/bells/bells_17",
+     "sprites_christmaseve/animations/bells/bells_18",
+     "sprites_christmaseve/animations/bells/bells_19",
+     "sprites_christmaseve/animations/bells/bells_20",
+     "sprites_christmaseve/animations/bells/bells_21",
+     "sprites_christmaseve/animations/bells/bells_22",
+     "sprites_christmaseve/animations/bells/bells_23",
+     "sprites_christmaseve/animations/bells/bells_24"
+    ]
+   }
+  },
+  {
+   "key": "candle",
+   "name": "Candle",
+   "image": "sprites_christmaseve/game_screen/png/symbols/candle",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/candles/candles_01",
+     "sprites_christmaseve/animations/candles/candles_02",
+     "sprites_christmaseve/animations/candles/candles_03",
+     "sprites_christmaseve/animations/candles/candles_04",
+     "sprites_christmaseve/animations/candles/candles_05",
+     "sprites_christmaseve/animations/candles/candles_06",
+     "sprites_christmaseve/animations/candles/candles_07",
+     "sprites_christmaseve/animations/candles/candles_08",
+     "sprites_christmaseve/animations/candles/candles_09",
+     "sprites_christmaseve/animations/candles/candles_10",
+     "sprites_christmaseve/animations/candles/candles_11",
+     "sprites_christmaseve/animations/candles/candles_12",
+     "sprites_christmaseve/animations/candles/candles_13",
+     "sprites_christmaseve/animations/candles/candles_14",
+     "sprites_christmaseve/animations/candles/candles_15",
+     "sprites_christmaseve/animations/candles/candles_16",
+     "sprites_christmaseve/animations/candles/candles_17",
+     "sprites_christmaseve/animations/candles/candles_18",
+     "sprites_christmaseve/animations/candles/candles_19",
+     "sprites_christmaseve/animations/candles/candles_20",
+     "sprites_christmaseve/animations/candles/candles_21",
+     "sprites_christmaseve/animations/candles/candles_22",
+     "sprites_christmaseve/animations/candles/candles_23",
+     "sprites_christmaseve/animations/candles/candles_24"
+    ]
+   }
+  },
+  {
+   "key": "cookies",
+   "name": "Cookies",
+   "image": "sprites_christmaseve/game_screen/png/symbols/cookies",
+   "blur": "sprites_christmaseve/game_screen/png/symbols_blurred/blurred_cookies",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/cookies/cookies_01",
+     "sprites_christmaseve/animations/cookies/cookies_02",
+     "sprites_christmaseve/animations/cookies/cookies_03",
+     "sprites_christmaseve/animations/cookies/cookies_04",
+     "sprites_christmaseve/animations/cookies/cookies_05",
+     "sprites_christmaseve/animations/cookies/cookies_06",
+     "sprites_christmaseve/animations/cookies/cookies_07",
+     "sprites_christmaseve/animations/cookies/cookies_08",
+     "sprites_christmaseve/animations/cookies/cookies_09",
+     "sprites_christmaseve/animations/cookies/cookies_10",
+     "sprites_christmaseve/animations/cookies/cookies_11",
+     "sprites_christmaseve/animations/cookies/cookies_12",
+     "sprites_christmaseve/animations/cookies/cookies_13",
+     "sprites_christmaseve/animations/cookies/cookies_14",
+     "sprites_christmaseve/animations/cookies/cookies_15",
+     "sprites_christmaseve/animations/cookies/cookies_16",
+     "sprites_christmaseve/animations/cookies/cookies_17",
+     "sprites_christmaseve/animations/cookies/cookies_18",
+     "sprites_christmaseve/animations/cookies/cookies_19",
+     "sprites_christmaseve/animations/cookies/cookies_20",
+     "sprites_christmaseve/animations/cookies/cookies_21",
+     "sprites_christmaseve/animations/cookies/cookies_22",
+     "sprites_christmaseve/animations/cookies/cookies_23",
+     "sprites_christmaseve/animations/cookies/cookies_24"
+    ]
+   }
+  },
+  {
+   "key": "sock",
+   "name": "Sock",
+   "image": "sprites_christmaseve/game_screen/png/symbols/sock",
+   "blur": "sprites_christmaseve/game_screen/png/symbols_blurred/blurred_sock",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/sock/sock_01",
+     "sprites_christmaseve/animations/sock/sock_02",
+     "sprites_christmaseve/animations/sock/sock_03",
+     "sprites_christmaseve/animations/sock/sock_04",
+     "sprites_christmaseve/animations/sock/sock_05",
+     "sprites_christmaseve/animations/sock/sock_06",
+     "sprites_christmaseve/animations/sock/sock_07",
+     "sprites_christmaseve/animations/sock/sock_08",
+     "sprites_christmaseve/animations/sock/sock_09",
+     "sprites_christmaseve/animations/sock/sock_10",
+     "sprites_christmaseve/animations/sock/sock_11",
+     "sprites_christmaseve/animations/sock/sock_12",
+     "sprites_christmaseve/animations/sock/sock_13",
+     "sprites_christmaseve/animations/sock/sock_14",
+     "sprites_christmaseve/animations/sock/sock_15",
+     "sprites_christmaseve/animations/sock/sock_16",
+     "sprites_christmaseve/animations/sock/sock_17",
+     "sprites_christmaseve/animations/sock/sock_18",
+     "sprites_christmaseve/animations/sock/sock_19",
+     "sprites_christmaseve/animations/sock/sock_20",
+     "sprites_christmaseve/animations/sock/sock_21",
+     "sprites_christmaseve/animations/sock/sock_22",
+     "sprites_christmaseve/animations/sock/sock_23",
+     "sprites_christmaseve/animations/sock/sock_24"
+    ]
+   }
+  },
+  {
+   "key": "wild",
+   "name": "Wild",
+   "image": "sprites_christmaseve/game_screen/png/symbols/wild",
+   "blur": "sprites_christmaseve/game_screen/png/symbols_blurred/blurred_wild",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/wild/wild_01",
+     "sprites_christmaseve/animations/wild/wild_02",
+     "sprites_christmaseve/animations/wild/wild_03",
+     "sprites_christmaseve/animations/wild/wild_04",
+     "sprites_christmaseve/animations/wild/wild_05",
+     "sprites_christmaseve/animations/wild/wild_06",
+     "sprites_christmaseve/animations/wild/wild_07",
+     "sprites_christmaseve/animations/wild/wild_08",
+     "sprites_christmaseve/animations/wild/wild_09",
+     "sprites_christmaseve/animations/wild/wild_10",
+     "sprites_christmaseve/animations/wild/wild_11",
+     "sprites_christmaseve/animations/wild/wild_12",
+     "sprites_christmaseve/animations/wild/wild_13",
+     "sprites_christmaseve/animations/wild/wild_14",
+     "sprites_christmaseve/animations/wild/wild_15",
+     "sprites_christmaseve/animations/wild/wild_16",
+     "sprites_christmaseve/animations/wild/wild_17",
+     "sprites_christmaseve/animations/wild/wild_18",
+     "sprites_christmaseve/animations/wild/wild_19",
+     "sprites_christmaseve/animations/wild/wild_20",
+     "sprites_christmaseve/animations/wild/wild_21",
+     "sprites_christmaseve/animations/wild/wild_22",
+     "sprites_christmaseve/animations/wild/wild_23",
+     "sprites_christmaseve/animations/wild/wild_24"
+    ]
+   }
+  },
+  {
+   "key": "scatter",
+   "name": "Scatter",
+   "image": "sprites_christmaseve/game_screen/png/symbols/scatter",
+   "blur": "sprites_christmaseve/game_screen/png/symbols_blurred/blurred_scatter",
+   "anim": {
+    "frames": [
+     "sprites_christmaseve/animations/scatter/scatter_01",
+     "sprites_christmaseve/animations/scatter/scatter_02",
+     "sprites_christmaseve/animations/scatter/scatter_03",
+     "sprites_christmaseve/animations/scatter/scatter_04",
+     "sprites_christmaseve/animations/scatter/scatter_05",
+     "sprites_christmaseve/animations/scatter/scatter_06",
+     "sprites_christmaseve/animations/scatter/scatter_07",
+     "sprites_christmaseve/animations/scatter/scatter_08",
+     "sprites_christmaseve/animations/scatter/scatter_09",
+     "sprites_christmaseve/animations/scatter/scatter_10",
+     "sprites_christmaseve/animations/scatter/scatter_11",
+     "sprites_christmaseve/animations/scatter/scatter_12",
+     "sprites_christmaseve/animations/scatter/scatter_13",
+     "sprites_christmaseve/animations/scatter/scatter_14",
+     "sprites_christmaseve/animations/scatter/scatter_15",
+     "sprites_christmaseve/animations/scatter/scatter_16",
+     "sprites_christmaseve/animations/scatter/scatter_17",
+     "sprites_christmaseve/animations/scatter/scatter_18",
+     "sprites_christmaseve/animations/scatter/scatter_19",
+     "sprites_christmaseve/animations/scatter/scatter_20",
+     "sprites_christmaseve/animations/scatter/scatter_21",
+     "sprites_christmaseve/animations/scatter/scatter_22",
+     "sprites_christmaseve/animations/scatter/scatter_23",
+     "sprites_christmaseve/animations/scatter/scatter_24"
+    ]
+   }
+  }
+ ],
+ "wildId": 8,
+ "scatterId": 9,
+ "reelStrips": [
+  [
+   2,
+   3,
+   4,
+   1,
+   5,
+   8,
+   6,
+   0,
+   7,
+   0
+  ],
+  [
+   1,
+   0,
+   8,
+   2,
+   5,
+   3,
+   4,
+   8,
+   6,
+   7,
+   8,
+   0
+  ],
+  [
+   1,
+   8,
+   6,
+   2,
+   5,
+   0,
+   3,
+   4,
+   8,
+   9,
+   7,
+   8
+  ],
+  [
+   2,
+   3,
+   8,
+   4,
+   5,
+   1,
+   8,
+   6,
+   7,
+   8,
+   9,
+   0,
+   9
+  ],
+  [
+   0,
+   8,
+   1,
+   2,
+   3,
+   4,
+   8,
+   5,
+   7,
+   8,
+   9,
+   6,
+   9
+  ]
+ ],
+ "payTable": [
+  {
+   "line": [
+    0,
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "pay": 4,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "pay": 5,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "pay": 6,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "pay": 7,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "pay": 17,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "pay": 19,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    -1
+   ],
+   "pay": 14,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    6
+   ],
+   "pay": 20,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    -1
+   ],
+   "pay": 15,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    7
+   ],
+   "pay": 25,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pay": 50,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "scatterPays": [
+  {
+   "count": 5,
+   "pay": 0,
+   "freeSpins": 5,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "wildInFirstPosition": false,
+ "wildSubstitute": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "bet": {
+  "defaultLineBet": 1,
+  "maxLineBet": 20
+ },
+ "ui": {
+  "spin": "sprites_christmaseve/game_screen/png/buttons_icons/spin_button_normal",
+  "autoSpin": "sprites_christmaseve/game_screen/png/buttons_icons/auto_spin_button_normal",
+  "maxBet": "sprites_christmaseve/game_screen/png/buttons_icons/max_bet_button_normal",
+  "plus": "sprites_christmaseve/game_screen/png/buttons_icons/plus_normal",
+  "minus": "sprites_christmaseve/game_screen/png/buttons_icons/minus_normal",
+  "menu": "sprites_christmaseve/game_screen/png/buttons_icons/icon_menu",
+  "info": "sprites_christmaseve/game_screen/png/buttons_icons/icon_information",
+  "settings": "sprites_christmaseve/game_screen/png/buttons_icons/icon_settings",
+  "popupPanel": "sprites_christmaseve/pop_ups/png/message_pop_up",
+  "popupBigWin": "sprites_christmaseve/pop_ups/png/big_win_pop_up",
+  "popupMegaWin": "sprites_christmaseve/pop_ups/png/mega_win_pop_up",
+  "popupHugeWin": "sprites_christmaseve/pop_ups/png/huge_win_pop_up",
+  "popupFreeSpins": "sprites_christmaseve/pop_ups/png/free_spin_pop_up",
+  "popupInfo": "sprites_christmaseve/pop_ups/png/infopanel",
+  "popupSettings": "sprites_christmaseve/pop_ups/png/settings_pop_up",
+  "buttonLong": "sprites_christmaseve/gui_elements/png/buttons/red_long_button_normal",
+  "exit": "sprites_christmaseve/game_screen/png/buttons_icons/icon_quit"
+ },
+ "uiLabeled": [],
+ "fonts": []
+}

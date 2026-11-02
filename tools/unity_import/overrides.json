@@ -1,0 +1,81 @@
+{
+ "_comment": "Per-theme manual choices. Paths are sanitised keys relative to the theme folder (no extension), as listed in that theme's images.json. Keys: symbolDir, regular (ordered low->high, max 8), wild, scatter, background, frame (null = draw a plain reel frame), title, ui{...}, anims{symbolKey:{sheet|frames}}, lobbyIcon (Unity path relative to HolidaySlotAsset). uiLabeled: ui keys whose art already contains its text/icon (the app then draws no label).",
+ "christmas_eve": {
+  "lobbyIcon": "1_Lobby/Sprites/PNG/GameIcons/Christmas Icon.png"
+ },
+ "valentines_day": {
+  "lobbyIcon": "1_Lobby/Sprites/PNG/GameIcons/Valentine Icon.png"
+ },
+ "witch": {
+  "lobbyIcon": "1_Lobby/Sprites/PNG/GameIcons/Halloween Icon.png",
+  "uiLabeled": [
+   "autoSpin",
+   "maxBet"
+  ]
+ },
+ "greek": {
+  "title": null
+ },
+ "modern": {
+  "title": null
+ },
+ "arabian": {
+  "uiLabeled": [
+   "autoSpin",
+   "maxBet"
+  ]
+ },
+ "candy": {
+  "uiLabeled": [
+   "autoSpin",
+   "maxBet"
+  ]
+ },
+ "egypt": {
+  "uiLabeled": [
+   "autoSpin",
+   "maxBet"
+  ]
+ },
+ "egypt_2": {
+  "uiLabeled": [
+   "autoSpin",
+   "maxBet"
+  ]
+ },
+ "most_wanted": {
+  "uiLabeled": [
+   "spin",
+   "autoSpin",
+   "maxBet"
+  ]
+ },
+ "viking": {
+  "uiLabeled": [
+   "autoSpin",
+   "maxBet"
+  ]
+ },
+ "wolf": {
+  "uiLabeled": [
+   "autoSpin",
+   "maxBet"
+  ]
+ },
+ "gems": {
+  "uiLabeled": [
+   "autoSpin"
+  ]
+ },
+ "farm": {
+  "uiLabeled": [
+   "spin"
+  ]
+ },
+ "pirates": {
+  "uiLabeled": [
+   "panelBalance",
+   "panelBet"
+  ]
+ }
+}

@@ -1,0 +1,552 @@
+{
+ "id": "witch",
+ "name": "Witch's Cauldron",
+ "order": 2,
+ "unityFolder": "4_Witch",
+ "source": "unity-scene:01h_WitchCauldron_3X5Hor_243ways.unity",
+ "reels": 5,
+ "rows": 3,
+ "mode": "ways",
+ "background": "sprites_witch/png/gamescreen/background",
+ "frame": "sprites_witch/png/gamescreen/slotmachine_3x5",
+ "reelBackground": null,
+ "title": "sprites_witch/png/gui/logo",
+ "symbols": [
+  {
+   "key": "bluebottle",
+   "name": "Bluebottle",
+   "image": "sprites_witch/png/gamescreen/symbols/bluebottle",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/bluebottleblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/bluebottlesheet"
+   }
+  },
+  {
+   "key": "greenbottle",
+   "name": "Greenbottle",
+   "image": "sprites_witch/png/gamescreen/symbols/greenbottle",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/greenbottleblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/greenbottlesheet"
+   }
+  },
+  {
+   "key": "margentebottle",
+   "name": "Margentebottle",
+   "image": "sprites_witch/png/gamescreen/symbols/margentebottle",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/margentebottleblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/margentebottlesheet"
+   }
+  },
+  {
+   "key": "violetbottle",
+   "name": "Violetbottle",
+   "image": "sprites_witch/png/gamescreen/symbols/violetbottle",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/violetbottleblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/violetbottlesheet"
+   }
+  },
+  {
+   "key": "candles",
+   "name": "Candles",
+   "image": "sprites_witch/png/gamescreen/symbols/candles",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/candlesblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/candlessheet"
+   }
+  },
+  {
+   "key": "broom",
+   "name": "Broom",
+   "image": "sprites_witch/png/gamescreen/symbols/broom",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/broomblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/broomsheet"
+   }
+  },
+  {
+   "key": "scroll",
+   "name": "Scroll",
+   "image": "sprites_witch/png/gamescreen/symbols/scroll",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/scrollblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/scrollsheet"
+   }
+  },
+  {
+   "key": "hat",
+   "name": "Hat",
+   "image": "sprites_witch/png/gamescreen/symbols/hat",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/hatblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/hatsheet"
+   }
+  },
+  {
+   "key": "wild",
+   "name": "Wild",
+   "image": "sprites_witch/png/gamescreen/symbols/wild",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/wildblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/wildsheet"
+   }
+  },
+  {
+   "key": "scatter",
+   "name": "Scatter",
+   "image": "sprites_witch/png/gamescreen/symbols/scatter",
+   "blur": "sprites_witch/png/gamescreen/symbolsblurred/scatterblurred",
+   "anim": {
+    "sheet": "sprites_witch/animations/scattersheet"
+   }
+  }
+ ],
+ "wildId": 8,
+ "scatterId": 9,
+ "reelStrips": [
+  [
+   2,
+   3,
+   4,
+   1,
+   5,
+   8,
+   6,
+   0,
+   7,
+   0
+  ],
+  [
+   1,
+   0,
+   8,
+   2,
+   5,
+   3,
+   4,
+   8,
+   6,
+   7,
+   8,
+   0
+  ],
+  [
+   1,
+   8,
+   6,
+   2,
+   5,
+   0,
+   3,
+   4,
+   8,
+   9,
+   7,
+   8
+  ],
+  [
+   2,
+   3,
+   8,
+   4,
+   5,
+   1,
+   8,
+   6,
+   7,
+   8,
+   9,
+   0,
+   9
+  ],
+  [
+   0,
+   8,
+   1,
+   2,
+   3,
+   4,
+   8,
+   5,
+   7,
+   8,
+   9,
+   6,
+   9
+  ]
+ ],
+ "payTable": [
+  {
+   "line": [
+    0,
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "pay": 4,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "pay": 5,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "pay": 6,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "pay": 7,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "pay": 17,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "pay": 19,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    -1
+   ],
+   "pay": 14,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    6
+   ],
+   "pay": 20,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    -1
+   ],
+   "pay": 15,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    7
+   ],
+   "pay": 25,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pay": 50,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "scatterPays": [
+  {
+   "count": 5,
+   "pay": 0,
+   "freeSpins": 5,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "wildInFirstPosition": false,
+ "wildSubstitute": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "bet": {
+  "defaultLineBet": 1,
+  "maxLineBet": 20
+ },
+ "ui": {
+  "spin": "sprites_witch/png/gamescreen/buttons/buttonspin",
+  "autoSpin": "sprites_witch/png/gamescreen/buttons/buttonautospin",
+  "maxBet": "sprites_witch/png/gamescreen/buttons/buttonmaxbet",
+  "plus": "sprites_witch/png/gamescreen/buttons/buttonplus",
+  "minus": "sprites_witch/png/gamescreen/buttons/buttonminus",
+  "menu": "sprites_witch/png/gamescreen/buttons/buttonmenu",
+  "info": "sprites_witch/png/gamescreen/buttons/buttoninfo",
+  "settings": "sprites_witch/png/gamescreen/buttons/buttonsettings",
+  "panelBalance": "sprites_witch/png/gamescreen/panelbalance",
+  "panelBet": "sprites_witch/png/gamescreen/paneltotalbet",
+  "buttonLong": "sprites_witch/png/gui/longbutton",
+  "exit": "sprites_witch/png/gui/exitbutton"
+ },
+ "uiLabeled": [
+  "autoSpin",
+  "maxBet"
+ ],
+ "fonts": []
+}

@@ -1,0 +1,560 @@
+{
+ "id": "egypt_2",
+ "name": "Egypt II",
+ "order": 16,
+ "unityFolder": "18_Egypt_2",
+ "source": "generated",
+ "reels": 5,
+ "rows": 3,
+ "mode": "ways",
+ "background": "sprites_eg2/gamescreen/backgrounds/backgroundh",
+ "frame": null,
+ "reelBackground": null,
+ "title": null,
+ "symbols": [
+  {
+   "key": "j",
+   "name": "J",
+   "image": "sprites_eg2/gamescreen/symbols/j",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/jblurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/jsheet"
+   }
+  },
+  {
+   "key": "q",
+   "name": "Q",
+   "image": "sprites_eg2/gamescreen/symbols/q",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/qblurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/qsheet"
+   }
+  },
+  {
+   "key": "k",
+   "name": "K",
+   "image": "sprites_eg2/gamescreen/symbols/k",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/kblurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/ksheet"
+   }
+  },
+  {
+   "key": "a",
+   "name": "A",
+   "image": "sprites_eg2/gamescreen/symbols/a",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/ablurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/asheet"
+   }
+  },
+  {
+   "key": "book",
+   "name": "Book",
+   "image": "sprites_eg2/gamescreen/symbols/book",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/bookblurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/booksheet"
+   }
+  },
+  {
+   "key": "scarab",
+   "name": "Scarab",
+   "image": "sprites_eg2/gamescreen/symbols/scarab",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/scarabblurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/scarabsheet"
+   }
+  },
+  {
+   "key": "scroll",
+   "name": "Scroll",
+   "image": "sprites_eg2/gamescreen/symbols/scroll",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/scrollblurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/scrollsheet"
+   }
+  },
+  {
+   "key": "vase",
+   "name": "Vase",
+   "image": "sprites_eg2/gamescreen/symbols/vase",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/vaseblurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/vasesheet"
+   }
+  },
+  {
+   "key": "wild",
+   "name": "Wild",
+   "image": "sprites_eg2/gamescreen/symbols/wild",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/wildblurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/wildsheet"
+   }
+  },
+  {
+   "key": "scatter",
+   "name": "Scatter",
+   "image": "sprites_eg2/gamescreen/symbols/scatter",
+   "blur": "sprites_eg2/gamescreen/symbolsblurred/scatterblurred",
+   "anim": {
+    "sheet": "sprites_eg2/animations/scattersheet"
+   }
+  }
+ ],
+ "wildId": 8,
+ "scatterId": 9,
+ "_comment": "Slot math shared by the Unity Holiday Slot scenes (Christmas/Valentine/Witch). Symbol ids 0-3 low, 4-7 high, 8 wild, 9 scatter.",
+ "reelStrips": [
+  [
+   2,
+   3,
+   4,
+   1,
+   5,
+   8,
+   6,
+   0,
+   7,
+   0
+  ],
+  [
+   1,
+   0,
+   8,
+   2,
+   5,
+   3,
+   4,
+   8,
+   6,
+   7,
+   8,
+   0
+  ],
+  [
+   1,
+   8,
+   6,
+   2,
+   5,
+   0,
+   3,
+   4,
+   8,
+   9,
+   7,
+   8
+  ],
+  [
+   2,
+   3,
+   8,
+   4,
+   5,
+   1,
+   8,
+   6,
+   7,
+   8,
+   9,
+   0,
+   9
+  ],
+  [
+   0,
+   8,
+   1,
+   2,
+   3,
+   4,
+   8,
+   5,
+   7,
+   8,
+   9,
+   6,
+   9
+  ]
+ ],
+ "payTable": [
+  {
+   "line": [
+    0,
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "pay": 4,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "pay": 5,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "pay": 6,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "pay": 7,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "pay": 17,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "pay": 19,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    -1
+   ],
+   "pay": 14,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    6
+   ],
+   "pay": 20,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    -1
+   ],
+   "pay": 15,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    7
+   ],
+   "pay": 25,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pay": 50,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "scatterPays": [
+  {
+   "count": 5,
+   "pay": 0,
+   "freeSpins": 5,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "wildInFirstPosition": false,
+ "bet": {
+  "defaultLineBet": 1,
+  "maxLineBet": 20
+ },
+ "wildSubstitute": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "ui": {
+  "spin": "sprites_eg2/gamescreen/buttons/buttonspin",
+  "autoSpin": "sprites_eg2/gamescreen/buttons/buttonautospin",
+  "maxBet": "sprites_eg2/gamescreen/buttons/buttonmaxbet",
+  "plus": "sprites_eg2/gamescreen/buttons/buttonplus",
+  "minus": "sprites_eg2/gamescreen/buttons/buttonminus",
+  "menu": "sprites_eg2/gamescreen/buttons/buttonmenu",
+  "info": "sprites_eg2/gamescreen/buttons/buttoninfo",
+  "settings": "sprites_eg2/gamescreen/buttons/buttonsettings",
+  "panelBalance": "sprites_eg2/gamescreen/panels/panelbalance",
+  "panelWin": "sprites_eg2/gamescreen/panels/panelwin",
+  "panelBet": "sprites_eg2/gamescreen/panels/paneltotalbet",
+  "popupPanel": "sprites_eg2/popups/panels/messagepanel",
+  "popupMegaWin": "sprites_eg2/popups/panels/megawinpanel",
+  "popupHugeWin": "sprites_eg2/popups/panels/hugewinpanel",
+  "popupFreeSpins": "sprites_eg2/popups/panels/freespinpanel",
+  "popupInfo": "sprites_eg2/popups/panels/infopanel",
+  "popupSettings": "sprites_eg2/popups/panels/settingspanel",
+  "buttonLong": "sprites_eg2/popups/buttons/longbutton",
+  "exit": "sprites_eg2/popups/buttons/exitbutton"
+ },
+ "uiLabeled": [
+  "autoSpin",
+  "maxBet"
+ ],
+ "fonts": []
+}

@@ -1,0 +1,794 @@
+{
+ "id": "greek",
+ "name": "Greek Gods",
+ "order": 18,
+ "unityFolder": "20_GreekTheme",
+ "source": "generated",
+ "reels": 5,
+ "rows": 3,
+ "mode": "ways",
+ "background": "sprites_greek/game_screen/backgrounds/background_day_greek",
+ "frame": null,
+ "reelBackground": "sprites_greek/game_screen/reels/reel",
+ "title": null,
+ "symbols": [
+  {
+   "key": "club",
+   "name": "Club",
+   "image": "sprites_greek/game_screen/symbols/club",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/club/club_01",
+     "sprites_greek/animations/club/club_02",
+     "sprites_greek/animations/club/club_03",
+     "sprites_greek/animations/club/club_04",
+     "sprites_greek/animations/club/club_05",
+     "sprites_greek/animations/club/club_06",
+     "sprites_greek/animations/club/club_07",
+     "sprites_greek/animations/club/club_08",
+     "sprites_greek/animations/club/club_09",
+     "sprites_greek/animations/club/club_10",
+     "sprites_greek/animations/club/club_11",
+     "sprites_greek/animations/club/club_12",
+     "sprites_greek/animations/club/club_13",
+     "sprites_greek/animations/club/club_14",
+     "sprites_greek/animations/club/club_15",
+     "sprites_greek/animations/club/club_16",
+     "sprites_greek/animations/club/club_17",
+     "sprites_greek/animations/club/club_18",
+     "sprites_greek/animations/club/club_19",
+     "sprites_greek/animations/club/club_20",
+     "sprites_greek/animations/club/club_21",
+     "sprites_greek/animations/club/club_22",
+     "sprites_greek/animations/club/club_23",
+     "sprites_greek/animations/club/club_24"
+    ]
+   }
+  },
+  {
+   "key": "diamond",
+   "name": "Diamond",
+   "image": "sprites_greek/game_screen/symbols/diamond",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/diamond/diamond_01",
+     "sprites_greek/animations/diamond/diamond_02",
+     "sprites_greek/animations/diamond/diamond_03",
+     "sprites_greek/animations/diamond/diamond_04",
+     "sprites_greek/animations/diamond/diamond_05",
+     "sprites_greek/animations/diamond/diamond_06",
+     "sprites_greek/animations/diamond/diamond_07",
+     "sprites_greek/animations/diamond/diamond_08",
+     "sprites_greek/animations/diamond/diamond_09",
+     "sprites_greek/animations/diamond/diamond_10",
+     "sprites_greek/animations/diamond/diamond_11",
+     "sprites_greek/animations/diamond/diamond_12",
+     "sprites_greek/animations/diamond/diamond_13",
+     "sprites_greek/animations/diamond/diamond_14",
+     "sprites_greek/animations/diamond/diamond_15",
+     "sprites_greek/animations/diamond/diamond_16",
+     "sprites_greek/animations/diamond/diamond_17",
+     "sprites_greek/animations/diamond/diamond_18",
+     "sprites_greek/animations/diamond/diamond_19",
+     "sprites_greek/animations/diamond/diamond_20",
+     "sprites_greek/animations/diamond/diamond_21",
+     "sprites_greek/animations/diamond/diamond_22",
+     "sprites_greek/animations/diamond/diamond_23",
+     "sprites_greek/animations/diamond/diamond_24"
+    ]
+   }
+  },
+  {
+   "key": "heart",
+   "name": "Heart",
+   "image": "sprites_greek/game_screen/symbols/heart",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/heart/heart_01",
+     "sprites_greek/animations/heart/heart_02",
+     "sprites_greek/animations/heart/heart_03",
+     "sprites_greek/animations/heart/heart_04",
+     "sprites_greek/animations/heart/heart_05",
+     "sprites_greek/animations/heart/heart_06",
+     "sprites_greek/animations/heart/heart_07",
+     "sprites_greek/animations/heart/heart_08",
+     "sprites_greek/animations/heart/heart_09",
+     "sprites_greek/animations/heart/heart_10",
+     "sprites_greek/animations/heart/heart_11",
+     "sprites_greek/animations/heart/heart_12",
+     "sprites_greek/animations/heart/heart_13",
+     "sprites_greek/animations/heart/heart_14",
+     "sprites_greek/animations/heart/heart_15",
+     "sprites_greek/animations/heart/heart_16",
+     "sprites_greek/animations/heart/heart_17",
+     "sprites_greek/animations/heart/heart_18",
+     "sprites_greek/animations/heart/heart_19",
+     "sprites_greek/animations/heart/heart_20",
+     "sprites_greek/animations/heart/heart_21",
+     "sprites_greek/animations/heart/heart_22",
+     "sprites_greek/animations/heart/heart_23",
+     "sprites_greek/animations/heart/heart_24"
+    ]
+   }
+  },
+  {
+   "key": "spade",
+   "name": "Spade",
+   "image": "sprites_greek/game_screen/symbols/spade",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/spade/spade_01",
+     "sprites_greek/animations/spade/spade_02",
+     "sprites_greek/animations/spade/spade_03",
+     "sprites_greek/animations/spade/spade_04",
+     "sprites_greek/animations/spade/spade_05",
+     "sprites_greek/animations/spade/spade_06",
+     "sprites_greek/animations/spade/spade_07",
+     "sprites_greek/animations/spade/spade_08",
+     "sprites_greek/animations/spade/spade_09",
+     "sprites_greek/animations/spade/spade_10",
+     "sprites_greek/animations/spade/spade_11",
+     "sprites_greek/animations/spade/spade_12",
+     "sprites_greek/animations/spade/spade_13",
+     "sprites_greek/animations/spade/spade_14",
+     "sprites_greek/animations/spade/spade_15",
+     "sprites_greek/animations/spade/spade_16",
+     "sprites_greek/animations/spade/spade_17",
+     "sprites_greek/animations/spade/spade_18",
+     "sprites_greek/animations/spade/spade_19",
+     "sprites_greek/animations/spade/spade_20",
+     "sprites_greek/animations/spade/spade_21",
+     "sprites_greek/animations/spade/spade_22",
+     "sprites_greek/animations/spade/spade_23",
+     "sprites_greek/animations/spade/spade_24"
+    ]
+   }
+  },
+  {
+   "key": "alpha",
+   "name": "Alpha",
+   "image": "sprites_greek/game_screen/symbols/alpha",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/alpha/alpha_01",
+     "sprites_greek/animations/alpha/alpha_02",
+     "sprites_greek/animations/alpha/alpha_03",
+     "sprites_greek/animations/alpha/alpha_04",
+     "sprites_greek/animations/alpha/alpha_05",
+     "sprites_greek/animations/alpha/alpha_06",
+     "sprites_greek/animations/alpha/alpha_07",
+     "sprites_greek/animations/alpha/alpha_08",
+     "sprites_greek/animations/alpha/alpha_09",
+     "sprites_greek/animations/alpha/alpha_10",
+     "sprites_greek/animations/alpha/alpha_11",
+     "sprites_greek/animations/alpha/alpha_12",
+     "sprites_greek/animations/alpha/alpha_13",
+     "sprites_greek/animations/alpha/alpha_14",
+     "sprites_greek/animations/alpha/alpha_15",
+     "sprites_greek/animations/alpha/alpha_16",
+     "sprites_greek/animations/alpha/alpha_17",
+     "sprites_greek/animations/alpha/alpha_18",
+     "sprites_greek/animations/alpha/alpha_19",
+     "sprites_greek/animations/alpha/alpha_20",
+     "sprites_greek/animations/alpha/alpha_21",
+     "sprites_greek/animations/alpha/alpha_22",
+     "sprites_greek/animations/alpha/alpha_23",
+     "sprites_greek/animations/alpha/alpha_24"
+    ]
+   }
+  },
+  {
+   "key": "beta",
+   "name": "Beta",
+   "image": "sprites_greek/game_screen/symbols/beta",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/beta/beta_01",
+     "sprites_greek/animations/beta/beta_02",
+     "sprites_greek/animations/beta/beta_03",
+     "sprites_greek/animations/beta/beta_04",
+     "sprites_greek/animations/beta/beta_05",
+     "sprites_greek/animations/beta/beta_06",
+     "sprites_greek/animations/beta/beta_07",
+     "sprites_greek/animations/beta/beta_08",
+     "sprites_greek/animations/beta/beta_09",
+     "sprites_greek/animations/beta/beta_10",
+     "sprites_greek/animations/beta/beta_11",
+     "sprites_greek/animations/beta/beta_12",
+     "sprites_greek/animations/beta/beta_13",
+     "sprites_greek/animations/beta/beta_14",
+     "sprites_greek/animations/beta/beta_15",
+     "sprites_greek/animations/beta/beta_16",
+     "sprites_greek/animations/beta/beta_17",
+     "sprites_greek/animations/beta/beta_18",
+     "sprites_greek/animations/beta/beta_19",
+     "sprites_greek/animations/beta/beta_20",
+     "sprites_greek/animations/beta/beta_21",
+     "sprites_greek/animations/beta/beta_22",
+     "sprites_greek/animations/beta/beta_23",
+     "sprites_greek/animations/beta/beta_24"
+    ]
+   }
+  },
+  {
+   "key": "psi",
+   "name": "Psi",
+   "image": "sprites_greek/game_screen/symbols/psi",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/psi/psi_01",
+     "sprites_greek/animations/psi/psi_02",
+     "sprites_greek/animations/psi/psi_03",
+     "sprites_greek/animations/psi/psi_04",
+     "sprites_greek/animations/psi/psi_05",
+     "sprites_greek/animations/psi/psi_06",
+     "sprites_greek/animations/psi/psi_07",
+     "sprites_greek/animations/psi/psi_08",
+     "sprites_greek/animations/psi/psi_09",
+     "sprites_greek/animations/psi/psi_10",
+     "sprites_greek/animations/psi/psi_11",
+     "sprites_greek/animations/psi/psi_12",
+     "sprites_greek/animations/psi/psi_13",
+     "sprites_greek/animations/psi/psi_14",
+     "sprites_greek/animations/psi/psi_15",
+     "sprites_greek/animations/psi/psi_16",
+     "sprites_greek/animations/psi/psi_17",
+     "sprites_greek/animations/psi/psi_18",
+     "sprites_greek/animations/psi/psi_19",
+     "sprites_greek/animations/psi/psi_20",
+     "sprites_greek/animations/psi/psi_21",
+     "sprites_greek/animations/psi/psi_22",
+     "sprites_greek/animations/psi/psi_23",
+     "sprites_greek/animations/psi/psi_24"
+    ]
+   }
+  },
+  {
+   "key": "sigma",
+   "name": "Sigma",
+   "image": "sprites_greek/game_screen/symbols/sigma",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/sigma/sigma_01",
+     "sprites_greek/animations/sigma/sigma_02",
+     "sprites_greek/animations/sigma/sigma_03",
+     "sprites_greek/animations/sigma/sigma_04",
+     "sprites_greek/animations/sigma/sigma_05",
+     "sprites_greek/animations/sigma/sigma_06",
+     "sprites_greek/animations/sigma/sigma_07",
+     "sprites_greek/animations/sigma/sigma_08",
+     "sprites_greek/animations/sigma/sigma_09",
+     "sprites_greek/animations/sigma/sigma_10",
+     "sprites_greek/animations/sigma/sigma_11",
+     "sprites_greek/animations/sigma/sigma_12",
+     "sprites_greek/animations/sigma/sigma_13",
+     "sprites_greek/animations/sigma/sigma_14",
+     "sprites_greek/animations/sigma/sigma_15",
+     "sprites_greek/animations/sigma/sigma_16",
+     "sprites_greek/animations/sigma/sigma_17",
+     "sprites_greek/animations/sigma/sigma_18",
+     "sprites_greek/animations/sigma/sigma_19",
+     "sprites_greek/animations/sigma/sigma_20",
+     "sprites_greek/animations/sigma/sigma_21",
+     "sprites_greek/animations/sigma/sigma_22",
+     "sprites_greek/animations/sigma/sigma_23",
+     "sprites_greek/animations/sigma/sigma_24"
+    ]
+   }
+  },
+  {
+   "key": "wild",
+   "name": "Wild",
+   "image": "sprites_greek/game_screen/symbols/wild",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/wild/wild_01",
+     "sprites_greek/animations/wild/wild_02",
+     "sprites_greek/animations/wild/wild_03",
+     "sprites_greek/animations/wild/wild_04",
+     "sprites_greek/animations/wild/wild_05",
+     "sprites_greek/animations/wild/wild_06",
+     "sprites_greek/animations/wild/wild_07",
+     "sprites_greek/animations/wild/wild_08",
+     "sprites_greek/animations/wild/wild_09",
+     "sprites_greek/animations/wild/wild_10",
+     "sprites_greek/animations/wild/wild_11",
+     "sprites_greek/animations/wild/wild_12",
+     "sprites_greek/animations/wild/wild_13",
+     "sprites_greek/animations/wild/wild_14",
+     "sprites_greek/animations/wild/wild_15",
+     "sprites_greek/animations/wild/wild_16",
+     "sprites_greek/animations/wild/wild_17",
+     "sprites_greek/animations/wild/wild_18",
+     "sprites_greek/animations/wild/wild_19",
+     "sprites_greek/animations/wild/wild_20",
+     "sprites_greek/animations/wild/wild_21",
+     "sprites_greek/animations/wild/wild_22",
+     "sprites_greek/animations/wild/wild_23",
+     "sprites_greek/animations/wild/wild_24"
+    ]
+   }
+  },
+  {
+   "key": "scatter",
+   "name": "Scatter",
+   "image": "sprites_greek/game_screen/symbols/scatter",
+   "anim": {
+    "frames": [
+     "sprites_greek/animations/scatter/scatter_01",
+     "sprites_greek/animations/scatter/scatter_02",
+     "sprites_greek/animations/scatter/scatter_03",
+     "sprites_greek/animations/scatter/scatter_04",
+     "sprites_greek/animations/scatter/scatter_05",
+     "sprites_greek/animations/scatter/scatter_06",
+     "sprites_greek/animations/scatter/scatter_07",
+     "sprites_greek/animations/scatter/scatter_08",
+     "sprites_greek/animations/scatter/scatter_09",
+     "sprites_greek/animations/scatter/scatter_10",
+     "sprites_greek/animations/scatter/scatter_11",
+     "sprites_greek/animations/scatter/scatter_12",
+     "sprites_greek/animations/scatter/scatter_13",
+     "sprites_greek/animations/scatter/scatter_14",
+     "sprites_greek/animations/scatter/scatter_15",
+     "sprites_greek/animations/scatter/scatter_16",
+     "sprites_greek/animations/scatter/scatter_17",
+     "sprites_greek/animations/scatter/scatter_18",
+     "sprites_greek/animations/scatter/scatter_19",
+     "sprites_greek/animations/scatter/scatter_20",
+     "sprites_greek/animations/scatter/scatter_21",
+     "sprites_greek/animations/scatter/scatter_22",
+     "sprites_greek/animations/scatter/scatter_23",
+     "sprites_greek/animations/scatter/scatter_24"
+    ]
+   }
+  }
+ ],
+ "wildId": 8,
+ "scatterId": 9,
+ "_comment": "Slot math shared by the Unity Holiday Slot scenes (Christmas/Valentine/Witch). Symbol ids 0-3 low, 4-7 high, 8 wild, 9 scatter.",
+ "reelStrips": [
+  [
+   2,
+   3,
+   4,
+   1,
+   5,
+   8,
+   6,
+   0,
+   7,
+   0
+  ],
+  [
+   1,
+   0,
+   8,
+   2,
+   5,
+   3,
+   4,
+   8,
+   6,
+   7,
+   8,
+   0
+  ],
+  [
+   1,
+   8,
+   6,
+   2,
+   5,
+   0,
+   3,
+   4,
+   8,
+   9,
+   7,
+   8
+  ],
+  [
+   2,
+   3,
+   8,
+   4,
+   5,
+   1,
+   8,
+   6,
+   7,
+   8,
+   9,
+   0,
+   9
+  ],
+  [
+   0,
+   8,
+   1,
+   2,
+   3,
+   4,
+   8,
+   5,
+   7,
+   8,
+   9,
+   6,
+   9
+  ]
+ ],
+ "payTable": [
+  {
+   "line": [
+    0,
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "pay": 4,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "pay": 5,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "pay": 6,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "pay": 7,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "pay": 17,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "pay": 19,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    -1
+   ],
+   "pay": 14,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    6
+   ],
+   "pay": 20,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    -1
+   ],
+   "pay": 15,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    7
+   ],
+   "pay": 25,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pay": 50,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "scatterPays": [
+  {
+   "count": 5,
+   "pay": 0,
+   "freeSpins": 5,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "wildInFirstPosition": false,
+ "bet": {
+  "defaultLineBet": 1,
+  "maxLineBet": 20
+ },
+ "wildSubstitute": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "ui": {
+  "spin": "sprites_greek/game_screen/button/spin_button_normal",
+  "autoSpin": "sprites_greek/game_screen/button/auto_button_normal",
+  "maxBet": "sprites_greek/game_screen/button/max_bet_button_normal",
+  "plus": "sprites_greek/game_screen/button/plus_button_normal",
+  "minus": "sprites_greek/game_screen/button/minus_button_normal",
+  "menu": "sprites_greek/game_screen/icon/icon_menu_red",
+  "info": "sprites_greek/game_screen/icon/icon_information_blue",
+  "settings": "sprites_greek/game_screen/icon/icon_settings_blue",
+  "popupPanel": "sprites_greek/pop_ups/panels/message_pop_up",
+  "popupBigWin": "sprites_greek/pop_ups/panels/big_win_title",
+  "popupMegaWin": "sprites_greek/pop_ups/panels/coins_mega",
+  "popupHugeWin": "sprites_greek/pop_ups/panels/coins_huge",
+  "popupFreeSpins": "sprites_greek/pop_ups/panels/free_spins_title",
+  "popupSettings": "sprites_greek/pop_ups/panels/settings_pop_up",
+  "buttonLong": "sprites_greek/pop_ups/buttons/long_red_button_normal",
+  "exit": "sprites_greek/pop_ups/buttons/exit_red_button_normal"
+ },
+ "uiLabeled": [],
+ "fonts": []
+}

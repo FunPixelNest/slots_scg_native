@@ -1,0 +1,529 @@
+{
+ "id": "tropical",
+ "name": "Tropical",
+ "order": 10,
+ "unityFolder": "12_TropicalTheme",
+ "source": "generated",
+ "reels": 5,
+ "rows": 3,
+ "mode": "ways",
+ "background": "sprites_tropical/gamescreen/background",
+ "frame": "sprites_tropical/gamescreen/other/reels",
+ "reelBackground": null,
+ "title": null,
+ "symbols": [
+  {
+   "key": "ananas",
+   "name": "Ananas",
+   "image": "sprites_tropical/gamescreen/symbols/ananas"
+  },
+  {
+   "key": "blueglass",
+   "name": "Blueglass",
+   "image": "sprites_tropical/gamescreen/symbols/blueglass"
+  },
+  {
+   "key": "cherry",
+   "name": "Cherry",
+   "image": "sprites_tropical/gamescreen/symbols/cherry"
+  },
+  {
+   "key": "greenglass",
+   "name": "Greenglass",
+   "image": "sprites_tropical/gamescreen/symbols/greenglass"
+  },
+  {
+   "key": "orangeglass",
+   "name": "Orangeglass",
+   "image": "sprites_tropical/gamescreen/symbols/orangeglass"
+  },
+  {
+   "key": "orrange",
+   "name": "Orrange",
+   "image": "sprites_tropical/gamescreen/symbols/orrange"
+  },
+  {
+   "key": "redglass",
+   "name": "Redglass",
+   "image": "sprites_tropical/gamescreen/symbols/redglass"
+  },
+  {
+   "key": "strawberry",
+   "name": "Strawberry",
+   "image": "sprites_tropical/gamescreen/symbols/strawberry"
+  },
+  {
+   "key": "wild",
+   "name": "Wild",
+   "image": "sprites_tropical/gamescreen/symbols/wild",
+   "anim": {
+    "frames": [
+     "sprites_tropical/animations/special/wild/canape_l",
+     "sprites_tropical/animations/special/wild/canape_m",
+     "sprites_tropical/animations/special/wild/canape_r",
+     "sprites_tropical/animations/special/wild/title"
+    ]
+   }
+  },
+  {
+   "key": "scatter",
+   "name": "Scatter",
+   "image": "sprites_tropical/gamescreen/symbols/scatter",
+   "anim": {
+    "frames": [
+     "sprites_tropical/animations/special/scatter/canape_l",
+     "sprites_tropical/animations/special/scatter/canape_m",
+     "sprites_tropical/animations/special/scatter/canape_r",
+     "sprites_tropical/animations/special/scatter/title"
+    ]
+   }
+  }
+ ],
+ "wildId": 8,
+ "scatterId": 9,
+ "_comment": "Slot math shared by the Unity Holiday Slot scenes (Christmas/Valentine/Witch). Symbol ids 0-3 low, 4-7 high, 8 wild, 9 scatter.",
+ "reelStrips": [
+  [
+   2,
+   3,
+   4,
+   1,
+   5,
+   8,
+   6,
+   0,
+   7,
+   0
+  ],
+  [
+   1,
+   0,
+   8,
+   2,
+   5,
+   3,
+   4,
+   8,
+   6,
+   7,
+   8,
+   0
+  ],
+  [
+   1,
+   8,
+   6,
+   2,
+   5,
+   0,
+   3,
+   4,
+   8,
+   9,
+   7,
+   8
+  ],
+  [
+   2,
+   3,
+   8,
+   4,
+   5,
+   1,
+   8,
+   6,
+   7,
+   8,
+   9,
+   0,
+   9
+  ],
+  [
+   0,
+   8,
+   1,
+   2,
+   3,
+   4,
+   8,
+   5,
+   7,
+   8,
+   9,
+   6,
+   9
+  ]
+ ],
+ "payTable": [
+  {
+   "line": [
+    0,
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "pay": 4,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "pay": 5,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "pay": 6,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "pay": 7,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "pay": 17,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "pay": 19,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    -1
+   ],
+   "pay": 14,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    6
+   ],
+   "pay": 20,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    -1
+   ],
+   "pay": 15,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    7
+   ],
+   "pay": 25,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pay": 50,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "scatterPays": [
+  {
+   "count": 5,
+   "pay": 0,
+   "freeSpins": 5,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "wildInFirstPosition": false,
+ "bet": {
+  "defaultLineBet": 1,
+  "maxLineBet": 20
+ },
+ "wildSubstitute": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "ui": {
+  "spin": "sprites_tropical/gamescreen/buttons/spin_button_normal",
+  "autoSpin": "sprites_tropical/gamescreen/buttons/auto_spin_button_normal",
+  "maxBet": "sprites_tropical/gamescreen/buttons/max_bet_button_normal",
+  "plus": "sprites_tropical/gamescreen/buttons/plus_button_normal",
+  "minus": "sprites_tropical/gamescreen/buttons/minus_button_normal",
+  "menu": "sprites_tropical/gamescreen/buttons/menu_button_normal",
+  "settings": "sprites_tropical/gamescreen/buttons/settings_button_normal",
+  "panelBalance": "sprites_tropical/gamescreen/panels/panelbalance",
+  "panelWin": "sprites_tropical/gamescreen/panels/panelwin",
+  "panelBet": "sprites_tropical/gamescreen/panels/paneltotalbet",
+  "popupPanel": "sprites_tropical/popups/panels/popup_message",
+  "popupInfo": "sprites_tropical/popups/panels/infopanel",
+  "popupSettings": "sprites_tropical/popups/panels/settings_pop_up",
+  "buttonLong": "sprites_tropical/popups/buttons/long_button_normal",
+  "exit": "sprites_tropical/popups/buttons/exit_button_normal"
+ },
+ "uiLabeled": [],
+ "fonts": []
+}

@@ -1,0 +1,552 @@
+{
+ "id": "underwater",
+ "name": "Underwater",
+ "order": 6,
+ "unityFolder": "8_Underwater",
+ "source": "generated",
+ "reels": 5,
+ "rows": 3,
+ "mode": "ways",
+ "background": "sprites_uw/game_screen/background_1",
+ "frame": null,
+ "reelBackground": "sprites_uw/game_screen/reels/reel",
+ "title": null,
+ "symbols": [
+  {
+   "key": "j",
+   "name": "J",
+   "image": "sprites_uw/game_screen/symbols/j",
+   "anim": {
+    "sheet": "sprites_uw/animations/usedanimations/jsymbsheet"
+   }
+  },
+  {
+   "key": "q",
+   "name": "Q",
+   "image": "sprites_uw/game_screen/symbols/q",
+   "anim": {
+    "sheet": "sprites_uw/animations/usedanimations/qsymbsheet"
+   }
+  },
+  {
+   "key": "k",
+   "name": "K",
+   "image": "sprites_uw/game_screen/symbols/k",
+   "anim": {
+    "sheet": "sprites_uw/animations/usedanimations/ksymbsheet"
+   }
+  },
+  {
+   "key": "a",
+   "name": "A",
+   "image": "sprites_uw/game_screen/symbols/a",
+   "anim": {
+    "sheet": "sprites_uw/animations/usedanimations/asymbsheet"
+   }
+  },
+  {
+   "key": "crab",
+   "name": "Crab",
+   "image": "sprites_uw/game_screen/symbols/crab",
+   "blur": "sprites_uw/game_screen/symbolsblurred/crabblurred",
+   "anim": {
+    "sheet": "sprites_uw/animations/crabsheet"
+   }
+  },
+  {
+   "key": "hedgehog",
+   "name": "Hedgehog",
+   "image": "sprites_uw/game_screen/symbols/hedgehog",
+   "blur": "sprites_uw/game_screen/symbolsblurred/hedgehogblurred",
+   "anim": {
+    "sheet": "sprites_uw/animations/usedanimations/hedgehogsheet"
+   }
+  },
+  {
+   "key": "jellyfish",
+   "name": "Jellyfish",
+   "image": "sprites_uw/game_screen/symbols/jellyfish",
+   "blur": "sprites_uw/game_screen/symbolsblurred/jellyfishblurred",
+   "anim": {
+    "sheet": "sprites_uw/animations/usedanimations/jellyfishsheet"
+   }
+  },
+  {
+   "key": "octopus",
+   "name": "Octopus",
+   "image": "sprites_uw/game_screen/symbols/octopus",
+   "blur": "sprites_uw/game_screen/symbolsblurred/octopusblurred",
+   "anim": {
+    "sheet": "sprites_uw/animations/usedanimations/octopussheet"
+   }
+  },
+  {
+   "key": "wild",
+   "name": "Wild",
+   "image": "sprites_uw/game_screen/symbols/wild",
+   "blur": "sprites_uw/game_screen/symbolsblurred/wildblurred",
+   "anim": {
+    "sheet": "sprites_uw/animations/usedanimations/wildsheet"
+   }
+  },
+  {
+   "key": "scatter",
+   "name": "Scatter",
+   "image": "sprites_uw/game_screen/symbols/scatter",
+   "blur": "sprites_uw/game_screen/symbolsblurred/scatterblurred",
+   "anim": {
+    "sheet": "sprites_uw/animations/usedanimations/scattersheet"
+   }
+  }
+ ],
+ "wildId": 8,
+ "scatterId": 9,
+ "_comment": "Slot math shared by the Unity Holiday Slot scenes (Christmas/Valentine/Witch). Symbol ids 0-3 low, 4-7 high, 8 wild, 9 scatter.",
+ "reelStrips": [
+  [
+   2,
+   3,
+   4,
+   1,
+   5,
+   8,
+   6,
+   0,
+   7,
+   0
+  ],
+  [
+   1,
+   0,
+   8,
+   2,
+   5,
+   3,
+   4,
+   8,
+   6,
+   7,
+   8,
+   0
+  ],
+  [
+   1,
+   8,
+   6,
+   2,
+   5,
+   0,
+   3,
+   4,
+   8,
+   9,
+   7,
+   8
+  ],
+  [
+   2,
+   3,
+   8,
+   4,
+   5,
+   1,
+   8,
+   6,
+   7,
+   8,
+   9,
+   0,
+   9
+  ],
+  [
+   0,
+   8,
+   1,
+   2,
+   3,
+   4,
+   8,
+   5,
+   7,
+   8,
+   9,
+   6,
+   9
+  ]
+ ],
+ "payTable": [
+  {
+   "line": [
+    0,
+    0,
+    0,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "pay": 4,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    -1,
+    -1
+   ],
+   "pay": 1,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "pay": 5,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "pay": 6,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    -1,
+    -1
+   ],
+   "pay": 2,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    -1
+   ],
+   "pay": 3,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "pay": 7,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    4,
+    4,
+    4,
+    4,
+    4
+   ],
+   "pay": 17,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    -1
+   ],
+   "pay": 13,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    5,
+    5,
+    5,
+    5,
+    5
+   ],
+   "pay": 19,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    -1
+   ],
+   "pay": 14,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    6,
+    6,
+    6,
+    6,
+    6
+   ],
+   "pay": 20,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    -1,
+    -1
+   ],
+   "pay": 11,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    -1
+   ],
+   "pay": 15,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    7,
+    7,
+    7,
+    7,
+    7
+   ],
+   "pay": 25,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  },
+  {
+   "line": [
+    8,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pay": 50,
+   "freeSpins": 0,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "scatterPays": [
+  {
+   "count": 5,
+   "pay": 0,
+   "freeSpins": 5,
+   "payMult": 1,
+   "freeSpinsMult": 1
+  }
+ ],
+ "wildInFirstPosition": false,
+ "bet": {
+  "defaultLineBet": 1,
+  "maxLineBet": 20
+ },
+ "wildSubstitute": [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+  false,
+  false
+ ],
+ "ui": {
+  "spin": "sprites_uw/game_screen/buttons/buttonspin",
+  "plus": "sprites_uw/game_screen/buttons/buttonplus",
+  "minus": "sprites_uw/game_screen/buttons/buttonminus",
+  "menu": "sprites_uw/game_screen/buttons/buttonmenu",
+  "info": "sprites_uw/game_screen/buttons/buttoninfo",
+  "settings": "sprites_uw/game_screen/buttons/buttonsettings",
+  "panelBalance": "sprites_uw/game_screen/panels/panelbalance",
+  "panelWin": "sprites_uw/game_screen/panels/panelwin",
+  "panelBet": "sprites_uw/game_screen/panels/paneltotalbet",
+  "popupPanel": "sprites_uw/pop_ups/panels/messagepanel",
+  "popupBigWin": "sprites_uw/pop_ups/panels/bigwinpanel",
+  "popupMegaWin": "sprites_uw/pop_ups/panels/megawinpanel",
+  "popupHugeWin": "sprites_uw/pop_ups/panels/hugewinpanel",
+  "popupFreeSpins": "sprites_uw/pop_ups/panels/freespinpanel",
+  "popupInfo": "sprites_uw/pop_ups/panels/infopanel",
+  "popupSettings": "sprites_uw/pop_ups/panels/settingspanel",
+  "buttonLong": "sprites_uw/pop_ups/buttons/longbutton",
+  "exit": "sprites_uw/pop_ups/buttons/exitbutton"
+ },
+ "uiLabeled": [],
+ "fonts": []
+}
