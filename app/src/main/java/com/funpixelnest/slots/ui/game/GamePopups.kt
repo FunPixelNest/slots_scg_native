@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import com.funpixelnest.slots.ui.common.CoinIcon
 import com.funpixelnest.slots.ui.common.formatCompact
 import com.funpixelnest.slots.ui.skin.Skin
