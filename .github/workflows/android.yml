@@ -2,13 +2,17 @@ name: Android build
 
 on:
   push:
+    branches-ignore: [screenshots]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -22,26 +26,35 @@ jobs:
       - name: Engine tests (slot math, all themes)
         run: ./gradlew :engine:test --stacktrace
 
-      - name: Debug APK (all themes bundled)
-        run: ./gradlew :app:assembleDebug --stacktrace
+      - name: Screenshots of the real app screens (Robolectric + Roborazzi)
+        run: ./gradlew :app:testDebugUnitTest --stacktrace
 
-      - name: Release APK + bundle (all themes included)
-        run: ./gradlew :app:assembleRelease :app:bundleRelease --stacktrace
+      - name: Publish screenshots to the 'screenshots' branch
+        if: always()
+        run: |
+          set -e
+          ls app/build/screenshots/*.png >/dev/null 2>&1 || { echo "no screenshots"; exit 0; }
+          mkdir -p /tmp/shots && cp app/build/screenshots/*.png /tmp/shots/
+          cd /tmp/shots
+          echo "Screenshots for ${GITHUB_SHA} (${GITHUB_REF_NAME})" > README.md
+          git init -q && git checkout -q -b screenshots
+          git add -A
+          git -c user.name="github-actions" -c user.email="github-actions@users.noreply.github.com" commit -qm "Screenshots for ${GITHUB_SHA}"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" screenshots
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: app/build/screenshots
+
+      - name: Debug APK (test build)
+        run: ./gradlew :app:assembleDebug --stacktrace
 
       - uses: actions/upload-artifact@v4
         with:
           name: slots-debug-apk
           path: app/build/outputs/apk/debug/*.apk
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: slots-release-apk
-          path: app/build/outputs/apk/release/*.apk
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: slots-release-aab
-          path: app/build/outputs/bundle/release/*.aab
 
       - uses: actions/upload-artifact@v4
         if: always()

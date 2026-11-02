@@ -787,6 +787,7 @@
   "popupMegaWin": "sprites_egypt/popups/panels/popup_mega_win",
   "popupHugeWin": "sprites_egypt/popups/panels/popup_huge_win",
   "popupFreeSpins": "sprites_egypt/popups/panels/popup_free_spin",
+  "popupJackpot": "sprites_egypt/popups/panels/popup_jackpot",
   "popupInfo": "sprites_egypt/popups/helpscreenbackground",
   "popupSettings": "sprites_egypt/popups/panels/popup_settings",
   "buttonLong": "sprites_egypt/popups/button/button_long_normal",

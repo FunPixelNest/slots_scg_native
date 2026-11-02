@@ -10,27 +10,26 @@ interface PlayerStore {
     var levelProgress: Float
     fun lineBet(themeId: String): Int?
     fun setLineBet(themeId: String, bet: Int)
+    fun jackpotPool(themeId: String, tier: JackpotTier): Long
+    fun setJackpotPool(themeId: String, tier: JackpotTier, value: Long)
 }
 
 class InMemoryPlayerStore(
-    override var coins: Long = PlayerRules.START_COINS,
+    override var coins: Long = Economy.START_COINS,
     override var level: Int = 1,
     override var levelProgress: Float = 0f,
 ) : PlayerStore {
     private val bets = HashMap<String, Int>()
+    private val pools = HashMap<String, Long>()
     override fun lineBet(themeId: String) = bets[themeId]
     override fun setLineBet(themeId: String, bet: Int) { bets[themeId] = bet }
+    override fun jackpotPool(themeId: String, tier: JackpotTier) = pools["$themeId/$tier"] ?: 0L
+    override fun setJackpotPool(themeId: String, tier: JackpotTier, value: Long) { pools["$themeId/$tier"] = value }
 }
 
+/** Kept for callers of the original Unity defaults. */
 object PlayerRules {
-    /** Unity default (SlotPlayer.defCoinsCount in the scenes). */
-    const val START_COINS = 5000L
-    const val LEVEL_UP_REWARD = 3000L
-    /** Unity SlotController defaults. */
-    const val LOSE_SPIN_PROGRESS = 0.5f
-    const val WIN_LINE_PROGRESS = 2.0f
-    /** Total win (in coins) that triggers the big-win popup (Unity SlotPlayer.minWin). */
-    const val BIG_WIN = 5000L
+    const val START_COINS = Economy.START_COINS
 }
 
 enum class WinTier { NONE, NORMAL, BIG, MEGA, HUGE }
@@ -39,16 +38,20 @@ data class SpinResult(
     val outcome: SpinOutcome,
     val totalBet: Long,
     val wasFreeSpin: Boolean,
+    /** Line + scatter win (without jackpot). */
     val winCoins: Long,
     val freeSpinsWon: Int,
     val tier: WinTier,
+    val jackpot: JackpotWin?,
     val levelUp: Int?,
     val levelUpReward: Long,
-)
+) {
+    val totalWin: Long get() = winCoins + (jackpot?.coins ?: 0L)
+}
 
 /**
- * Bet, balance, free spins and level progress for one machine
- * (Unity: SlotControls + the win/lose states of SlotController).
+ * Bet, balance, free spins, jackpots and level progress for one machine
+ * (Unity: SlotControls + the win/lose states of SlotController, plus the coin economy).
  */
 class GameSession(
     val machine: SlotMachine,
@@ -56,25 +59,38 @@ class GameSession(
     private val random: Random = Random.Default,
 ) {
     private val cfg = machine.config
+    private val bets = Economy.LINE_BETS
     val linesCount: Int get() = machine.lines.size
 
-    var lineBet: Int = (store.lineBet(cfg.id) ?: cfg.bet.defaultLineBet).coerceIn(1, cfg.bet.maxLineBet)
+    /** Index into [Economy.LINE_BETS]. */
+    var betIndex: Int = (store.lineBet(cfg.id)?.let { saved -> bets.indexOfLast { it <= saved } } ?: 0)
+        .coerceIn(0, Economy.unlockedBetSteps(store.level) - 1)
         private set
     var freeSpins: Int = 0
         private set
+
+    val lineBet: Int get() = bets[betIndex]
     val coins: Long get() = store.coins
     val level: Int get() = store.level
     val levelProgress: Float get() = store.levelProgress
     val totalBet: Long get() = lineBet.toLong() * linesCount
+    val unlockedSteps: Int get() = Economy.unlockedBetSteps(store.level)
+    val isMaxBet: Boolean get() = betIndex == unlockedSteps - 1
 
-    fun changeLineBet(delta: Int) = setLineBet(lineBet + delta)
-    fun maxBet() = setLineBet(cfg.bet.maxLineBet)
+    /** Level that opens the next bet step, or null when the ladder is fully open. */
+    val nextBetUnlockLevel: Int? get() =
+        if (unlockedSteps >= bets.size) null else Economy.levelForBetStep(unlockedSteps)
 
-    fun setLineBet(value: Int) {
+    fun changeLineBet(delta: Int) = setBetIndex(betIndex + delta)
+    fun maxBet() = setBetIndex(unlockedSteps - 1)
+
+    fun setBetIndex(index: Int) {
         if (freeSpins > 0) return // bet is locked during free games
-        lineBet = value.coerceIn(1, cfg.bet.maxLineBet)
+        betIndex = index.coerceIn(0, unlockedSteps - 1)
         store.setLineBet(cfg.id, lineBet)
     }
+
+    fun jackpotValue(tier: JackpotTier): Long = totalBet * tier.betMultiple + store.jackpotPool(cfg.id, tier)
 
     fun canSpin(): Boolean = freeSpins > 0 || store.coins >= totalBet
 
@@ -86,34 +102,39 @@ class GameSession(
         val outcome = machine.spin(random)
         val winCoins = outcome.payUnits * lineBet
         var spinsWon = outcome.freeSpins * outcome.freeSpinsMultiplier
-        if (cfg.bet.freeSpinsScaleWithBet) spinsWon *= lineBet
-        store.coins += winCoins
+        if (cfg.bet.freeSpinsScaleWithBet) spinsWon *= betIndex + 1
         freeSpins += spinsWon
 
-        val progress = if (outcome.isWin) PlayerRules.WIN_LINE_PROGRESS * outcome.lineWins.size.coerceAtLeast(1) * lineBet
-        else PlayerRules.LOSE_SPIN_PROGRESS * lineBet
-        val (levelUp, reward) = addProgress(progress)
+        val jackpot = if (free) null else rollJackpot()
+        store.coins += winCoins + (jackpot?.coins ?: 0L)
 
-        val tier = when {
-            winCoins <= 0 -> WinTier.NONE
-            winCoins >= totalBet * 50 -> WinTier.HUGE
-            winCoins >= totalBet * 20 -> WinTier.MEGA
-            winCoins >= PlayerRules.BIG_WIN || winCoins >= totalBet * 8 -> WinTier.BIG
-            else -> WinTier.NORMAL
-        }
-        return Result.success(SpinResult(outcome, totalBet, free, winCoins, spinsWon, tier, levelUp, reward))
+        val xp = (betIndex + 1f) * if (outcome.isWin) 2f else 1f
+        val (levelUp, reward) = addXp(xp)
+
+        val tier = Economy.winTier(winCoins, totalBet)
+        return Result.success(SpinResult(outcome, totalBet, free, winCoins, spinsWon, tier, jackpot, levelUp, reward))
     }
 
-    /** Level needs grow with level, so higher levels take longer. */
-    private fun addProgress(points: Float): Pair<Int?, Long> {
-        var p = store.levelProgress + points * 100f / pointsForLevel(store.level)
+    private fun rollJackpot(): JackpotWin? {
+        JackpotTier.entries.forEach { t ->
+            val pool = store.jackpotPool(cfg.id, t)
+            store.setJackpotPool(cfg.id, t, pool + (totalBet * t.poolShare).toLong())
+        }
+        val hit = JackpotTier.entries.reversed().firstOrNull { random.nextInt(it.odds) == 0 } ?: return null
+        val win = JackpotWin(hit, jackpotValue(hit))
+        store.setJackpotPool(cfg.id, hit, 0L)
+        return win
+    }
+
+    private fun addXp(points: Float): Pair<Int?, Long> {
+        var p = store.levelProgress + points * 100f / Economy.xpForLevel(store.level)
         var up: Int? = null
         var reward = 0L
         while (p >= 100f) {
             p -= 100f
             store.level += 1
             up = store.level
-            reward += PlayerRules.LEVEL_UP_REWARD
+            reward += Economy.levelUpReward(store.level)
         }
         store.levelProgress = p
         store.coins += reward
@@ -121,10 +142,6 @@ class GameSession(
     }
 
     fun addCoins(amount: Long) { store.coins += amount }
-
-    companion object {
-        fun pointsForLevel(level: Int): Float = 100f + 50f * (level - 1)
-    }
 }
 
 class NotEnoughCoinsException : IllegalStateException("Not enough coins")

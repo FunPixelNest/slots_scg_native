@@ -73,6 +73,16 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
                 }
             }
         }
+        is Popup.Jackpot -> {
+            AutoDismiss(4500, vm::dismissPopup)
+            val art = ui["popupJackpot"] ?: ui["popupHugeWin"] ?: ui["popupBigWin"]
+            PopupFrame(assets, art, vm::dismissPopup, widthFraction = 0.46f) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("${p.win.tier.label} JACKPOT!", style = outlinedText(32.sp, Gold, font))
+                    CountingText(p.win.coins, outlinedText(40.sp, Color.White, font))
+                }
+            }
+        }
         is Popup.FreeSpins -> {
             AutoDismiss(3000, vm::dismissPopup)
             PopupFrame(assets, ui["popupFreeSpins"] ?: ui["popupPanel"], vm::dismissPopup, widthFraction = 0.42f) {
@@ -89,6 +99,7 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
                     Text("LEVEL UP!", style = outlinedText(30.sp, Gold, font))
                     Text("Level ${p.level}", style = outlinedText(24.sp))
                     Text("+${formatCoins(p.reward)} coins", style = outlinedText(22.sp, Gold))
+                    if (p.betUnlocked) Text("Higher bets unlocked!", style = outlinedText(16.sp, Color(0xFFFFCC80)))
                 }
             }
         }

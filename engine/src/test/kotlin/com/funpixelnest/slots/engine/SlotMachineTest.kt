@@ -113,7 +113,7 @@ class SlotMachineTest {
         for (e in index) {
             val root = File(dir, "themes/theme_${e.id}/src/main/assets/themes/${e.id}")
             val cfg = ThemeConfig.parse(File(root, "theme.json").readText())
-            assertTrue(File(dir, "app/src/main/assets/common/${e.tile}").isFile, "${e.id}: lobby tile missing")
+            assertTrue(File(dir, "app/src/main/assets/common/${e.tile}.webp").isFile, "${e.id}: lobby tile missing")
             for (s in cfg.symbols) assertTrue(File(root, "${s.image}.webp").isFile, "${e.id}: ${s.image} missing")
             cfg.background?.let { assertTrue(File(root, "$it.webp").isFile, "${e.id}: background missing") }
             val session = GameSession(SlotMachine(cfg), InMemoryPlayerStore())
@@ -123,20 +123,57 @@ class SlotMachineTest {
     }
 
     @Test
-    fun `session debits bet and credits wins`() {
+    fun `session debits bet and credits wins and jackpots`() {
         val cfg = theme("christmas_eve")
-        val store = InMemoryPlayerStore(coins = 1_000_000)
+        val store = InMemoryPlayerStore(coins = 10_000_000_000)
         val s = GameSession(SlotMachine(cfg), store, Random(7))
-        s.setLineBet(2)
-        assertEquals(486, s.totalBet)
+        s.setBetIndex(1)
+        assertEquals(20, s.lineBet)
+        assertEquals(4_860, s.totalBet)
         var expected = store.coins
-        repeat(500) {
+        var jackpots = 0
+        repeat(5_000) {
             val r = s.spin().getOrThrow()
             if (!r.wasFreeSpin) expected -= r.totalBet
-            expected += r.winCoins + r.levelUpReward
+            expected += r.totalWin + r.levelUpReward
             assertEquals(expected, store.coins)
-            assertEquals(r.outcome.payUnits * 2, r.winCoins)
+            assertEquals(r.outcome.payUnits * r.totalBet / s.linesCount, r.winCoins)
+            if (r.jackpot != null) {
+                jackpots++
+                assertTrue(r.jackpot!!.coins >= r.totalBet * r.jackpot!!.tier.betMultiple)
+            }
         }
+        assertTrue(jackpots > 0, "expected some jackpots in 5000 spins")
+    }
+
+    @Test
+    fun `bet ladder unlocks with level`() {
+        val store = InMemoryPlayerStore(level = 1)
+        val s = GameSession(SlotMachine(theme("wolf")), store)
+        s.maxBet()
+        assertEquals(Economy.FREE_BET_STEPS - 1, s.betIndex)
+        assertEquals(3, s.nextBetUnlockLevel)
+        s.changeLineBet(+5)
+        assertEquals(Economy.FREE_BET_STEPS - 1, s.betIndex) // locked steps stay locked
+        store.level = 30
+        s.maxBet()
+        assertEquals(Economy.LINE_BETS.size - 1, s.betIndex)
+        assertEquals(null, s.nextBetUnlockLevel)
+        for (i in Economy.LINE_BETS.indices) {
+            assertTrue(Economy.unlockedBetSteps(Economy.levelForBetStep(i)) > i, "step $i")
+        }
+    }
+
+    @Test
+    fun `daily streak`() {
+        val day = Economy.DAY_MS
+        assertEquals(1, Economy.nextDailyDay(0, 0, 1000))
+        assertEquals(null, Economy.nextDailyDay(1000, 1, 1000 + day - 1))
+        assertEquals(2, Economy.nextDailyDay(1000, 1, 1000 + day))
+        assertEquals(1, Economy.nextDailyDay(1000, 7, 1000 + day))
+        assertEquals(1, Economy.nextDailyDay(1000, 3, 1000 + 2 * day))
+        assertTrue(Economy.dailyBonus(7, 1) > Economy.dailyBonus(1, 1))
+        assertTrue(Economy.dailyBonus(1, 10) > Economy.dailyBonus(1, 1))
     }
 
     @Test
@@ -146,27 +183,28 @@ class SlotMachineTest {
         assertEquals(10, s.coins)
     }
 
-    /** Monte-Carlo return-to-player per theme; printed for tuning, sanity-checked loosely. */
+    /** Monte-Carlo return-to-player per theme incl. jackpots; printed for tuning, sanity-checked loosely. */
     @Test
     fun `rtp simulation`() {
         for (f in themeFiles()) {
             val cfg = ThemeConfig.parse(f.readText())
-            val m = SlotMachine(cfg)
-            val rnd = Random(42)
+            val store = InMemoryPlayerStore(coins = Long.MAX_VALUE / 4, level = 1)
+            val s = GameSession(SlotMachine(cfg), store, Random(42))
             val spins = 20_000
             var paid = 0L
             var bet = 0L
-            var free = 0
             var hits = 0
+            var jp = 0
             repeat(spins) {
-                if (free > 0) free-- else bet += m.lines.size
-                val o = m.spin(rnd)
-                paid += o.payUnits
-                free += o.freeSpins * o.freeSpinsMultiplier
-                if (o.isWin) hits++
+                val r = s.spin().getOrThrow()
+                if (!r.wasFreeSpin) bet += r.totalBet
+                paid += r.totalWin
+                if (r.outcome.isWin) hits++
+                if (r.jackpot != null) jp++
+                store.level = 1 // keep the bet constant
             }
             val rtp = paid.toDouble() / bet * 100
-            println("RTP %-16s %6.1f%%  hit %4.1f%%".format(cfg.id, rtp, hits * 100.0 / spins))
+            println("RTP %-16s %6.1f%%  hit %4.1f%%  jackpots %d".format(cfg.id, rtp, hits * 100.0 / spins, jp))
             assertTrue(rtp in 20.0..400.0, "${cfg.id}: RTP $rtp looks broken")
         }
     }

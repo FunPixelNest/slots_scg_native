@@ -760,6 +760,7 @@
   "popupMegaWin": "sprites_christmaseve/pop_ups/png/mega_win_pop_up",
   "popupHugeWin": "sprites_christmaseve/pop_ups/png/huge_win_pop_up",
   "popupFreeSpins": "sprites_christmaseve/pop_ups/png/free_spin_pop_up",
+  "popupJackpot": "sprites_christmaseve/pop_ups/png/jackpot_pop_up",
   "popupInfo": "sprites_christmaseve/pop_ups/png/infopanel",
   "popupSettings": "sprites_christmaseve/pop_ups/png/settings_pop_up",
   "buttonLong": "sprites_christmaseve/gui_elements/png/buttons/red_long_button_normal",

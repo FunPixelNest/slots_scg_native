@@ -570,6 +570,7 @@
   "popupMegaWin": "sprites_valentinesday/popups/png/megawinpanel",
   "popupHugeWin": "sprites_valentinesday/popups/png/hugewinpanel",
   "popupFreeSpins": "sprites_valentinesday/popups/png/freespinpanel",
+  "popupJackpot": "sprites_valentinesday/popups/png/jackpotwinpanel",
   "popupInfo": "sprites_valentinesday/popups/png/infopanel",
   "popupSettings": "sprites_valentinesday/popups/png/settingspanel",
   "buttonLong": "sprites_valentinesday/gui_elements/png/buttons/longbutton",

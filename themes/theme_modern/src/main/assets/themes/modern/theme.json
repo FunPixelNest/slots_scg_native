@@ -526,6 +526,7 @@
   "popupPanel": "sprites_modern/pop_ups/messagepanel",
   "popupBigWin": "sprites_modern/pop_ups/bigwinpanel",
   "popupFreeSpins": "sprites_modern/pop_ups/label/labelfree100",
+  "popupJackpot": "sprites_modern/pop_ups/jackpotwinpanel",
   "popupInfo": "sprites_modern/pop_ups/paytablepanel",
   "popupSettings": "sprites_modern/pop_ups/settingspanel",
   "buttonLong": "sprites_modern/pop_ups/buttons/buttonlongyellow",

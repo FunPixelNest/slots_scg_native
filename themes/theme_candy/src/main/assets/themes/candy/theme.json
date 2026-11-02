@@ -524,6 +524,7 @@
   "popupMegaWin": "sprites_candy/popups/panels/megawinpanel",
   "popupHugeWin": "sprites_candy/popups/panels/hugewinpanel",
   "popupFreeSpins": "sprites_candy/popups/panels/freespinpanel",
+  "popupJackpot": "sprites_candy/popups/panels/jackpotwinpanel",
   "popupInfo": "sprites_candy/popups/panels/infopanel",
   "popupSettings": "sprites_candy/popups/panels/settingspanel",
   "buttonLong": "sprites_candy/popups/buttons/longbutton",

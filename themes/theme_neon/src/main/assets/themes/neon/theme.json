@@ -547,6 +547,7 @@
   "popupMegaWin": "sprites_mneon/popups/panels/pop_up_mega_win",
   "popupHugeWin": "sprites_mneon/popups/panels/pop_up_huge_win",
   "popupFreeSpins": "sprites_mneon/popups/panels/pop_up_free_spins",
+  "popupJackpot": "sprites_mneon/popups/panels/pop_up_jackpot",
   "popupInfo": "sprites_mneon/popups/panels/pop_up_help",
   "popupSettings": "sprites_mneon/popups/panels/pop_up_settings",
   "buttonLong": "sprites_mneon/popups/button/long_button_normal",

@@ -542,6 +542,7 @@
   "popupMegaWin": "sprites_uw/pop_ups/panels/megawinpanel",
   "popupHugeWin": "sprites_uw/pop_ups/panels/hugewinpanel",
   "popupFreeSpins": "sprites_uw/pop_ups/panels/freespinpanel",
+  "popupJackpot": "sprites_uw/pop_ups/panels/jackpotwinpanel",
   "popupInfo": "sprites_uw/pop_ups/panels/infopanel",
   "popupSettings": "sprites_uw/pop_ups/panels/settingspanel",
   "buttonLong": "sprites_uw/pop_ups/buttons/longbutton",

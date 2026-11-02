@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,7 +36,8 @@ import com.funpixelnest.slots.data.ThemeAssets
 import com.funpixelnest.slots.ui.common.ArtButton
 import com.funpixelnest.slots.ui.common.AssetImage
 import com.funpixelnest.slots.ui.common.Gold
-import com.funpixelnest.slots.ui.common.formatCoins
+import com.funpixelnest.slots.ui.common.CoinShower
+import com.funpixelnest.slots.ui.common.formatCompact
 import com.funpixelnest.slots.ui.common.outlinedText
 import com.funpixelnest.slots.ui.common.themeFont
 import com.funpixelnest.slots.ui.lobby.CoinsBox
@@ -43,7 +45,13 @@ import com.funpixelnest.slots.ui.lobby.LevelBadge
 import com.funpixelnest.slots.ui.lobby.LoadBar
 
 @Composable
-fun GameScreen(graph: AppGraph, themeId: String, onExit: () -> Unit) {
+fun GameScreen(
+    graph: AppGraph,
+    themeId: String,
+    onExit: () -> Unit,
+    /** Screenshot hook: runs once the machine has loaded. */
+    onReady: ((GameViewModel) -> Unit)? = null,
+) {
     val assets = remember(themeId) { graph.theme(themeId) }
     if (assets == null) {
         LaunchedEffect(Unit) { onExit() }
@@ -60,12 +68,15 @@ fun GameScreen(graph: AppGraph, themeId: String, onExit: () -> Unit) {
     }
 
     val cfg = assets.config
+    val ready = vm.phase != Phase.Loading
+    LaunchedEffect(ready) { if (ready) onReady?.invoke(vm) }
 
-    Box(Modifier.fillMaxSize().background(Color.Black)) {
+    Box(Modifier.fillMaxSize().background(Color.Black).then(if (ready) Modifier.testTag("game-ready") else Modifier)) {
         AssetImage(assets, cfg.background, Modifier.fillMaxSize(), ContentScale.Crop)
 
         Column(Modifier.fillMaxSize()) {
             TopBar(vm, assets, onExit)
+            JackpotBar(vm, assets)
 
             // ---------------- reels
             Box(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 8.dp, vertical = 4.dp), contentAlignment = Alignment.Center) {
@@ -93,6 +104,7 @@ fun GameScreen(graph: AppGraph, themeId: String, onExit: () -> Unit) {
 
         if (vm.phase == Phase.Loading) LoadingOverlay(graph, assets, vm.loadProgress)
         GamePopups(graph, vm, assets)
+        CoinShower(vm.showerTrigger, vm.showerCoins, Modifier.fillMaxSize())
     }
 }
 
@@ -138,17 +150,20 @@ private fun BottomBar(vm: GameViewModel, assets: ThemeAssets) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        InfoPanel(assets, "panelBalance", "WAYS", "${vm.session.linesCount}", Modifier.weight(0.8f))
+        InfoPanel(assets, "panelBalance", "BET LEVEL", "${vm.betIndex + 1}/${vm.session.unlockedSteps}", Modifier.weight(0.8f))
 
         ArtButton(assets, ui["minus"], Modifier.size(40.dp), label = if (ui["minus"] == null) "−" else null, enabled = !betLocked) {
             vm.changeBet(-1)
         }
-        InfoPanel(assets, "panelBet", "TOTAL BET", formatCoins(vm.totalBet), Modifier.weight(1.1f))
+        InfoPanel(
+            assets, "panelBet", "TOTAL BET", formatCompact(vm.totalBet), Modifier.weight(1.1f),
+            footnote = vm.nextBetUnlockLevel?.takeIf { vm.isMaxBet }?.let { "Lv $it: higher bets" },
+        )
         ArtButton(assets, ui["plus"], Modifier.size(40.dp), label = if (ui["plus"] == null) "+" else null, enabled = !betLocked) {
             vm.changeBet(1)
         }
 
-        InfoPanel(assets, "panelWin", "WIN", formatCoins(vm.shownWin), Modifier.weight(1.2f), highlight = vm.shownWin > 0)
+        InfoPanel(assets, "panelWin", "WIN", formatCompact(vm.shownWin), Modifier.weight(1.2f), highlight = vm.shownWin > 0)
 
         ArtButton(
             assets, ui["maxBet"], Modifier.width(92.dp).height(52.dp),
@@ -181,6 +196,7 @@ private fun InfoPanel(
     value: String,
     modifier: Modifier,
     highlight: Boolean = false,
+    footnote: String? = null,
 ) {
     val art = assets.config.ui[key]
     val artHasTitle = key in assets.config.uiLabeled
@@ -190,6 +206,9 @@ private fun InfoPanel(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             if (!artHasTitle) Text(title, style = outlinedText(10.sp, Color(0xFFE0E0E0)))
             Text(value, style = outlinedText(if (highlight) 18.sp else 16.sp, if (highlight) Gold else Color.White), maxLines = 1)
+        }
+        if (footnote != null) {
+            Text(footnote, style = outlinedText(9.sp, Color(0xFFFFCC80)), modifier = Modifier.align(Alignment.BottomCenter))
         }
     }
 }

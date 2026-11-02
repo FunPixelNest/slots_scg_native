@@ -546,6 +546,7 @@
   "popupMegaWin": "sprites_wolf/popups/panels/megawinpanel",
   "popupHugeWin": "sprites_wolf/popups/panels/hugewinpanel",
   "popupFreeSpins": "sprites_wolf/popups/panels/freespinpanel",
+  "popupJackpot": "sprites_wolf/popups/panels/jackpotwinpanel",
   "popupInfo": "sprites_wolf/popups/panels/infopanel",
   "popupSettings": "sprites_wolf/popups/panels/settingspanel",
   "buttonLong": "sprites_wolf/popups/buttons/longbutton",

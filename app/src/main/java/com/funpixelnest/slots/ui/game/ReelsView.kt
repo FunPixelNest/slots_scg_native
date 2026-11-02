@@ -102,6 +102,10 @@ fun ReelsView(
 
     LaunchedEffect(request?.nonce) {
         val req = request ?: return@LaunchedEffect
+        if (req.instant) {
+            positions.forEachIndexed { reel, anim -> anim.snapTo(req.stops[reel].toFloat()) }
+            return@LaunchedEffect
+        }
         coroutineScope {
             positions.forEachIndexed { reel, anim ->
                 launch {

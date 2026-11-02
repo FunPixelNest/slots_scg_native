@@ -543,6 +543,7 @@
   "popupMegaWin": "sprites_arabic/popups/panels/megawinpanel",
   "popupHugeWin": "sprites_arabic/popups/panels/hugewinpanel",
   "popupFreeSpins": "sprites_arabic/popups/panels/freespinpanel",
+  "popupJackpot": "sprites_arabic/popups/panels/jackpotwinpanel",
   "popupInfo": "sprites_arabic/popups/panels/infopanel",
   "popupSettings": "sprites_arabic/popups/panels/settingspanel",
   "buttonLong": "sprites_arabic/popups/buttons/longbutton",

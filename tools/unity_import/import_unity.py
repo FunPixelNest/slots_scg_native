@@ -194,6 +194,7 @@ def pick_ui(images: list[str], sizes: dict | None = None) -> dict:
         "popupMegaWin": pick(pu, [r"mega"], ex, [r"panel|plate"]),
         "popupHugeWin": pick(pu, [r"huge"], ex, [r"panel|plate"]),
         "popupFreeSpins": pick(pu, [r"free"], ex + [r"symbol"], [r"panel|plate"]),
+        "popupJackpot": pick(pu, [r"jackpot"], ex + [r"symbol", r"title", r"icon"], [r"panel|plate|win|pop"]),
         "popupInfo": pick(pu, [r"info|paytable|pay_?table|help"], ex + [r"line|title|button"], [r"panel|plate"]),
         "popupSettings": pick(pu, [r"settings"], ex + [r"line|title|button|icon"], [r"panel|plate|pop"]),
         "buttonLong": pick(pu + gs, [r"long|middle|ok"], ex + [r"icon"], [r"button"]),
@@ -548,7 +549,8 @@ def main():
                       [s["image"] for s in symbols if s["image"]], title, tname,
                       os.path.join(common_out, tile_rel), font_for_tiles)
         size_bytes = sum(os.path.getsize(os.path.join(dp, x)) for dp, _, fs in os.walk(root) for x in fs)
-        index.append({"id": tid, "name": tname, "order": order, "tile": tile_rel,
+        # image keys never carry the extension (the app appends ".webp")
+        index.append({"id": tid, "name": tname, "order": order, "tile": tile_rel[:-len(".webp")],
                       "pack": f"theme_{tid}", "sizeBytes": size_bytes, "source": source})
         print(f"theme {tid:16s} symbols={len(symbols)} wild={wild} scatter={scatter} bg={bool(bg)} "
               f"frame={bool(frame)} ui={len(ui)} {source}")

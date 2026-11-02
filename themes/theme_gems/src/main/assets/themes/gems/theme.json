@@ -525,6 +525,7 @@
   "popupMegaWin": "sprites_gems/popups/panels/megawinpanel",
   "popupHugeWin": "sprites_gems/popups/panels/hugewinpanel",
   "popupFreeSpins": "sprites_gems/popups/panels/freespinpanel",
+  "popupJackpot": "sprites_gems/popups/panels/jackpotwinpanel",
   "popupInfo": "sprites_gems/popups/panels/infopanel",
   "popupSettings": "sprites_gems/popups/panels/settingspanel",
   "buttonLong": "sprites_gems/popups/buttons/longbutton",

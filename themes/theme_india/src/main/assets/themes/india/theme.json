@@ -565,6 +565,7 @@
   "popupMegaWin": "sprites_indian/pop_ups/panels/coins_mega",
   "popupHugeWin": "sprites_indian/pop_ups/panels/coins_huge",
   "popupFreeSpins": "sprites_indian/pop_ups/panels/free_spin_pop_up",
+  "popupJackpot": "sprites_indian/pop_ups/panels/coins_jackpot",
   "popupSettings": "sprites_indian/pop_ups/panels/settings_pop_up",
   "buttonLong": "sprites_indian/pop_ups/buttons/long_button_normal",
   "exit": "sprites_indian/pop_ups/buttons/exit_button_normal"

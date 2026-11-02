@@ -785,6 +785,7 @@
   "popupMegaWin": "sprites_greek/pop_ups/panels/coins_mega",
   "popupHugeWin": "sprites_greek/pop_ups/panels/coins_huge",
   "popupFreeSpins": "sprites_greek/pop_ups/panels/free_spins_title",
+  "popupJackpot": "sprites_greek/pop_ups/panels/coins_jackpot",
   "popupSettings": "sprites_greek/pop_ups/panels/settings_pop_up",
   "buttonLong": "sprites_greek/pop_ups/buttons/long_red_button_normal",
   "exit": "sprites_greek/pop_ups/buttons/exit_red_button_normal"

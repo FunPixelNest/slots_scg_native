@@ -785,6 +785,7 @@
   "popupMegaWin": "sprites_china/pop_ups/panels/title_mega_win",
   "popupHugeWin": "sprites_china/pop_ups/panels/title_huge_win",
   "popupFreeSpins": "sprites_china/pop_ups/panels/title_free_spin",
+  "popupJackpot": "sprites_china/pop_ups/panels/jackpot_pop_up",
   "popupSettings": "sprites_china/pop_ups/panels/settings_pop_up",
   "buttonLong": "sprites_china/pop_ups/buttons/long_red_button_normal",
   "exit": "sprites_china/pop_ups/buttons/exit_green_button_normal"

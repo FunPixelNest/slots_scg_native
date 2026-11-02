@@ -570,6 +570,7 @@
   "popupMegaWin": "sprites_viking/pop_ups/panels/megawinpanel",
   "popupHugeWin": "sprites_viking/pop_ups/panels/hugewinpanel",
   "popupFreeSpins": "sprites_viking/pop_ups/panels/freespinpanel",
+  "popupJackpot": "sprites_viking/pop_ups/panels/jackpotpanel",
   "popupInfo": "sprites_viking/pop_ups/panels/helppanel",
   "popupSettings": "sprites_viking/pop_ups/panels/settingspanel",
   "buttonLong": "sprites_viking/pop_ups/buttons/longbutton",
