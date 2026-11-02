@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -85,11 +86,13 @@ fun GameScreen(
             JackpotBar(vm, assets)
 
             // ---------------- reels: full width, cells a little taller than wide
-            Box(
+            BoxWithConstraints(
                 Modifier.fillMaxWidth().weight(1f).padding(horizontal = 6.dp, vertical = 6.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                Box(Modifier.fillMaxWidth().aspectRatio(cfg.reels / (cfg.rows * REEL_CELL_TALL))) {
+                // use the free height: cells grow from slightly tall up to REEL_CELL_MAX_TALL
+                val tall = ((maxHeight / maxWidth) * cfg.reels / cfg.rows).coerceIn(REEL_CELL_TALL, REEL_CELL_MAX_TALL)
+                Box(Modifier.fillMaxWidth().aspectRatio(cfg.reels / (cfg.rows * tall))) {
                     if (cfg.frame != null) {
                         AssetImage(assets, cfg.frame, Modifier.fillMaxSize(), ContentScale.FillBounds)
                     } else {
@@ -121,6 +124,7 @@ fun GameScreen(
 
 /** Height/width of one reel cell in portrait (symbols are drawn fitted inside). */
 private const val REEL_CELL_TALL = 1.22f
+private const val REEL_CELL_MAX_TALL = 1.55f
 
 @Composable
 private fun TopBar(vm: GameViewModel, assets: ThemeAssets, onExit: () -> Unit) {
