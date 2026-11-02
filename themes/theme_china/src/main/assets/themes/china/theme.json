@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_china/game_screen/backgrounds/background_day_game",
+ "backgroundPortrait": null,
  "frame": null,
  "reelBackground": "sprites_china/game_screen/reels/reel",
  "title": null,

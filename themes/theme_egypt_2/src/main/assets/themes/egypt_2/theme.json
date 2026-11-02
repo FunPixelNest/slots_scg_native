@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_eg2/gamescreen/backgrounds/backgroundh",
+ "backgroundPortrait": "sprites_eg2/gamescreen/backgrounds/backgroundv",
  "frame": null,
  "reelBackground": null,
  "title": null,

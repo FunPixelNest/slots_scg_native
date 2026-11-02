@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_gems/game_screen/background_1",
+ "backgroundPortrait": null,
  "frame": "sprites_gems/game_screen/reels/slotmachine_3x5",
  "reelBackground": null,
  "title": null,

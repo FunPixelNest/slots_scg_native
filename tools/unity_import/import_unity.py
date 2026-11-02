@@ -224,6 +224,16 @@ def pick_background(images: list[str], sizes: dict) -> str | None:
     return max(cands, key=score)
 
 
+def pick_background_portrait(images: list[str], sizes: dict) -> str | None:
+    """Vertical (portrait) background where the Unity theme ships one."""
+    cands = [i for i in images if re.search(r"(^|/)(background|bkg|bg)[^/]*$", i)
+             and not re.search(r"help|pop|fort_?wheel|wheel|anim|symbol|lobby|button|panel|night", i)
+             and sizes[i][1] > sizes[i][0]]
+    if not cands:
+        return None
+    return max(cands, key=lambda c: (("3x5" in c), sizes[c][0] * sizes[c][1]))
+
+
 def pick_frame(images: list[str], sizes: dict) -> str | None:
     c = [i for i in images if re.search(r"slot_?machine_?3x5|slotmachine3x5", i)]
     if c:
@@ -518,6 +528,7 @@ def main():
         wild_id = order_keys.index(wild) if wild in order_keys else -1
         scatter_id = order_keys.index(scatter) if scatter in order_keys else -1
         bg = ov.get("background") or pick_background(images, sizes)
+        bg_portrait = ov.get("backgroundPortrait") or pick_background_portrait(images, sizes)
         frame = ov.get("frame", pick_frame(images, sizes))
         reel_bg = ov.get("reelBackground")
         if frame and frame in sizes and sizes[frame][0] < sizes[frame][1] * 0.8:
@@ -530,7 +541,7 @@ def main():
         theme = {
             "id": tid, "name": tname, "order": order, "unityFolder": f, "source": source,
             "reels": 5, "rows": 3, "mode": "ways",
-            "background": bg, "frame": frame, "reelBackground": reel_bg, "title": title,
+            "background": bg, "backgroundPortrait": bg_portrait, "frame": frame, "reelBackground": reel_bg, "title": title,
             "symbols": symbols, "wildId": wild_id, "scatterId": scatter_id,
             **math,
             "ui": ui,

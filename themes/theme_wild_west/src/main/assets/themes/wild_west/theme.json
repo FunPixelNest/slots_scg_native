@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_ww/gamescreen/backgrounds/backgroundh",
+ "backgroundPortrait": "sprites_ww/gamescreen/backgrounds/backgroundv",
  "frame": "sprites_ww/gamescreen/other/slotmachine_3x5",
  "reelBackground": null,
  "title": null,

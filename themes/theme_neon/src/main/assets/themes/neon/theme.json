@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_mneon/backgrounds/bkg",
+ "backgroundPortrait": null,
  "frame": "sprites_mneon/gamescreen/reels/reel_5x3",
  "reelBackground": null,
  "title": null,

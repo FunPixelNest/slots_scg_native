@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_christmaseve/game_screen/png/background",
+ "backgroundPortrait": null,
  "frame": null,
  "reelBackground": null,
  "title": "sprites_christmaseve/load_screen/png/game_title",

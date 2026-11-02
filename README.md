@@ -2,7 +2,7 @@
 
 Native Android (Kotlin + Jetpack Compose) version of the Unity project
 [`slots_android_New`](https://github.com/FunPixelNest/slots_android_New) ("MK Holiday Slot Bundle"):
-a lobby plus **23 slot machines**, using the original Unity UI art.
+a portrait lobby plus **23 slot machines**, using the original Unity UI art.
 
 ## Project layout
 

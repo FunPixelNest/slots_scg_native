@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_egypt/game_screen/background/background_wide_3x5_horizontal",
+ "backgroundPortrait": "sprites_egypt/game_screen/background/background_wide_3x5_vertical",
  "frame": null,
  "reelBackground": null,
  "title": null,

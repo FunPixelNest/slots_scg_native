@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_viking/game_screen/backgrounds/background",
+ "backgroundPortrait": "sprites_viking/game_screen/backgrounds/backgroundv",
  "frame": "sprites_viking/game_screen/reels/slotmachine3x5",
  "reelBackground": null,
  "title": null,

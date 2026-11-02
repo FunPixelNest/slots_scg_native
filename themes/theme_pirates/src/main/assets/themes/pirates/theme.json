@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_pirates/game_screen/background",
+ "backgroundPortrait": null,
  "frame": null,
  "reelBackground": null,
  "title": null,

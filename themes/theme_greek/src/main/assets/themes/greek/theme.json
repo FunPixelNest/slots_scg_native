@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_greek/game_screen/backgrounds/background_day_greek",
+ "backgroundPortrait": null,
  "frame": null,
  "reelBackground": "sprites_greek/game_screen/reels/reel",
  "title": null,

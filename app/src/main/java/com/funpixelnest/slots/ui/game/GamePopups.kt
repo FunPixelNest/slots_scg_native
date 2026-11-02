@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,7 +67,7 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
                 else -> (ui["popupBigWin"] ?: ui["popupMegaWin"]) to "BIG WIN!"
             }
             AutoDismiss(3500, vm::dismissPopup)
-            PopupFrame(assets, art, vm::dismissPopup, widthFraction = 0.42f) {
+            PopupFrame(assets, art, vm::dismissPopup) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(title, style = outlinedText(34.sp, Gold, font))
                     CountingText(p.coins, outlinedText(40.sp, Color.White, font))
@@ -76,7 +77,7 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
         is Popup.Jackpot -> {
             AutoDismiss(4500, vm::dismissPopup)
             val art = ui["popupJackpot"] ?: ui["popupHugeWin"] ?: ui["popupBigWin"]
-            PopupFrame(assets, art, vm::dismissPopup, widthFraction = 0.46f) {
+            PopupFrame(assets, art, vm::dismissPopup) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("${p.win.tier.label} JACKPOT!", style = outlinedText(32.sp, Gold, font))
                     CountingText(p.win.coins, outlinedText(40.sp, Color.White, font))
@@ -85,7 +86,7 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
         }
         is Popup.FreeSpins -> {
             AutoDismiss(3000, vm::dismissPopup)
-            PopupFrame(assets, ui["popupFreeSpins"] ?: ui["popupPanel"], vm::dismissPopup, widthFraction = 0.42f) {
+            PopupFrame(assets, ui["popupFreeSpins"] ?: ui["popupPanel"], vm::dismissPopup) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("FREE SPINS", style = outlinedText(30.sp, Gold, font))
                     Text("${p.count}", style = outlinedText(54.sp, Color.White, font))
@@ -94,7 +95,7 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
         }
         is Popup.LevelUp -> {
             AutoDismiss(3000, vm::dismissPopup)
-            PopupFrame(assets, ui["popupPanel"], vm::dismissPopup, widthFraction = 0.4f) {
+            PopupFrame(assets, ui["popupPanel"], vm::dismissPopup) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("LEVEL UP!", style = outlinedText(30.sp, Gold, font))
                     Text("Level ${p.level}", style = outlinedText(24.sp))
@@ -103,7 +104,7 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
                 }
             }
         }
-        Popup.NoCoins -> PopupFrame(assets, ui["popupPanel"], vm::dismissPopup, widthFraction = 0.45f) {
+        Popup.NoCoins -> PopupFrame(assets, ui["popupPanel"], vm::dismissPopup) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("NOT ENOUGH COINS", style = outlinedText(24.sp, Gold, font))
                 Spacer(Modifier.height(6.dp))
@@ -144,8 +145,9 @@ fun PopupFrame(
     assets: ThemeAssets,
     art: String?,
     onDismiss: () -> Unit,
-    widthFraction: Float = 0.6f,
-    heightFraction: Float = 0.62f,
+    widthFraction: Float = 0.9f,
+    /** null: keep the panel art's own proportions (or wrap the content when there is no art). */
+    heightFraction: Float? = null,
     /** Extra top inset inside panel art, for art with a title printed at the top. */
     artTopInset: androidx.compose.ui.unit.Dp = 0.dp,
     content: @Composable BoxScope.() -> Unit,
@@ -160,7 +162,14 @@ fun PopupFrame(
         contentAlignment = Alignment.Center,
     ) {
         val img = rememberImage(assets, art)
-        val box = Modifier.fillMaxWidth(widthFraction).fillMaxHeight(heightFraction).scale(scale.value)
+        val sized = Modifier.fillMaxWidth(widthFraction).let { m ->
+            when {
+                heightFraction != null -> m.fillMaxHeight(heightFraction)
+                img != null -> m.aspectRatio((img.width.toFloat() / img.height).coerceIn(0.6f, 2.2f))
+                else -> m
+            }
+        }
+        val box = sized.scale(scale.value)
             .clickable(remember { MutableInteractionSource() }, null) { /* swallow */ }
         if (img != null) {
             Box(box, contentAlignment = Alignment.Center) {
@@ -176,21 +185,23 @@ fun PopupFrame(
 @Composable
 private fun PayTablePopup(assets: ThemeAssets, lineBet: Int, lines: Int, onDismiss: () -> Unit) {
     val cfg = assets.config
-    PopupFrame(assets, cfg.ui["popupInfo"], onDismiss, widthFraction = 0.86f, heightFraction = 0.86f, artTopInset = 30.dp) {
+    // landscape panel art would be squashed in portrait, so the paytable uses the drawn panel
+    PopupFrame(assets, null, onDismiss, widthFraction = 0.94f, heightFraction = 0.82f) {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("PAYTABLE", style = outlinedText(24.sp, Gold, themeFont(cfg.id)))
             Text(
                 "$lines ways • pays left to right • line bet $lineBet",
                 style = outlinedText(12.sp, Color(0xFFE0E0E0)),
             )
             Spacer(Modifier.height(6.dp))
             val rows = payRows(cfg)
-            LazyVerticalGrid(GridCells.Fixed(4), Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            LazyVerticalGrid(GridCells.Fixed(2), Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(rows) { r ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        AssetImage(assets, cfg.symbols[r.symbol].image, Modifier.size(54.dp))
+                        AssetImage(assets, cfg.symbols[r.symbol].image, Modifier.size(64.dp))
                         Column(Modifier.padding(start = 4.dp)) {
                             r.pays.forEach { (count, pay) ->
-                                Text("${count}× ${formatCoins(pay.toLong() * lineBet)}", style = outlinedText(12.sp))
+                                Text("${count}× ${formatCoins(pay.toLong() * lineBet)}", style = outlinedText(14.sp))
                             }
                         }
                     }
@@ -232,7 +243,7 @@ fun SettingsPopup(graph: AppGraph, assets: ThemeAssets, art: String?, onDismiss:
     var sound by remember { mutableStateOf(graph.player.soundOn) }
     var music by remember { mutableStateOf(graph.player.musicOn) }
     val panel = art ?: if (assets.config.id == "common") "lobby/settings_pop_up" else null
-    PopupFrame(assets, panel, onDismiss, widthFraction = 0.4f, heightFraction = 0.7f) {
+    PopupFrame(assets, panel, onDismiss, widthFraction = 0.82f) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text("SETTINGS", style = outlinedText(24.sp, Gold))
             Toggle(graph, "Sound", sound) { sound = it; graph.sound.setSound(it) }

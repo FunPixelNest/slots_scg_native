@@ -49,8 +49,8 @@ import org.robolectric.annotation.GraphicsMode
 import java.io.File
 import kotlin.random.Random
 
-/** Landscape phone, 1782x822 px. */
-private const val PHONE = "w891dp-h411dp-land-xhdpi"
+/** Portrait phone, 822x1782 px. */
+private const val PHONE = "w411dp-h891dp-port-xhdpi"
 private const val OUT = "build/screenshots"
 
 private fun themeIndex(): List<ThemeIndexEntry> = ThemeConfig.json.decodeFromString(
@@ -162,7 +162,7 @@ class LobbyScreenshotTest : ScreenshotBase() {
         val themes = graph.themes
         compose.setContent {
             LazyVerticalGrid(
-                GridCells.Fixed(12),
+                GridCells.Fixed(5),
                 Modifier.fillMaxSize().background(Color(0xFF1A0533)).padding(6.dp),
             ) {
                 items(themes) { e ->

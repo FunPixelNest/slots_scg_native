@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_forest/game_screen/backgrounds/bkg_coniferous",
+ "backgroundPortrait": null,
  "frame": null,
  "reelBackground": null,
  "title": null,

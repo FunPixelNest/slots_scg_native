@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_mw/gamescreen/background",
+ "backgroundPortrait": null,
  "frame": "sprites_mw/gamescreen/other/reels",
  "reelBackground": null,
  "title": null,

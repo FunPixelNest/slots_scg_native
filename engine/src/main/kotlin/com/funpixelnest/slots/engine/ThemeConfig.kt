@@ -18,6 +18,8 @@ data class ThemeConfig(
     /** "ways": every row combination is a line (3^5 = 243). "lines": only [lines]. */
     val mode: String = "ways",
     val background: String? = null,
+    /** Vertical background for the portrait layout, when the Unity theme has one. */
+    val backgroundPortrait: String? = null,
     val frame: String? = null,
     val reelBackground: String? = null,
     val title: String? = null,

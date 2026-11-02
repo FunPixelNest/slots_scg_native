@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_tropical/gamescreen/background",
+ "backgroundPortrait": null,
  "frame": "sprites_tropical/gamescreen/other/reels",
  "reelBackground": null,
  "title": null,

@@ -44,16 +44,19 @@ private val TIER_COLORS = mapOf(
     JackpotTier.GRAND to listOf(Color(0xFFFFD54F), Color(0xFFE65100)),
 )
 
-/** Mini / Minor / Major / Grand progressive jackpot meters, ticking up like a live pool. */
+/** Progressive jackpots for the portrait layout: a wide GRAND meter over MAJOR · MINOR · MINI. */
 @Composable
 fun JackpotBar(vm: GameViewModel, assets: ThemeAssets) {
     val font = themeFont(assets.config.id)
-    Row(
-        Modifier.fillMaxWidth().height(40.dp).padding(horizontal = 24.dp, vertical = 3.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    Column(
+        Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 2.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        JackpotTier.entries.forEach { t ->
-            JackpotMeter(t, vm.jackpots[t] ?: 0L, font, Modifier.weight(if (t == JackpotTier.GRAND) 1.35f else 1f))
+        JackpotMeter(JackpotTier.GRAND, vm.jackpots[JackpotTier.GRAND] ?: 0L, font, Modifier.fillMaxWidth().height(50.dp))
+        Row(Modifier.fillMaxWidth().height(42.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            listOf(JackpotTier.MAJOR, JackpotTier.MINOR, JackpotTier.MINI).forEach { t ->
+                JackpotMeter(t, vm.jackpots[t] ?: 0L, font, Modifier.weight(1f).fillMaxHeight())
+            }
         }
     }
 }
@@ -76,14 +79,14 @@ private fun JackpotMeter(tier: JackpotTier, value: Long, font: androidx.compose.
     val colors = TIER_COLORS.getValue(tier)
     val shape = RoundedCornerShape(50)
     Box(
-        modifier.fillMaxHeight()
+        modifier
             .background(Brush.verticalGradient(listOf(colors[0], colors[1])), shape)
             .border(2.dp, Color(0xFFFFE082).copy(alpha = glow), shape),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(tier.label, style = outlinedText(10.sp, Color.White, font))
-            Text(formatCoins(shown), style = outlinedText(if (tier == JackpotTier.GRAND) 16.sp else 13.sp, Color(0xFFFFF8E1)), maxLines = 1)
+            Text(if (tier == JackpotTier.GRAND) "GRAND JACKPOT" else tier.label, style = outlinedText(if (tier == JackpotTier.GRAND) 12.sp else 10.sp, Color.White, font))
+            Text(formatCoins(shown), style = outlinedText(if (tier == JackpotTier.GRAND) 22.sp else 14.sp, Color(0xFFFFF8E1)), maxLines = 1)
         }
     }
 }

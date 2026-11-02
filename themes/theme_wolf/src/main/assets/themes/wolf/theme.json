@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_wolf/gamescreen/background",
+ "backgroundPortrait": null,
  "frame": "sprites_wolf/gamescreen/reels/slotmachine3x5",
  "reelBackground": null,
  "title": null,

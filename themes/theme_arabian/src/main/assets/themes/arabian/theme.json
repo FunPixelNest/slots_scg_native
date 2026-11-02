@@ -8,6 +8,7 @@
  "rows": 3,
  "mode": "ways",
  "background": "sprites_arabic/gamescreen/backgrounds/backgroundh",
+ "backgroundPortrait": "sprites_arabic/gamescreen/backgrounds/background_v",
  "frame": "sprites_arabic/gamescreen/reels/reel_3x5",
  "reelBackground": null,
  "title": null,
