@@ -55,28 +55,12 @@
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_tropical/gamescreen/symbols/wild",
-   "anim": {
-    "frames": [
-     "sprites_tropical/animations/special/wild/canape_l",
-     "sprites_tropical/animations/special/wild/canape_m",
-     "sprites_tropical/animations/special/wild/canape_r",
-     "sprites_tropical/animations/special/wild/title"
-    ]
-   }
+   "image": "sprites_tropical/gamescreen/symbols/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_tropical/gamescreen/symbols/scatter",
-   "anim": {
-    "frames": [
-     "sprites_tropical/animations/special/scatter/canape_l",
-     "sprites_tropical/animations/special/scatter/canape_m",
-     "sprites_tropical/animations/special/scatter/canape_r",
-     "sprites_tropical/animations/special/scatter/title"
-    ]
-   }
+   "image": "sprites_tropical/gamescreen/symbols/scatter"
   }
  ],
  "wildId": 8,

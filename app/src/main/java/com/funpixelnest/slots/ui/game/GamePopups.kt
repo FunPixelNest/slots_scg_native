@@ -146,6 +146,8 @@ fun PopupFrame(
     onDismiss: () -> Unit,
     widthFraction: Float = 0.6f,
     heightFraction: Float = 0.62f,
+    /** Extra top inset inside panel art, for art with a title printed at the top. */
+    artTopInset: androidx.compose.ui.unit.Dp = 0.dp,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val scale = remember { Animatable(0.6f) }
@@ -163,7 +165,7 @@ fun PopupFrame(
         if (img != null) {
             Box(box, contentAlignment = Alignment.Center) {
                 AssetImage(assets, art, Modifier.fillMaxSize(), ContentScale.FillBounds)
-                Box(Modifier.fillMaxSize().padding(28.dp), contentAlignment = Alignment.Center, content = content)
+                Box(Modifier.fillMaxSize().padding(start = 28.dp, end = 28.dp, bottom = 28.dp, top = 28.dp + artTopInset), contentAlignment = Alignment.Center, content = content)
             }
         } else {
             FallbackPanel(box, content)
@@ -174,9 +176,8 @@ fun PopupFrame(
 @Composable
 private fun PayTablePopup(assets: ThemeAssets, lineBet: Int, lines: Int, onDismiss: () -> Unit) {
     val cfg = assets.config
-    PopupFrame(assets, cfg.ui["popupInfo"], onDismiss, widthFraction = 0.86f, heightFraction = 0.86f) {
+    PopupFrame(assets, cfg.ui["popupInfo"], onDismiss, widthFraction = 0.86f, heightFraction = 0.86f, artTopInset = 30.dp) {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("PAYTABLE", style = outlinedText(22.sp, Gold, themeFont(cfg.id)))
             Text(
                 "$lines ways • pays left to right • line bet $lineBet",
                 style = outlinedText(12.sp, Color(0xFFE0E0E0)),

@@ -49,7 +49,7 @@ private val TIER_COLORS = mapOf(
 fun JackpotBar(vm: GameViewModel, assets: ThemeAssets) {
     val font = themeFont(assets.config.id)
     Row(
-        Modifier.fillMaxWidth().height(44.dp).padding(horizontal = 24.dp, vertical = 3.dp),
+        Modifier.fillMaxWidth().height(40.dp).padding(horizontal = 24.dp, vertical = 3.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         JackpotTier.entries.forEach { t ->

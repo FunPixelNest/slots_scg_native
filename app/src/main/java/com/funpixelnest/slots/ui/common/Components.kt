@@ -64,7 +64,7 @@ fun outlinedText(size: TextUnit, color: Color = Color.White, family: FontFamily 
     fontSize = size,
     color = color,
     textAlign = TextAlign.Center,
-    shadow = Shadow(Color.Black.copy(alpha = 0.85f), blurRadius = 6f),
+    shadow = Shadow(Color.Black, offset = androidx.compose.ui.geometry.Offset(0f, 2.5f), blurRadius = 3f),
 )
 
 @Composable
@@ -216,7 +216,7 @@ fun CoinShower(trigger: Int, count: Int, modifier: Modifier = Modifier) {
     androidx.compose.foundation.Canvas(modifier) {
         val p = progress.value
         if (p >= 1f) return@Canvas
-        val r = size.minDimension * 0.035f
+        val r = size.minDimension * 0.024f
         for (c in coins) {
             val t = ((p - c[3]) / (1f - c[3])).coerceIn(0f, 1f)
             if (t <= 0f) continue

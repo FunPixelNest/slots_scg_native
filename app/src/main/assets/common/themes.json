@@ -95,7 +95,7 @@
   "order": 10,
   "tile": "lobby/tiles/tropical",
   "pack": "theme_tropical",
-  "sizeBytes": 721161,
+  "sizeBytes": 720611,
   "source": "generated"
  },
  {
@@ -185,7 +185,7 @@
   "order": 20,
   "tile": "lobby/tiles/india",
   "pack": "theme_india",
-  "sizeBytes": 2818644,
+  "sizeBytes": 2816346,
   "source": "generated"
  },
  {

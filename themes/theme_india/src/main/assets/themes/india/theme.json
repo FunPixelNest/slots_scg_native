@@ -35,93 +35,32 @@
   {
    "key": "elephant",
    "name": "Elephant",
-   "image": "sprites_indian/game_screen/symbols/elephant",
-   "anim": {
-    "frames": [
-     "sprites_indian/animations/elephant/elephant_body",
-     "sprites_indian/animations/elephant/elephant_ear_far",
-     "sprites_indian/animations/elephant/elephant_head",
-     "sprites_indian/animations/elephant/elephant_rog_far",
-     "sprites_indian/animations/elephant/elephant_rog_near",
-     "sprites_indian/animations/elephant/elephant_rope_1",
-     "sprites_indian/animations/elephant/elephant_rope_2"
-    ]
-   }
+   "image": "sprites_indian/game_screen/symbols/elephant"
   },
   {
    "key": "monkey",
    "name": "Monkey",
-   "image": "sprites_indian/game_screen/symbols/monkey",
-   "anim": {
-    "frames": [
-     "sprites_indian/animations/monkey/monkey_main",
-     "sprites_indian/animations/monkey/monkey_main_head",
-     "sprites_indian/animations/monkey/monkey_small",
-     "sprites_indian/animations/monkey/monkey_small_hand_far",
-     "sprites_indian/animations/monkey/monkey_small_hand_near",
-     "sprites_indian/animations/monkey/monkey_small_or",
-     "sprites_indian/animations/monkey/shadow"
-    ]
-   }
+   "image": "sprites_indian/game_screen/symbols/monkey"
   },
   {
    "key": "peacock",
    "name": "Peacock",
-   "image": "sprites_indian/game_screen/symbols/peacock",
-   "anim": {
-    "frames": [
-     "sprites_indian/animations/peacock/peacock_body",
-     "sprites_indian/animations/peacock/peacock_feather_far",
-     "sprites_indian/animations/peacock/peacock_feathers",
-     "sprites_indian/animations/peacock/peacock_feathers_round",
-     "sprites_indian/animations/peacock/peacock_holka",
-     "sprites_indian/animations/peacock/peacock_kluv_main",
-     "sprites_indian/animations/peacock/peacock_kluv_second"
-    ]
-   }
+   "image": "sprites_indian/game_screen/symbols/peacock"
   },
   {
    "key": "tiger",
    "name": "Tiger",
-   "image": "sprites_indian/game_screen/symbols/tiger",
-   "anim": {
-    "frames": [
-     "sprites_indian/animations/tiger/tiger_body",
-     "sprites_indian/animations/tiger/tiger_hand_left",
-     "sprites_indian/animations/tiger/tiger_hand_right",
-     "sprites_indian/animations/tiger/tiger_head",
-     "sprites_indian/animations/tiger/tiger_mask"
-    ]
-   }
+   "image": "sprites_indian/game_screen/symbols/tiger"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_indian/game_screen/symbols/wild",
-   "anim": {
-    "frames": [
-     "sprites_indian/animations/wild/wild_dot",
-     "sprites_indian/animations/wild/wild_feather",
-     "sprites_indian/animations/wild/wild_gems",
-     "sprites_indian/animations/wild/wild_hat",
-     "sprites_indian/animations/wild/wild_i",
-     "sprites_indian/animations/wild/wild_wild"
-    ]
-   }
+   "image": "sprites_indian/game_screen/symbols/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_indian/game_screen/symbols/scatter",
-   "anim": {
-    "frames": [
-     "sprites_indian/animations/scatter/scatter_c",
-     "sprites_indian/animations/scatter/scatter_cap",
-     "sprites_indian/animations/scatter/scatter_chest",
-     "sprites_indian/animations/scatter/scatter_scatter",
-     "sprites_indian/animations/scatter/wild_dot"
-    ]
-   }
+   "image": "sprites_indian/game_screen/symbols/scatter"
   }
  ],
  "wildId": 8,

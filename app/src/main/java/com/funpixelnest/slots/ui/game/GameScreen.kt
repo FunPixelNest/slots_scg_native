@@ -103,8 +103,9 @@ fun GameScreen(
         }
 
         if (vm.phase == Phase.Loading) LoadingOverlay(graph, assets, vm.loadProgress)
-        GamePopups(graph, vm, assets)
+        // coins rain behind popups so the win amount stays readable
         CoinShower(vm.showerTrigger, vm.showerCoins, Modifier.fillMaxSize())
+        GamePopups(graph, vm, assets)
     }
 }
 
@@ -112,7 +113,7 @@ fun GameScreen(
 private fun TopBar(vm: GameViewModel, assets: ThemeAssets, onExit: () -> Unit) {
     val ui = assets.config.ui
     Row(
-        Modifier.fillMaxWidth().height(52.dp).background(Color.Black.copy(alpha = 0.35f)).padding(horizontal = 10.dp),
+        Modifier.fillMaxWidth().height(46.dp).background(Color.Black.copy(alpha = 0.35f)).padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ArtButton(assets, ui["menu"], Modifier.size(42.dp), label = if (ui["menu"] == null) "☰" else null) { onExit() }
@@ -146,11 +147,11 @@ private fun BottomBar(vm: GameViewModel, assets: ThemeAssets) {
     val betLocked = busy || vm.freeSpins > 0
 
     Row(
-        Modifier.fillMaxWidth().height(84.dp).background(Color.Black.copy(alpha = 0.45f)).padding(horizontal = 10.dp, vertical = 6.dp),
+        Modifier.fillMaxWidth().height(74.dp).background(Color.Black.copy(alpha = 0.45f)).padding(horizontal = 10.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        InfoPanel(assets, "panelBalance", "BET LEVEL", "${vm.betIndex + 1}/${vm.session.unlockedSteps}", Modifier.weight(0.8f))
+        InfoPanel(assets, "panelBalance".takeUnless { it in cfg.uiLabeled } ?: "-", "BET LEVEL", "${vm.betIndex + 1}/${vm.session.unlockedSteps}", Modifier.weight(0.8f))
 
         ArtButton(assets, ui["minus"], Modifier.size(40.dp), label = if (ui["minus"] == null) "−" else null, enabled = !betLocked) {
             vm.changeBet(-1)

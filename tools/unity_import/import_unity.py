@@ -269,8 +269,16 @@ def find_anim(images: list[str], sprites: dict, sym_key: str):
         if "anim" in d and d.rsplit("/", 1)[-1].rstrip("s") == sym_key.rstrip("s"):
             folders.setdefault(d, []).append(i)
     for d, files in folders.items():
-        if len(files) >= 4:
-            return {"frames": sorted(files, key=natural_key)}
+        # only real frame sequences (name_01, name_02, ...): folders of loose body parts
+        # (rigged Unity animations) are not playable as frames
+        groups = {}
+        for f in files:
+            m = re.match(r"^(.*?)_?(\d+)$", f.rsplit("/", 1)[-1])
+            if m:
+                groups.setdefault(m.group(1), []).append(f)
+        seq = max(groups.values(), key=len, default=[])
+        if len(seq) >= 4:
+            return {"frames": sorted(seq, key=natural_key)}
     return None
 
 

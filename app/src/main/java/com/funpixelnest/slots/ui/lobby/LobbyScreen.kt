@@ -126,8 +126,8 @@ fun LobbyScreen(
         }
 
         if (showSettings) SettingsPopup(graph, common, null) { showSettings = false }
-        if (showDaily) DailyBonusPopup(graph, now, onClaimed = { shower++ }) { showDaily = false }
         CoinShower(shower, 60, Modifier.fillMaxSize())
+        if (showDaily) DailyBonusPopup(graph, now, onClaimed = { shower++ }) { showDaily = false }
     }
 }
 
@@ -146,11 +146,13 @@ private fun ThemeCard(graph: AppGraph, entry: ThemeIndexEntry, onClick: () -> Un
         if (entry.order < 3) {
             AssetImage(common, "lobby/hot", Modifier.align(Alignment.TopEnd).padding(6.dp).width(64.dp).height(22.dp))
         }
+        // round play marker in the corner, clear of the theme name painted on the art
         Box(
-            Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp)
-                .background(Color.Black.copy(alpha = 0.55f), RoundedCornerShape(50))
-                .padding(horizontal = 14.dp, vertical = 4.dp),
-        ) { Text("PLAY", style = outlinedText(14.sp, Gold)) }
+            Modifier.align(Alignment.TopStart).padding(8.dp).size(34.dp)
+                .background(Brush.radialGradient(listOf(Color(0xFF66BB6A), Color(0xFF1B5E20))), RoundedCornerShape(50))
+                .border(2.dp, Gold, RoundedCornerShape(50)),
+            contentAlignment = Alignment.Center,
+        ) { Text("▶", style = outlinedText(14.sp)) }
     }
 }
 
