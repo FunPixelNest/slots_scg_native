@@ -21,11 +21,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,7 +43,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -52,15 +53,26 @@ import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.audio.Sfx
 import com.funpixelnest.slots.data.AppGraph
 import com.funpixelnest.slots.engine.Economy
+import com.funpixelnest.slots.engine.JackpotTier
 import com.funpixelnest.slots.engine.ThemeIndexEntry
-import com.funpixelnest.slots.ui.common.ArtButton
 import com.funpixelnest.slots.ui.common.AssetImage
 import com.funpixelnest.slots.ui.common.CoinIcon
 import com.funpixelnest.slots.ui.common.CoinShower
-import com.funpixelnest.slots.ui.common.Gold
 import com.funpixelnest.slots.ui.common.formatCompact
 import com.funpixelnest.slots.ui.common.outlinedText
 import com.funpixelnest.slots.ui.game.SettingsPopup
+import com.funpixelnest.slots.ui.skin.CoinCapsule
+import com.funpixelnest.slots.ui.skin.GoldFrame
+import com.funpixelnest.slots.ui.skin.IconRoundButton
+import com.funpixelnest.slots.ui.skin.LevelStar
+import com.funpixelnest.slots.ui.skin.Ribbon
+import com.funpixelnest.slots.ui.skin.Skin
+import com.funpixelnest.slots.ui.skin.SkinButton
+import com.funpixelnest.slots.ui.skin.SkinDialog
+import com.funpixelnest.slots.ui.skin.SkinIcon
+import com.funpixelnest.slots.ui.skin.SkinTone
+import com.funpixelnest.slots.ui.skin.Sunburst
+import com.funpixelnest.slots.ui.skin.VelvetBackdrop
 import kotlinx.coroutines.delay
 
 @Composable
@@ -70,7 +82,6 @@ fun LobbyScreen(
     /** Screenshot hook: open the daily bonus popup straight away. */
     startWithDailyBonus: Boolean = false,
 ) {
-    val common = graph.commonImages
     val coins by graph.player.coinsFlow.collectAsState()
     val level by graph.player.levelFlow.collectAsState()
     val progress by graph.player.progressFlow.collectAsState()
@@ -86,48 +97,43 @@ fun LobbyScreen(
         while (true) { delay(1000); now = System.currentTimeMillis() }
     }
 
-    Box(Modifier.fillMaxSize().background(Color.Black).testTag("lobby")) {
-        AssetImage(common, "lobby/bkg", Modifier.fillMaxSize(), ContentScale.Crop)
+    Box(Modifier.fillMaxSize().background(Skin.VelvetDeep).testTag("lobby")) {
+        VelvetBackdrop(Modifier.fillMaxSize())
 
         Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
-            // ---------------- top panel: level · coins · settings
-            Box(Modifier.fillMaxWidth().height(60.dp)) {
-                AssetImage(common, "lobby/up_pannel", Modifier.fillMaxSize(), ContentScale.FillBounds)
-                Row(
-                    Modifier.fillMaxSize().padding(horizontal = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    LevelBadge(level, progress)
-                    Spacer(Modifier.weight(1f))
-                    CoinsBox(coins)
-                    Spacer(Modifier.width(8.dp))
-                    ArtButton(common, "lobby/menu_button_normal", Modifier.size(40.dp), label = "⚙", labelSize = 16.sp) {
-                        graph.sound.play(Sfx.Button); showSettings = true
-                    }
-                }
-            }
-
-            // ---------------- bonuses
+            // ---------------- HUD: level · coins · settings
             Row(
-                Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                Modifier.fillMaxWidth()
+                    .background(Brush.verticalGradient(listOf(Color(0xE6170327), Color(0x99170327))))
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                HourlyBonusButton(graph, now, Modifier.weight(1.3f)) { shower++ }
-                DailyBonusButton(graph, now, Modifier.weight(1f)) { showDaily = true }
+                LevelStar(level, progress)
+                Spacer(Modifier.weight(1f))
+                CoinCapsule(coins, onPlus = { graph.sound.play(Sfx.Button); showDaily = true })
+                Spacer(Modifier.width(8.dp))
+                IconRoundButton(SkinIcon.Gear) { graph.sound.play(Sfx.Button); showSettings = true }
             }
+            Box(Modifier.fillMaxWidth().height(2.dp).background(Skin.goldBorder))
 
-            AssetImage(common, "lobby/lobby_title", Modifier.fillMaxWidth().height(50.dp))
-
-            // ---------------- machines: two columns, every one unlocked
             LazyVerticalGrid(
                 GridCells.Fixed(2),
                 Modifier.fillMaxWidth().weight(1f),
-                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 12.dp),
+                contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 6.dp, bottom = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
+                item(span = { GridItemSpan(maxLineSpan) }) { Brand() }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    BonusRow(graph, now, onHourly = { shower++ }, onDaily = { showDaily = true })
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Box(Modifier.fillMaxWidth().padding(top = 4.dp), contentAlignment = Alignment.Center) {
+                        Ribbon("ALL GAMES · ${graph.themes.size}", tone = SkinTone.Purple, textSize = 16.sp)
+                    }
+                }
                 items(graph.themes, key = { it.id }) { entry ->
-                    ThemeCard(graph, entry, Modifier.fillMaxWidth().aspectRatio(392f / 588f)) {
+                    MachineCard(graph, entry) {
                         graph.sound.play(Sfx.Choose)
                         onOpenTheme(entry.id)
                     }
@@ -135,91 +141,21 @@ fun LobbyScreen(
             }
         }
 
-        if (showSettings) SettingsPopup(graph, common, null) { showSettings = false }
+        if (showSettings) SettingsPopup(graph, graph.commonImages, null) { showSettings = false }
         CoinShower(shower, 60, Modifier.fillMaxSize())
         if (showDaily) DailyBonusPopup(graph, now, onClaimed = { shower++ }) { showDaily = false }
     }
 }
 
+/** Brand header over a turning sunburst. */
 @Composable
-private fun ThemeCard(graph: AppGraph, entry: ThemeIndexEntry, modifier: Modifier, onClick: () -> Unit) {
-    val common = graph.commonImages
-    Box(
-        modifier
-            .clip(RoundedCornerShape(18.dp))
-            .border(2.dp, Gold.copy(alpha = 0.7f), RoundedCornerShape(18.dp))
-            .clickable(onClick = onClick),
-    ) {
-        AssetImage(common, entry.tile, Modifier.fillMaxSize(), ContentScale.Crop)
-        if (entry.order < 3) {
-            AssetImage(common, "lobby/hot", Modifier.align(Alignment.TopEnd).padding(6.dp).width(64.dp).height(22.dp))
-        }
-        // round play marker in the corner, clear of the theme name painted on the art
-        Box(
-            Modifier.align(Alignment.TopStart).padding(8.dp).size(34.dp)
-                .background(Brush.radialGradient(listOf(Color(0xFF66BB6A), Color(0xFF1B5E20))), RoundedCornerShape(50))
-                .border(2.dp, Gold, RoundedCornerShape(50)),
-            contentAlignment = Alignment.Center,
-        ) { Text("▶", style = outlinedText(14.sp)) }
-    }
-}
-
-@Composable
-fun LoadBar(graph: AppGraph, progress: Float, modifier: Modifier) {
-    val common = graph.commonImages
-    Box(modifier) {
-        AssetImage(common, "lobby/load_bar_empty", Modifier.fillMaxSize(), ContentScale.FillBounds)
-        AssetImage(
-            common, "lobby/load_bar_full",
-            Modifier.fillMaxHeight().fillMaxWidth(progress.coerceIn(0f, 1f)), ContentScale.FillBounds,
-        )
-    }
-}
-
-/** Balance HUD: gold coin + compact amount (1.25M), rolling up when it changes. */
-@Composable
-fun CoinsBox(coins: Long) {
-    var shown by remember { mutableLongStateOf(coins) }
-    LaunchedEffect(coins) {
-        val from = shown
-        for (i in 1..20) { shown = from + (coins - from) * i / 20; delay(30) }
-    }
-    Row(
-        Modifier
-            .background(Brush.verticalGradient(listOf(Color(0xCC1A0B2E), Color(0xCC000000))), RoundedCornerShape(50))
-            .border(2.dp, Gold, RoundedCornerShape(50))
-            .padding(start = 4.dp, end = 16.dp, top = 3.dp, bottom = 3.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        CoinIcon(Modifier.size(28.dp))
-        Spacer(Modifier.width(8.dp))
-        Text(formatCompact(shown), style = outlinedText(20.sp, Gold), modifier = Modifier.testTag("coins"))
-    }
-}
-
-@Composable
-fun LevelBadge(level: Int, progress: Float, compact: Boolean = false) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            Modifier.size(36.dp)
-                .background(Brush.radialGradient(listOf(Color(0xFF7E57C2), Color(0xFF311B92))), RoundedCornerShape(50))
-                .border(2.dp, Gold, RoundedCornerShape(50)),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text("$level", style = outlinedText(15.sp))
-        }
-        Column(Modifier.padding(start = 6.dp)) {
-            if (!compact) Text("LEVEL $level", style = outlinedText(9.sp, Color(0xFFE0E0E0)))
-            Box(
-                Modifier.width(if (compact) 56.dp else 84.dp).height(10.dp)
-                    .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(50))
-                    .border(1.dp, Color(0x88FFFFFF), RoundedCornerShape(50))
-            ) {
-                Box(
-                    Modifier.fillMaxHeight().fillMaxWidth((progress / 100f).coerceIn(0f, 1f))
-                        .background(Brush.horizontalGradient(listOf(Color(0xFF9CCC65), Color(0xFF43A047))), RoundedCornerShape(50))
-                )
-            }
+private fun Brand() {
+    Box(Modifier.fillMaxWidth().height(118.dp), contentAlignment = Alignment.Center) {
+        Sunburst(Modifier.fillMaxSize())
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("FUNPIXEL", style = outlinedText(16.sp, Skin.TextSoft).copy(letterSpacing = 6.sp))
+            Text("SLOTS", style = outlinedText(52.sp, Skin.GoldLight).copy(letterSpacing = 4.sp))
+            Text("EVERY MACHINE UNLOCKED", style = outlinedText(11.sp, Skin.Gold).copy(letterSpacing = 2.sp))
         }
     }
 }
@@ -229,34 +165,107 @@ private fun countdown(ms: Long): String {
     return "%d:%02d:%02d".format(s / 3600, s / 60 % 60, s % 60)
 }
 
-/** Free coins every hour (amount grows with level). */
+/** Hourly and daily bonus side by side, each in its own velvet plate. */
 @Composable
-private fun HourlyBonusButton(graph: AppGraph, now: Long, modifier: Modifier, onClaimed: () -> Unit) {
-    val left = graph.player.hourlyReadyIn(now)
-    val ready = left == 0L
-    val pulse by rememberInfiniteTransition(label = "hourly").animateFloat(
-        1f, if (ready) 1.07f else 1f, infiniteRepeatable(tween(600), RepeatMode.Reverse), label = "pulse",
+private fun BonusRow(graph: AppGraph, now: Long, onHourly: () -> Unit, onDaily: () -> Unit) {
+    val player = graph.player
+    val hourlyLeft = player.hourlyReadyIn(now)
+    val dailyReady = player.nextDailyDay(now) != null
+    val pulse by rememberInfiniteTransition(label = "bonus").animateFloat(
+        1f, 1.05f, infiniteRepeatable(tween(650), RepeatMode.Reverse), label = "pulse",
     )
-    ArtButton(
-        graph.commonImages, "lobby/long_button_normal",
-        modifier.height(46.dp).scale(pulse),
-        label = if (ready) "HOURLY ${formatCompact(Economy.hourlyBonus(graph.player.level))}" else "HOURLY ${countdown(left)}",
-        labelSize = 13.sp, enabled = ready,
-    ) {
-        if (graph.player.claimHourly(System.currentTimeMillis()) > 0) {
-            graph.sound.play(Sfx.WinCoins)
-            onClaimed()
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        BonusPlate("HOURLY BONUS", formatCompact(Economy.hourlyBonus(player.level)), Modifier.weight(1f)) {
+            val ready = hourlyLeft == 0L
+            SkinButton(
+                if (ready) "COLLECT" else countdown(hourlyLeft),
+                Modifier.fillMaxWidth().height(40.dp).scale(if (ready) pulse else 1f),
+                tone = if (ready) SkinTone.Green else SkinTone.Purple, enabled = ready, textSize = 15.sp,
+            ) {
+                if (player.claimHourly(System.currentTimeMillis()) > 0) {
+                    graph.sound.play(Sfx.WinCoins)
+                    onHourly()
+                }
+            }
+        }
+        val day = player.nextDailyDay(now) ?: player.lastDailyDay
+        BonusPlate("DAILY BONUS", "DAY $day / 7", Modifier.weight(1f)) {
+            SkinButton(
+                if (dailyReady) "OPEN" else "CALENDAR",
+                Modifier.fillMaxWidth().height(40.dp).scale(if (dailyReady) pulse else 1f),
+                tone = if (dailyReady) SkinTone.Gold else SkinTone.Purple, textSize = 15.sp,
+            ) { graph.sound.play(Sfx.Button); onDaily() }
         }
     }
 }
 
 @Composable
-private fun DailyBonusButton(graph: AppGraph, now: Long, modifier: Modifier, onOpen: () -> Unit) {
-    val ready = graph.player.nextDailyDay(now) != null
-    ArtButton(
-        graph.commonImages, "lobby/long_button_normal", modifier.height(46.dp),
-        label = if (ready) "DAILY BONUS!" else "DAILY ✓", labelSize = 13.sp,
-    ) { graph.sound.play(Sfx.Button); onOpen() }
+private fun BonusPlate(title: String, value: String, modifier: Modifier, button: @Composable () -> Unit) {
+    Column(
+        modifier
+            .background(Skin.goldBorder, RoundedCornerShape(16.dp))
+            .padding(2.dp)
+            .background(Brush.verticalGradient(listOf(Color(0xFF34105A), Color(0xFF1A0530))), RoundedCornerShape(14.dp))
+            .padding(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Text(title, style = outlinedText(11.sp, Skin.TextSoft).copy(letterSpacing = 1.sp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            CoinIcon(Modifier.size(22.dp))
+            Spacer(Modifier.width(6.dp))
+            Text(value, style = outlinedText(18.sp, Skin.GoldLight))
+        }
+        button()
+    }
+}
+
+/** Gold-framed machine card with a HOT tag and a Grand-jackpot plate under it. */
+@Composable
+private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, onClick: () -> Unit) {
+    val grand = Economy.LINE_BETS[0].toLong() * 243 * JackpotTier.GRAND.betMultiple +
+        graph.player.jackpotPool(entry.id, JackpotTier.GRAND)
+    Column(
+        Modifier.clickable(remember { MutableInteractionSource() }, null, onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box {
+            GoldFrame(Modifier.fillMaxWidth().aspectRatio(392f / 588f), corner = 18.dp) {
+                AssetImage(graph.commonImages, entry.tile, Modifier.fillMaxSize(), ContentScale.Crop)
+            }
+            if (entry.order < 3) {
+                Ribbon("HOT", Modifier.align(Alignment.TopEnd).offset(x = 4.dp, y = (-6).dp), tone = SkinTone.Red, textSize = 12.sp)
+            }
+        }
+        Row(
+            Modifier.offset(y = (-12).dp)
+                .background(Skin.goldBorder, RoundedCornerShape(50))
+                .padding(2.dp)
+                .background(Brush.verticalGradient(listOf(Color(0xFF2A0846), Color(0xFF0E0219))), RoundedCornerShape(50))
+                .padding(horizontal = 12.dp, vertical = 3.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("GRAND ", style = outlinedText(10.sp, Skin.TextSoft))
+            Text(formatCompact(grand), style = outlinedText(14.sp, Skin.GoldLight))
+        }
+    }
+}
+
+/** Loading bar used on machine load screens. */
+@Composable
+fun LoadBar(@Suppress("UNUSED_PARAMETER") graph: AppGraph, progress: Float, modifier: Modifier) {
+    Box(
+        modifier
+            .background(Skin.goldBorder, RoundedCornerShape(50))
+            .padding(2.5.dp)
+            .background(Color(0xFF0B0114), RoundedCornerShape(50))
+            .padding(3.dp)
+    ) {
+        Box(
+            Modifier.fillMaxHeight().fillMaxWidth(progress.coerceIn(0.03f, 1f))
+                .background(Brush.verticalGradient(listOf(Color(0xFFFFE27A), Color(0xFFE08A00))), RoundedCornerShape(50))
+        )
+    }
 }
 
 /** Seven-day streak calendar; day 7 pays the most, missing a day restarts at day 1. */
@@ -266,20 +275,17 @@ private fun DailyBonusPopup(graph: AppGraph, now: Long, onClaimed: () -> Unit, o
     val today = player.nextDailyDay(now)
     val streakDay = today ?: player.lastDailyDay
     Box(
-        Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.65f)).clickable(onClick = onDismiss),
+        Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.7f)).clickable(onClick = onDismiss),
         contentAlignment = Alignment.Center,
     ) {
-        Column(
+        SkinDialog(
+            "DAILY BONUS",
             Modifier.fillMaxWidth(0.92f)
-                .background(Brush.verticalGradient(listOf(Color(0xFF4A148C), Color(0xFF1A0533))), RoundedCornerShape(24.dp))
-                .border(3.dp, Brush.verticalGradient(listOf(Gold, Color(0xFFB8860B))), RoundedCornerShape(24.dp))
                 .clickable(remember { MutableInteractionSource() }, null) { /* swallow taps */ }
-                .padding(18.dp)
                 .testTag("daily-bonus"),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            tone = SkinTone.Red, sunburst = true,
         ) {
-            Text("DAILY BONUS", style = outlinedText(26.sp, Gold))
-            Text("Come back every day – day 7 pays the most!", style = outlinedText(12.sp, Color(0xFFE0E0E0)))
+            Text("Come back every day. Day 7 pays the most!", style = outlinedText(12.sp, Skin.TextSoft))
             Spacer(Modifier.height(12.dp))
             for (days in listOf(1..4, 5..Economy.DAILY_DAYS)) Row(
                 Modifier.padding(bottom = 8.dp),
@@ -289,30 +295,30 @@ private fun DailyBonusPopup(graph: AppGraph, now: Long, onClaimed: () -> Unit, o
                     val claimed = (today == null && d <= streakDay) || (today != null && d < today)
                     val isToday = d == today
                     Column(
-                        Modifier.weight(if (d == 7) 2f else 1f).height(104.dp)
+                        Modifier.weight(if (d == 7) 2f else 1f).height(100.dp)
                             .background(
                                 when {
-                                    isToday -> Brush.verticalGradient(listOf(Color(0xFFFFD54F), Color(0xFFFF8F00)))
-                                    claimed -> Brush.verticalGradient(listOf(Color(0xFF43A047), Color(0xFF1B5E20)))
-                                    else -> Brush.verticalGradient(listOf(Color(0xFF5E35B1), Color(0xFF311B92)))
+                                    isToday -> Brush.verticalGradient(listOf(Color(0xFFFFE27A), Color(0xFFE08A00)))
+                                    claimed -> Brush.verticalGradient(listOf(Color(0xFF4ADE80), Color(0xFF15803D)))
+                                    else -> Brush.verticalGradient(listOf(Color(0xFF5B2A9E), Color(0xFF2A0846)))
                                 },
                                 RoundedCornerShape(14.dp),
                             )
-                            .border(if (isToday) 3.dp else 1.dp, if (isToday) Color.White else Color(0x66FFFFFF), RoundedCornerShape(14.dp))
+                            .border(if (isToday) 3.dp else 1.5.dp, if (isToday) Brush.verticalGradient(listOf(Color.White, Color.White)) else Skin.goldBorder, RoundedCornerShape(14.dp))
                             .padding(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text("DAY $d", style = outlinedText(12.sp))
                         CoinIcon(Modifier.size(if (d == 7) 40.dp else 30.dp))
-                        Text(formatCompact(Economy.dailyBonus(d, player.level)), style = outlinedText(13.sp, if (isToday) Color.White else Gold))
+                        Text(formatCompact(Economy.dailyBonus(d, player.level)), style = outlinedText(13.sp, if (isToday) Color.White else Skin.GoldLight))
                         if (claimed) Text("✓", style = outlinedText(12.sp, Color.White))
                     }
                 }
             }
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(8.dp))
             if (today != null) {
-                ArtButton(graph.commonImages, "lobby/long_button_normal", Modifier.width(220.dp).height(50.dp), label = "COLLECT", labelSize = 18.sp) {
+                SkinButton("COLLECT", Modifier.width(220.dp).height(52.dp), tone = SkinTone.Green, textSize = 20.sp) {
                     if (player.claimDaily(System.currentTimeMillis()) > 0) {
                         graph.sound.play(Sfx.BigWin)
                         onClaimed()
@@ -321,6 +327,8 @@ private fun DailyBonusPopup(graph: AppGraph, now: Long, onClaimed: () -> Unit, o
                 }
             } else {
                 Text("Next bonus in ${countdown(player.lastDailyAt + Economy.DAY_MS - now)}", style = outlinedText(14.sp))
+                Spacer(Modifier.height(8.dp))
+                SkinButton("OK", Modifier.width(160.dp).height(46.dp), tone = SkinTone.Purple, onClick = onDismiss)
             }
         }
     }

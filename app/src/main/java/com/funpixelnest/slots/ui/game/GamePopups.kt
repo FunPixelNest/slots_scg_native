@@ -1,5 +1,15 @@
 package com.funpixelnest.slots.ui.game
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.shape.CircleShape
+import com.funpixelnest.slots.ui.common.CoinIcon
+import com.funpixelnest.slots.ui.common.formatCompact
+import com.funpixelnest.slots.ui.skin.Skin
+import com.funpixelnest.slots.ui.skin.SkinButton
+import com.funpixelnest.slots.ui.skin.SkinDialog
+import com.funpixelnest.slots.ui.skin.SkinTone
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -44,83 +54,70 @@ import com.funpixelnest.slots.engine.PayLineDef
 import com.funpixelnest.slots.engine.PlayerRules
 import com.funpixelnest.slots.engine.ThemeConfig
 import com.funpixelnest.slots.engine.WinTier
-import com.funpixelnest.slots.ui.common.ArtButton
 import com.funpixelnest.slots.ui.common.AssetImage
-import com.funpixelnest.slots.ui.common.FallbackPanel
-import com.funpixelnest.slots.ui.common.Gold
 import com.funpixelnest.slots.ui.common.formatCoins
 import com.funpixelnest.slots.ui.common.outlinedText
-import com.funpixelnest.slots.ui.common.rememberImage
 import com.funpixelnest.slots.ui.common.themeFont
 import kotlinx.coroutines.delay
 
 @Composable
 fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
-    val ui = assets.config.ui
     val font = themeFont(assets.config.id)
     when (val p = vm.popup) {
         null -> Unit
         is Popup.BigWin -> {
-            val (art, title) = when (p.tier) {
-                WinTier.HUGE -> (ui["popupHugeWin"] ?: ui["popupBigWin"]) to "HUGE WIN!"
-                WinTier.MEGA -> (ui["popupMegaWin"] ?: ui["popupBigWin"]) to "MEGA WIN!"
-                else -> (ui["popupBigWin"] ?: ui["popupMegaWin"]) to "BIG WIN!"
+            val title = when (p.tier) {
+                WinTier.HUGE -> "HUGE WIN!"
+                WinTier.MEGA -> "MEGA WIN!"
+                else -> "BIG WIN!"
             }
             AutoDismiss(3500, vm::dismissPopup)
-            PopupFrame(assets, art, vm::dismissPopup) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(title, style = outlinedText(34.sp, Gold, font))
-                    CountingText(p.coins, outlinedText(40.sp, Color.White, font))
-                }
+            PopupFrame(title, vm::dismissPopup, tone = SkinTone.Gold, sunburst = true) {
+                CoinIcon(Modifier.size(56.dp))
+                CountingText(p.coins, outlinedText(44.sp, Skin.GoldLight, font))
+                Text("COINS", style = outlinedText(14.sp, Skin.TextSoft).copy(letterSpacing = 3.sp))
             }
         }
         is Popup.Jackpot -> {
             AutoDismiss(4500, vm::dismissPopup)
-            val art = ui["popupJackpot"] ?: ui["popupHugeWin"] ?: ui["popupBigWin"]
-            PopupFrame(assets, art, vm::dismissPopup) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("${p.win.tier.label} JACKPOT!", style = outlinedText(32.sp, Gold, font))
-                    CountingText(p.win.coins, outlinedText(40.sp, Color.White, font))
-                }
+            PopupFrame("${p.win.tier.label} JACKPOT", vm::dismissPopup, tone = SkinTone.Red, sunburst = true) {
+                Text("CONGRATULATIONS!", style = outlinedText(18.sp, Skin.TextSoft))
+                CoinIcon(Modifier.size(64.dp))
+                CountingText(p.win.coins, outlinedText(44.sp, Skin.GoldLight, font))
             }
         }
         is Popup.FreeSpins -> {
             AutoDismiss(3000, vm::dismissPopup)
-            PopupFrame(assets, ui["popupFreeSpins"] ?: ui["popupPanel"], vm::dismissPopup) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("FREE SPINS", style = outlinedText(30.sp, Gold, font))
-                    Text("${p.count}", style = outlinedText(54.sp, Color.White, font))
-                }
+            PopupFrame("FREE SPINS", vm::dismissPopup, tone = SkinTone.Green, sunburst = true) {
+                Text("${p.count}", style = outlinedText(64.sp, Color.White, font))
+                Text("FREE GAMES WON", style = outlinedText(16.sp, Skin.GoldLight))
             }
         }
         is Popup.LevelUp -> {
             AutoDismiss(3000, vm::dismissPopup)
-            PopupFrame(assets, ui["popupPanel"], vm::dismissPopup) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("LEVEL UP!", style = outlinedText(30.sp, Gold, font))
-                    Text("Level ${p.level}", style = outlinedText(24.sp))
-                    Text("+${formatCoins(p.reward)} coins", style = outlinedText(22.sp, Gold))
-                    if (p.betUnlocked) Text("Higher bets unlocked!", style = outlinedText(16.sp, Color(0xFFFFCC80)))
+            PopupFrame("LEVEL UP!", vm::dismissPopup, tone = SkinTone.Purple, sunburst = true) {
+                Text("LEVEL ${p.level}", style = outlinedText(36.sp, Color.White))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CoinIcon(Modifier.size(28.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text("+${formatCoins(p.reward)}", style = outlinedText(24.sp, Skin.GoldLight))
                 }
+                if (p.betUnlocked) Text("Higher bets unlocked!", style = outlinedText(15.sp, Color(0xFFFFCC80)))
             }
         }
-        Popup.NoCoins -> PopupFrame(assets, ui["popupPanel"], vm::dismissPopup) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("NOT ENOUGH COINS", style = outlinedText(24.sp, Gold, font))
-                Spacer(Modifier.height(6.dp))
-                Text("Here are some free coins to keep playing!", style = outlinedText(16.sp))
-                Spacer(Modifier.height(12.dp))
-                ArtButton(
-                    assets, ui["buttonLong"], Modifier.width(220.dp).height(48.dp),
-                    label = "GET ${formatCoins(PlayerRules.START_COINS)}",
-                ) {
-                    vm.addCoins(PlayerRules.START_COINS)
-                    vm.dismissPopup()
-                }
+        Popup.NoCoins -> PopupFrame("OUT OF COINS", vm::dismissPopup, tone = SkinTone.Red) {
+            Text("Here are some free coins\nto keep playing!", style = outlinedText(17.sp))
+            Spacer(Modifier.height(4.dp))
+            SkinButton(
+                "GET ${formatCompact(PlayerRules.START_COINS)}", Modifier.width(220.dp).height(52.dp),
+                tone = SkinTone.Green, textSize = 20.sp,
+            ) {
+                vm.addCoins(PlayerRules.START_COINS)
+                vm.dismissPopup()
             }
         }
         Popup.Info -> PayTablePopup(assets, vm.lineBet, vm.session.linesCount, vm::dismissPopup)
-        Popup.Settings -> SettingsPopup(graph, assets, ui["popupSettings"], vm::dismissPopup)
+        Popup.Settings -> SettingsPopup(graph, assets, null, vm::dismissPopup)
     }
 }
 
@@ -139,45 +136,40 @@ private fun CountingText(target: Long, style: androidx.compose.ui.text.TextStyle
     Text(formatCoins(shown), style = style)
 }
 
-/** Dimmed backdrop + themed panel art (or a drawn panel), popping in like Unity's PopUpsController. */
+/** Dimmed backdrop + skin dialog that pops in with a spring. */
 @Composable
 fun PopupFrame(
-    assets: ThemeAssets,
-    art: String?,
+    title: String,
     onDismiss: () -> Unit,
+    tone: SkinTone = SkinTone.Red,
+    sunburst: Boolean = false,
     widthFraction: Float = 0.9f,
-    /** null: keep the panel art's own proportions (or wrap the content when there is no art). */
     heightFraction: Float? = null,
-    /** Extra top inset inside panel art, for art with a title printed at the top. */
-    artTopInset: androidx.compose.ui.unit.Dp = 0.dp,
-    content: @Composable BoxScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     val scale = remember { Animatable(0.6f) }
     LaunchedEffect(Unit) { scale.animateTo(1f, spring(dampingRatio = 0.5f, stiffness = Spring.StiffnessMediumLow)) }
     Box(
         Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.6f))
+            .background(Color.Black.copy(alpha = 0.7f))
             .clickable(remember { MutableInteractionSource() }, null, onClick = onDismiss),
         contentAlignment = Alignment.Center,
     ) {
-        val img = rememberImage(assets, art)
-        val sized = Modifier.fillMaxWidth(widthFraction).let { m ->
-            when {
-                heightFraction != null -> m.fillMaxHeight(heightFraction)
-                img != null -> m.aspectRatio((img.width.toFloat() / img.height).coerceIn(0.6f, 2.2f))
-                else -> m
-            }
-        }
-        val box = sized.scale(scale.value)
-            .clickable(remember { MutableInteractionSource() }, null) { /* swallow */ }
-        if (img != null) {
-            Box(box, contentAlignment = Alignment.Center) {
-                AssetImage(assets, art, Modifier.fillMaxSize(), ContentScale.FillBounds)
-                Box(Modifier.fillMaxSize().padding(start = 28.dp, end = 28.dp, bottom = 28.dp, top = 28.dp + artTopInset), contentAlignment = Alignment.Center, content = content)
-            }
-        } else {
-            FallbackPanel(box, content)
+        SkinDialog(
+            title,
+            Modifier.fillMaxWidth(widthFraction)
+                .let { if (heightFraction != null) it.fillMaxHeight(heightFraction) else it }
+                .scale(scale.value)
+                .clickable(remember { MutableInteractionSource() }, null) { /* swallow */ },
+            tone = tone, sunburst = sunburst,
+        ) {
+            Column(
+                Modifier.then(if (heightFraction != null) Modifier.fillMaxHeight() else Modifier),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                content = content,
+            )
         }
     }
 }
@@ -185,39 +177,40 @@ fun PopupFrame(
 @Composable
 private fun PayTablePopup(assets: ThemeAssets, lineBet: Int, lines: Int, onDismiss: () -> Unit) {
     val cfg = assets.config
-    // landscape panel art would be squashed in portrait, so the paytable uses the drawn panel
-    PopupFrame(assets, null, onDismiss, widthFraction = 0.94f, heightFraction = 0.82f) {
-        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("PAYTABLE", style = outlinedText(24.sp, Gold, themeFont(cfg.id)))
-            Text(
-                "$lines ways • pays left to right • line bet $lineBet",
-                style = outlinedText(12.sp, Color(0xFFE0E0E0)),
-            )
-            Spacer(Modifier.height(6.dp))
-            val rows = payRows(cfg)
-            LazyVerticalGrid(GridCells.Fixed(2), Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                items(rows) { r ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        AssetImage(assets, cfg.symbols[r.symbol].image, Modifier.size(64.dp))
-                        Column(Modifier.padding(start = 4.dp)) {
-                            r.pays.forEach { (count, pay) ->
-                                Text("${count}× ${formatCoins(pay.toLong() * lineBet)}", style = outlinedText(14.sp))
+    PopupFrame("PAYTABLE", onDismiss, tone = SkinTone.Purple, widthFraction = 0.94f, heightFraction = 0.82f) {
+        Text("$lines ways · pays left to right · line bet ${formatCoins(lineBet.toLong())}", style = outlinedText(12.sp, Skin.TextSoft))
+        val rows = payRows(cfg)
+        LazyVerticalGrid(
+            GridCells.Fixed(2), Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(10.dp), horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            items(rows) { r ->
+                Row(
+                    Modifier.background(Color.Black.copy(alpha = 0.3f), RoundedCornerShape(12.dp)).padding(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    AssetImage(assets, cfg.symbols[r.symbol].image, Modifier.size(58.dp))
+                    Column(Modifier.padding(start = 6.dp)) {
+                        r.pays.forEach { (count, pay) ->
+                            Row {
+                                Text("$count× ", style = outlinedText(13.sp, Skin.TextSoft))
+                                Text(formatCompact(pay.toLong() * lineBet), style = outlinedText(13.sp, Skin.GoldLight))
                             }
                         }
                     }
                 }
             }
-            val rules = buildList {
-                if (cfg.wildId >= 0) add("WILD substitutes for all symbols except scatter (not on reel 1).")
-                cfg.scatterPays.forEach { s ->
-                    add("${s.count} SCATTERS anywhere: " + listOfNotNull(
-                        s.freeSpins.takeIf { it > 0 }?.let { "$it free spins" },
-                        s.pay.takeIf { it > 0 }?.let { "${formatCoins(it.toLong() * lineBet)} coins" },
-                    ).joinToString(" + "))
-                }
-            }
-            rules.forEach { Text(it, style = outlinedText(12.sp, Gold)) }
         }
+        val rules = buildList {
+            if (cfg.wildId >= 0) add("WILD substitutes for all symbols except scatter (not on reel 1).")
+            cfg.scatterPays.forEach { s ->
+                add("${s.count} SCATTERS anywhere: " + listOfNotNull(
+                    s.freeSpins.takeIf { it > 0 }?.let { "$it free spins" },
+                    s.pay.takeIf { it > 0 }?.let { "${formatCoins(it.toLong() * lineBet)} coins" },
+                ).joinToString(" + "))
+            }
+        }
+        rules.forEach { Text(it, style = outlinedText(12.sp, Skin.GoldLight)) }
     }
 }
 
@@ -237,33 +230,41 @@ private fun payRows(cfg: ThemeConfig): List<PayRow> {
         .map { PayRow(it.key, it.value.sortedByDescending { p -> p.first }) }
 }
 
-/** Sound / music toggles; used in the lobby (common art) and in every machine (theme art). */
+/** Sound / music toggles; used in the lobby and in every machine. */
 @Composable
-fun SettingsPopup(graph: AppGraph, assets: ThemeAssets, art: String?, onDismiss: () -> Unit) {
+fun SettingsPopup(graph: AppGraph, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets, @Suppress("UNUSED_PARAMETER") art: String?, onDismiss: () -> Unit) {
     var sound by remember { mutableStateOf(graph.player.soundOn) }
     var music by remember { mutableStateOf(graph.player.musicOn) }
-    val panel = art ?: if (assets.config.id == "common") "lobby/settings_pop_up" else null
-    PopupFrame(assets, panel, onDismiss, widthFraction = 0.82f) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Text("SETTINGS", style = outlinedText(24.sp, Gold))
-            Toggle(graph, "Sound", sound) { sound = it; graph.sound.setSound(it) }
-            Toggle(graph, "Music", music) { music = it; graph.sound.setMusic(it) }
-            Text("Converted from Unity – FunPixelNest", style = outlinedText(10.sp, Color(0xFFBDBDBD)))
-        }
+    PopupFrame("SETTINGS", onDismiss, tone = SkinTone.Purple, widthFraction = 0.82f) {
+        Toggle("Sound", sound) { sound = it; graph.sound.setSound(it) }
+        Toggle("Music", music) { music = it; graph.sound.setMusic(it) }
+        Spacer(Modifier.height(4.dp))
+        SkinButton("DONE", Modifier.width(160.dp).height(46.dp), tone = SkinTone.Green, onClick = onDismiss)
+        Text("FunPixelNest", style = outlinedText(10.sp, Skin.TextSoft))
     }
 }
 
+/** Pill switch in the skin colours. */
 @Composable
-private fun Toggle(graph: AppGraph, label: String, on: Boolean, onChange: (Boolean) -> Unit) {
+private fun Toggle(label: String, on: Boolean, onChange: (Boolean) -> Unit) {
+    val knob by animateFloatAsState(if (on) 1f else 0f, label = "knob")
     Row(
         Modifier.clickable { onChange(!on) }.padding(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label, style = outlinedText(20.sp), modifier = Modifier.width(90.dp))
-        AssetImage(
-            graph.commonImages, if (on) "lobby/radio_button_on" else "lobby/radio_button_off",
-            Modifier.size(36.dp),
-        )
-        Text(if (on) "ON" else "OFF", style = outlinedText(16.sp, if (on) Gold else Color.Gray), modifier = Modifier.padding(start = 6.dp))
+        Text(label, style = outlinedText(20.sp), modifier = Modifier.width(96.dp))
+        Box(
+            Modifier.width(64.dp).height(32.dp)
+                .background(Skin.goldBorder, RoundedCornerShape(50))
+                .padding(2.dp)
+                .background(if (on) Color(0xFF16A34A) else Color(0xFF3A1B5C), RoundedCornerShape(50))
+                .padding(3.dp),
+        ) {
+            Box(
+                Modifier.offset(x = 32.dp * knob).size(26.dp)
+                    .background(Skin.goldFill, CircleShape)
+            )
+        }
+        Text(if (on) "ON" else "OFF", style = outlinedText(15.sp, if (on) Skin.GoldLight else Color.Gray), modifier = Modifier.padding(start = 8.dp))
     }
 }

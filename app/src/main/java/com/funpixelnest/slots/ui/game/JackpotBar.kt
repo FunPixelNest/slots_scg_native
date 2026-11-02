@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.data.ThemeAssets
 import com.funpixelnest.slots.engine.JackpotTier
+import com.funpixelnest.slots.ui.skin.MarqueeLights
+import com.funpixelnest.slots.ui.skin.Skin
 import com.funpixelnest.slots.ui.common.formatCoins
 import com.funpixelnest.slots.ui.common.outlinedText
 import com.funpixelnest.slots.ui.common.themeFont
@@ -41,7 +43,7 @@ private val TIER_COLORS = mapOf(
     JackpotTier.MINI to listOf(Color(0xFF26C6DA), Color(0xFF00695C)),
     JackpotTier.MINOR to listOf(Color(0xFF66BB6A), Color(0xFF1B5E20)),
     JackpotTier.MAJOR to listOf(Color(0xFFAB47BC), Color(0xFF4A148C)),
-    JackpotTier.GRAND to listOf(Color(0xFFFFD54F), Color(0xFFE65100)),
+    JackpotTier.GRAND to listOf(Color(0xFFE53935), Color(0xFF6A0D0D)),
 )
 
 /** Progressive jackpots for the portrait layout: a wide GRAND meter over MAJOR · MINOR · MINI. */
@@ -52,7 +54,10 @@ fun JackpotBar(vm: GameViewModel, assets: ThemeAssets) {
         Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 2.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        JackpotMeter(JackpotTier.GRAND, vm.jackpots[JackpotTier.GRAND] ?: 0L, font, Modifier.fillMaxWidth().height(50.dp))
+        // GRAND sits in a light-bulb marquee
+        MarqueeLights(Modifier.fillMaxWidth().height(62.dp), bulbs = 34) {
+            JackpotMeter(JackpotTier.GRAND, vm.jackpots[JackpotTier.GRAND] ?: 0L, font, Modifier.fillMaxSize())
+        }
         Row(Modifier.fillMaxWidth().height(42.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(JackpotTier.MAJOR, JackpotTier.MINOR, JackpotTier.MINI).forEach { t ->
                 JackpotMeter(t, vm.jackpots[t] ?: 0L, font, Modifier.weight(1f).fillMaxHeight())
@@ -80,8 +85,10 @@ private fun JackpotMeter(tier: JackpotTier, value: Long, font: androidx.compose.
     val shape = RoundedCornerShape(50)
     Box(
         modifier
+            .background(Skin.goldBorder, shape)
+            .padding(2.dp)
             .background(Brush.verticalGradient(listOf(colors[0], colors[1])), shape)
-            .border(2.dp, Color(0xFFFFE082).copy(alpha = glow), shape),
+            .border(1.5.dp, Color(0xFFFFFDE7).copy(alpha = glow * 0.7f), shape),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
