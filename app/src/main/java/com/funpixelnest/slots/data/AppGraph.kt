@@ -60,7 +60,6 @@ class AppGraph(context: Context) {
     private val app = context.applicationContext
     val common = ApkAssetSource(app.assets, "common")
     val player = PrefsPlayerStore(app.getSharedPreferences("player", Context.MODE_PRIVATE))
-    val packs = ThemePacks(app)
     val sound = SoundPlayer(app, player)
 
     val themes: List<ThemeIndexEntry> by lazy {
@@ -70,11 +69,12 @@ class AppGraph(context: Context) {
 
     private val openThemes = HashMap<String, ThemeAssets>()
 
-    /** Null while the theme's pack is not on the device. */
+    /** Every theme is packaged in the app; null only for an unknown id. */
     fun theme(id: String): ThemeAssets? = synchronized(openThemes) {
         openThemes[id] ?: run {
-            val entry = themes.firstOrNull { it.id == id } ?: return null
-            val src = packs.source(entry) ?: return null
+            if (themes.none { it.id == id }) return null
+            val src = ApkAssetSource(app.assets, "themes/$id")
+            if (!src.exists("theme.json")) return null
             ThemeAssets.open(src).also { openThemes[id] = it }
         }
     }

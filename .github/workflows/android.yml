@@ -25,8 +25,8 @@ jobs:
       - name: Debug APK (all themes bundled)
         run: ./gradlew :app:assembleDebug --stacktrace
 
-      - name: Release bundle (themes as Play Asset Delivery packs)
-        run: ./gradlew :app:bundleRelease --stacktrace
+      - name: Release APK + bundle (all themes included)
+        run: ./gradlew :app:assembleRelease :app:bundleRelease --stacktrace
 
       - uses: actions/upload-artifact@v4
         with:
@@ -35,7 +35,12 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: slots-release-aab-unsigned
+          name: slots-release-apk
+          path: app/build/outputs/apk/release/*.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: slots-release-aab
           path: app/build/outputs/bundle/release/*.aab
 
       - uses: actions/upload-artifact@v4

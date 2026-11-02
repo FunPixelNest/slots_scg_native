@@ -12,7 +12,7 @@ a lobby plus **23 slot machines**, using the original Unity UI art.
 | `app/` | Android app: lobby, game screen, reel animation, popups, sound, saved progress. |
 | `app/src/main/assets/common/` | Shared art (lobby, common UI, FX), audio (OGG) and `themes.json` (lobby index). |
 | `app/src/main/res/font/` | Fonts shipped with the Unity project (Montserrat, Coiny, Lilita One, Corben). |
-| `themes/theme_<id>/` | One **Play Asset Delivery** pack per slot theme: all of that theme's art (WebP), plus `theme.json`, `sprites.json` and `images.json`. |
+| `themes/theme_<id>/` | One folder per slot theme: all of that theme's art (WebP), plus `theme.json`, `sprites.json` and `images.json`. Packaged into the app. |
 | `tools/unity_import/` | The converter that produced everything above from the Unity project. |
 
 ## Themes
@@ -48,25 +48,20 @@ python3 tools/unity_import/import_unity.py \
 
 ```bash
 ./gradlew :engine:test          # slot math tests + RTP simulation for every theme
-./gradlew :app:assembleDebug    # debug APK, every theme bundled inside (no Play needed)
-./gradlew :app:bundleRelease    # release .aab, themes delivered as Play Asset Delivery packs
+./gradlew :app:assembleDebug    # debug APK
+./gradlew :app:assembleRelease  # release APK (minified)
+./gradlew :app:bundleRelease    # release .aab for Google Play
 ```
 
-The GitHub Actions workflow (`.github/workflows/android.yml`) runs all three and uploads the APK/AAB.
+The GitHub Actions workflow (`.github/workflows/android.yml`) runs these and uploads the APKs and the AAB as artifacts.
 
-**Theme delivery:** in the release bundle each theme is a `fast-follow` asset pack, so Play downloads them right after
-install. The lobby shows download progress or a "tap to download" card for a theme that is not on the device yet.
-Debug builds put every theme straight into the APK.
+**All 23 machines are unlocked.** Every theme ships inside the app in all builds, so every lobby card opens its
+machine straight away, offline, with no level locks or downloads. If a player runs out of coins, the game offers a
+free refill.
 
-To test the release asset-pack flow locally:
-
-```bash
-bundletool build-apks --bundle=app/build/outputs/bundle/release/app-release.aab --output=slots.apks --local-testing
-```
-
-```bash
-bundletool install-apks --apks=slots.apks
-```
+**Signing:** release builds use your keystore when `SLOTS_KEYSTORE`, `SLOTS_KEYSTORE_PASSWORD`, `SLOTS_KEY_ALIAS`
+and `SLOTS_KEY_PASSWORD` are set. Otherwise they are signed with the debug key, so the APK installs for testing but
+cannot be uploaded to Play.
 
 ## What was ported from Unity
 

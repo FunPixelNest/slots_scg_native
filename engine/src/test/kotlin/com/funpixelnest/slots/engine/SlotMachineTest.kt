@@ -102,6 +102,27 @@ class SlotMachineTest {
     }
 
     @Test
+    fun `every lobby entry is playable`() {
+        var dir = File("").absoluteFile
+        while (!File(dir, "themes").isDirectory) dir = dir.parentFile
+        val index = ThemeConfig.json.decodeFromString(
+            kotlinx.serialization.builtins.ListSerializer(ThemeIndexEntry.serializer()),
+            File(dir, "app/src/main/assets/common/themes.json").readText(),
+        )
+        assertEquals(23, index.size)
+        for (e in index) {
+            val root = File(dir, "themes/theme_${e.id}/src/main/assets/themes/${e.id}")
+            val cfg = ThemeConfig.parse(File(root, "theme.json").readText())
+            assertTrue(File(dir, "app/src/main/assets/common/${e.tile}").isFile, "${e.id}: lobby tile missing")
+            for (s in cfg.symbols) assertTrue(File(root, "${s.image}.webp").isFile, "${e.id}: ${s.image} missing")
+            cfg.background?.let { assertTrue(File(root, "$it.webp").isFile, "${e.id}: background missing") }
+            val session = GameSession(SlotMachine(cfg), InMemoryPlayerStore())
+            assertTrue(session.canSpin(), "${e.id}: cannot spin with starting coins")
+            assertTrue(session.spin().isSuccess)
+        }
+    }
+
+    @Test
     fun `session debits bet and credits wins`() {
         val cfg = theme("christmas_eve")
         val store = InMemoryPlayerStore(coins = 1_000_000)

@@ -3,7 +3,6 @@ package com.funpixelnest.slots
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -16,11 +15,6 @@ import com.funpixelnest.slots.ui.lobby.LobbyScreen
 
 class MainActivity : ComponentActivity() {
     private val graph by lazy { AppGraph.get(this) }
-
-    /** Play's "download over mobile data?" dialog for large theme packs. */
-    private val cellularConfirm = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
-        graph.packs.refresh(graph.themes)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +31,6 @@ class MainActivity : ComponentActivity() {
                     LobbyScreen(
                         graph = graph,
                         onOpenTheme = { id -> nav.navigate("game/$id") },
-                        onConfirmCellular = { graph.packs.confirmCellular(cellularConfirm) },
                     )
                 }
                 composable("game/{id}") { entry ->

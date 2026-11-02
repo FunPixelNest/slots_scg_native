@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.audio.Sfx
 import com.funpixelnest.slots.data.AppGraph
-import com.funpixelnest.slots.data.PackState
 import com.funpixelnest.slots.data.PrefsPlayerStore
 import com.funpixelnest.slots.engine.ThemeIndexEntry
 import com.funpixelnest.slots.ui.common.ArtButton
@@ -56,16 +55,14 @@ import com.funpixelnest.slots.ui.game.SettingsPopup
 import kotlinx.coroutines.delay
 
 @Composable
-fun LobbyScreen(graph: AppGraph, onOpenTheme: (String) -> Unit, onConfirmCellular: () -> Unit) {
+fun LobbyScreen(graph: AppGraph, onOpenTheme: (String) -> Unit) {
     val common = graph.commonImages
     val coins by graph.player.coinsFlow.collectAsState()
     val level by graph.player.levelFlow.collectAsState()
-    val packStates by graph.packs.states.collectAsState()
     var showSettings by remember { mutableStateOf(false) }
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
 
     LaunchedEffect(Unit) {
-        graph.packs.refresh(graph.themes)
         graph.sound.startMusic()
         while (true) { delay(1000); now = System.currentTimeMillis() }
     }
@@ -102,14 +99,10 @@ fun LobbyScreen(graph: AppGraph, onOpenTheme: (String) -> Unit, onConfirmCellula
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 items(graph.themes, key = { it.id }) { entry ->
-                    ThemeCard(graph, entry, packStates[entry.pack]) {
+                    // every machine is unlocked: a tap always opens it
+                    ThemeCard(graph, entry) {
                         graph.sound.play(Sfx.Choose)
-                        when (packStates[entry.pack] ?: PackState.NotDownloaded) {
-                            PackState.Ready -> onOpenTheme(entry.id)
-                            PackState.WaitingForWifi -> onConfirmCellular()
-                            is PackState.Downloading -> Unit
-                            else -> graph.packs.download(entry)
-                        }
+                        onOpenTheme(entry.id)
                     }
                 }
             }
@@ -120,7 +113,7 @@ fun LobbyScreen(graph: AppGraph, onOpenTheme: (String) -> Unit, onConfirmCellula
 }
 
 @Composable
-private fun ThemeCard(graph: AppGraph, entry: ThemeIndexEntry, state: PackState?, onClick: () -> Unit) {
+private fun ThemeCard(graph: AppGraph, entry: ThemeIndexEntry, onClick: () -> Unit) {
     val common = graph.commonImages
     Box(
         Modifier
@@ -133,29 +126,12 @@ private fun ThemeCard(graph: AppGraph, entry: ThemeIndexEntry, state: PackState?
         if (entry.order < 3) {
             AssetImage(common, "lobby/hot", Modifier.align(Alignment.TopEnd).padding(6.dp).width(64.dp).height(22.dp))
         }
-        when (state) {
-            PackState.Ready, null -> Unit
-            is PackState.Downloading -> DownloadOverlay(graph, "Downloading…", state.progress)
-            PackState.WaitingForWifi -> DownloadOverlay(graph, "Tap to download on mobile data", null)
-            is PackState.Failed -> DownloadOverlay(graph, "Download failed – tap to retry", null)
-            PackState.NotDownloaded -> DownloadOverlay(
-                graph, "Tap to download\n${"%.0f".format(entry.sizeBytes / 1_000_000.0)} MB", null,
-            )
-        }
-    }
-}
-
-@Composable
-private fun DownloadOverlay(graph: AppGraph, text: String, progress: Float?) {
-    Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.55f)), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("⬇", style = outlinedText(34.sp, Gold))
-            Text(text, style = outlinedText(13.sp))
-            if (progress != null) {
-                Spacer(Modifier.height(8.dp))
-                LoadBar(graph, progress, Modifier.width(120.dp).height(20.dp))
-            }
-        }
+        // name strip + PLAY badge
+        Box(
+            Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp)
+                .background(Color.Black.copy(alpha = 0.55f), RoundedCornerShape(50))
+                .padding(horizontal = 14.dp, vertical = 4.dp),
+        ) { Text("PLAY", style = outlinedText(14.sp, Gold)) }
     }
 }
 

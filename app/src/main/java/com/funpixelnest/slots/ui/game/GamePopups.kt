@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.data.AppGraph
 import com.funpixelnest.slots.data.ThemeAssets
 import com.funpixelnest.slots.engine.PayLineDef
+import com.funpixelnest.slots.engine.PlayerRules
 import com.funpixelnest.slots.engine.ThemeConfig
 import com.funpixelnest.slots.engine.WinTier
 import com.funpixelnest.slots.ui.common.ArtButton
@@ -95,9 +96,15 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("NOT ENOUGH COINS", style = outlinedText(24.sp, Gold, font))
                 Spacer(Modifier.height(6.dp))
-                Text("Lower your bet, or collect\nthe free gift in the lobby.", style = outlinedText(16.sp))
+                Text("Here are some free coins to keep playing!", style = outlinedText(16.sp))
                 Spacer(Modifier.height(12.dp))
-                ArtButton(assets, ui["buttonLong"], Modifier.width(150.dp).height(44.dp), label = "OK") { vm.dismissPopup() }
+                ArtButton(
+                    assets, ui["buttonLong"], Modifier.width(220.dp).height(48.dp),
+                    label = "GET ${formatCoins(PlayerRules.START_COINS)}",
+                ) {
+                    vm.addCoins(PlayerRules.START_COINS)
+                    vm.dismissPopup()
+                }
             }
         }
         Popup.Info -> PayTablePopup(assets, vm.lineBet, vm.session.linesCount, vm::dismissPopup)
