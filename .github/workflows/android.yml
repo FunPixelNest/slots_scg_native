@@ -56,6 +56,17 @@ jobs:
           name: slots-debug-apk
           path: app/build/outputs/apk/debug/*.apk
 
+      - name: Publish the test APK as a GitHub release (direct download link)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk FunPixelSlots-test.apk
+          gh release delete test-apk --yes --cleanup-tag || true
+          gh release create test-apk FunPixelSlots-test.apk --prerelease --target "${GITHUB_SHA}" \
+            --title "Test APK (${GITHUB_SHA::7})" \
+            --notes "Debug build of ${GITHUB_SHA} (${GITHUB_REF_NAME}). Install on Android: open the file and allow installs from this source."
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
