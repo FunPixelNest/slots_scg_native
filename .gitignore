@@ -9,3 +9,4 @@ captures/
 *.apk
 *.aab
 __pycache__/
+apk-download/
