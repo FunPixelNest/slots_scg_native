@@ -101,6 +101,14 @@ abstract class ScreenshotBase {
         }
     }
 
+    /** Same layout as MainActivity: the screen above, the banner-ad safe area below. */
+    protected fun setScreen(content: @androidx.compose.runtime.Composable () -> Unit) = compose.setContent {
+        androidx.compose.foundation.layout.Column(Modifier.fillMaxSize()) {
+            Box(Modifier.weight(1f)) { content() }
+            com.funpixelnest.slots.ui.common.AdBannerSlot()
+        }
+    }
+
     protected fun shot(name: String) {
         File(OUT).mkdirs()
         compose.onRoot().captureRoboImage("$OUT/$name.png")
@@ -116,7 +124,7 @@ class MachineScreenshotTest(private val order: Int, private val themeId: String)
     @Test
     fun machine() {
         val stops = winningStops(graph.theme(themeId)!!.config)
-        compose.setContent {
+        setScreen {
             GameScreen(graph, themeId, onExit = {}, onReady = { vm -> vm.preview(stops) })
         }
         waitForTag("game-ready")
@@ -139,7 +147,7 @@ class LobbyScreenshotTest : ScreenshotBase() {
     @Test
     fun lobby() {
         graph.player.claimDaily(System.currentTimeMillis()) // daily already taken -> no popup
-        compose.setContent { LobbyScreen(graph, onOpenTheme = {}) }
+        setScreen { LobbyScreen(graph, onOpenTheme = {}) }
         waitForTag("lobby")
         settle(3000)
         shot("lobby_01_main")
@@ -150,7 +158,7 @@ class LobbyScreenshotTest : ScreenshotBase() {
         val now = System.currentTimeMillis()
         graph.player.lastDailyAt = now - 30 * 60 * 60 * 1000L // claimed yesterday...
         graph.player.lastDailyDay = 3                       // ...on day 3 -> today is day 4
-        compose.setContent { LobbyScreen(graph, onOpenTheme = {}) }
+        setScreen { LobbyScreen(graph, onOpenTheme = {}) }
         waitForTag("daily-bonus")
         settle(2500)
         shot("lobby_02_daily_bonus")
@@ -160,7 +168,7 @@ class LobbyScreenshotTest : ScreenshotBase() {
     fun unlocksList() {
         graph.player.claimDaily(System.currentTimeMillis())
         graph.player.level = 6
-        compose.setContent { LobbyScreen(graph, onOpenTheme = {}, startWithUnlocks = true) }
+        setScreen { LobbyScreen(graph, onOpenTheme = {}, startWithUnlocks = true) }
         waitForTag("lobby")
         settle(3000)
         shot("lobby_04_unlocks")
@@ -170,7 +178,7 @@ class LobbyScreenshotTest : ScreenshotBase() {
     fun lockedVideoMachine() {
         graph.player.claimDaily(System.currentTimeMillis())
         val videoMachine = graph.themes.first { com.funpixelnest.slots.engine.Unlocks.rule(it.order) is com.funpixelnest.slots.engine.Unlock.WatchVideo }
-        compose.setContent { LobbyScreen(graph, onOpenTheme = {}, startWithLocked = videoMachine.id) }
+        setScreen { LobbyScreen(graph, onOpenTheme = {}, startWithLocked = videoMachine.id) }
         waitForTag("lobby")
         settle(3000)
         shot("lobby_05_locked_watch_video")
@@ -214,7 +222,7 @@ class PopupScreenshotTest : ScreenshotBase() {
 
     private fun machineWith(themeId: String, name: String, settleMs: Long = 1200, action: (GameViewModel, List<Int>) -> Unit) {
         val stops = winningStops(graph.theme(themeId)!!.config)
-        compose.setContent { GameScreen(graph, themeId, onExit = {}, onReady = { vm -> action(vm, stops) }) }
+        setScreen { GameScreen(graph, themeId, onExit = {}, onReady = { vm -> action(vm, stops) }) }
         waitForTag("game-ready")
         settle(settleMs)
         shot(name)

@@ -29,7 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
@@ -124,38 +124,39 @@ fun LobbyScreen(
         VelvetBackdrop(Modifier.fillMaxSize())
         StageLights(Modifier.fillMaxSize())
 
-        Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
+        Column(Modifier.fillMaxSize().statusBarsPadding()) {
             PlayerHud(level, progress, coins, onCoins = { graph.sound.play(Sfx.Button); showDaily = true }) {
                 graph.sound.play(Sfx.Button); showSettings = true
             }
-            MarqueeSign()
-
-            // ---------------- casino floor: two rows, scrolls sideways like a game lobby
+            // ---------------- machines: vertical scroll, two columns (sign scrolls with them)
             val unlocked = remember(refresh, level) { graph.themes.count { graph.player.isOpen(it) } }
-            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text("MACHINES", style = outlinedText(14.sp, Skin.GoldLight).copy(letterSpacing = 2.sp))
-                Spacer(Modifier.weight(1f))
-                Text("$unlocked / ${graph.themes.size} UNLOCKED", style = outlinedText(11.sp, Skin.TextSoft))
-            }
-            LazyHorizontalGrid(
-                    GridCells.Fixed(2),
-                    Modifier.fillMaxWidth().weight(1f),
-                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    items(graph.themes, key = { it.id }) { entry ->
-                        val open = remember(refresh, level) { graph.player.isOpen(entry) }
-                        MachineCabinet(graph, entry, open, level) {
-                            if (open) {
-                                graph.sound.play(Sfx.Choose)
-                                onOpenTheme(entry.id)
-                            } else {
-                                graph.sound.play(Sfx.Button)
-                                locked = entry
-                            }
+            LazyVerticalGrid(
+                GridCells.Fixed(2),
+                Modifier.fillMaxWidth().weight(1f),
+                contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                item(span = { GridItemSpan(maxLineSpan) }) { MarqueeSign() }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Row(Modifier.fillMaxWidth().padding(horizontal = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Text("MACHINES", style = outlinedText(14.sp, Skin.GoldLight).copy(letterSpacing = 2.sp))
+                        Spacer(Modifier.weight(1f))
+                        Text("$unlocked / ${graph.themes.size} UNLOCKED", style = outlinedText(11.sp, Skin.TextSoft))
+                    }
+                }
+                items(graph.themes, key = { it.id }) { entry ->
+                    val open = remember(refresh, level) { graph.player.isOpen(entry) }
+                    MachineCabinet(graph, entry, open, level) {
+                        if (open) {
+                            graph.sound.play(Sfx.Choose)
+                            onOpenTheme(entry.id)
+                        } else {
+                            graph.sound.play(Sfx.Button)
+                            locked = entry
                         }
                     }
+                }
             }
 
             BottomDock(
@@ -272,7 +273,7 @@ private fun MachineCabinet(graph: AppGraph, entry: ThemeIndexEntry, open: Boolea
         0f, 1f, infiniteRepeatable(tween(1400 + entry.order * 37), RepeatMode.Reverse), label = "b",
     )
     Column(
-        Modifier.fillMaxHeight().aspectRatio(0.62f)
+        Modifier.fillMaxWidth().aspectRatio(0.6f)
             .clickable(remember { MutableInteractionSource() }, null, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

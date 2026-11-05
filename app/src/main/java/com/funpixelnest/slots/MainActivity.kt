@@ -13,6 +13,8 @@ import com.funpixelnest.slots.data.AppGraph
 import com.funpixelnest.slots.ui.common.RewardedVideoOverlay
 import com.funpixelnest.slots.ui.game.GameScreen
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import com.funpixelnest.slots.ui.common.AdBannerSlot
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import com.funpixelnest.slots.ui.lobby.LobbyScreen
@@ -30,8 +32,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             Box(Modifier.fillMaxSize()) {
+            Column(Modifier.fillMaxSize()) {
             val nav = rememberNavController()
-            NavHost(nav, startDestination = "lobby") {
+            // screens use everything above the banner safe area
+            NavHost(nav, startDestination = "lobby", modifier = Modifier.weight(1f)) {
                 composable("lobby") {
                     LobbyScreen(
                         graph = graph,
@@ -42,6 +46,9 @@ class MainActivity : ComponentActivity() {
                     val id = entry.arguments?.getString("id").orEmpty()
                     GameScreen(graph, id, onExit = { nav.popBackStack("lobby", inclusive = false) })
                 }
+            }
+            // safe area for a bottom banner ad on every screen
+            AdBannerSlot()
             }
             // rewarded videos (machine unlocks, free coins) play above every screen
             RewardedVideoOverlay(graph.ads)

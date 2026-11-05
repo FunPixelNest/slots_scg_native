@@ -99,7 +99,7 @@ fun GameScreen(
         // portrait art when the theme has it, otherwise the centre of the landscape background
         AssetImage(assets, cfg.backgroundPortrait ?: cfg.background, Modifier.fillMaxSize(), ContentScale.Crop)
 
-        Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
+        Column(Modifier.fillMaxSize().statusBarsPadding()) {
             TopBar(vm, assets, onExit)
             TitleBanner(assets)
             JackpotBar(vm, assets)
