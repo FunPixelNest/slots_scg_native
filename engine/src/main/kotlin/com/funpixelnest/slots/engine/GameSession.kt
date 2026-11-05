@@ -47,6 +47,10 @@ data class SpinResult(
     val levelUpReward: Long,
     /** XP this spin earned (shown as "+N XP" in the HUD). */
     val xpGained: Int = 0,
+    /** What this machine's feature did on the spin. */
+    val effects: FeatureEffects = FeatureEffects(),
+    /** Symbols the reels actually stopped on, before features changed them. */
+    val baseGrid: Grid = outcome.grid,
 ) {
     val totalWin: Long get() = winCoins + (jackpot?.coins ?: 0L)
 }
@@ -101,8 +105,21 @@ class GameSession(
         if (!free && store.coins < totalBet) return Result.failure(NotEnoughCoinsException())
         if (free) freeSpins-- else store.coins -= totalBet
 
-        val outcome = machine.spin(random)
-        val winCoins = outcome.payUnits * lineBet
+        val stops = cfg.reelStrips.map { random.nextInt(it.size) }
+        val baseGrid = machine.gridAt(stops)
+        val (grid, fx) = applyFeatures(baseGrid, free)
+        val outcome = machine.evaluateGrid(stops, grid)
+        var effects = fx
+        var winCoins = outcome.payUnits * lineBet
+        if (feature == Feature.MULTIPLIER && winCoins > 0 && random.nextDouble() < Features.MULTIPLIER_CHANCE) {
+            val m = random.weighted(Features.MULTIPLIERS)
+            winCoins *= m
+            effects = effects.copy(multiplier = m)
+        }
+        val scatters = baseGrid.sumOf { col -> col.count { it == cfg.scatterId } }
+        if (feature?.isBonusGame == true && cfg.scatterId >= 0 && scatters >= Features.BONUS_SCATTERS) {
+            effects = effects.copy(bonus = feature)
+        }
         var spinsWon = outcome.freeSpins * outcome.freeSpinsMultiplier
         if (cfg.bet.freeSpinsScaleWithBet) spinsWon *= betIndex + 1
         freeSpins += spinsWon
@@ -113,8 +130,12 @@ class GameSession(
         val xp = xpForSpin(outcome.isWin)
         val (levelUp, reward) = addXp(xp.toFloat())
 
+        if (free && freeSpins == 0) stickyCells.clear() // free games over
+
         val tier = Economy.winTier(winCoins, totalBet)
-        return Result.success(SpinResult(outcome, totalBet, free, winCoins, spinsWon, tier, jackpot, levelUp, reward, xp))
+        return Result.success(
+            SpinResult(outcome, totalBet, free, winCoins, spinsWon, tier, jackpot, levelUp, reward, xp, effects, baseGrid),
+        )
     }
 
     private fun rollJackpot(): JackpotWin? {
@@ -147,6 +168,74 @@ class GameSession(
     }
 
     fun addCoins(amount: Long) { store.coins += amount }
+
+    // ------------------------------------------------------------------ features
+
+    /** This machine's special feature, if any. */
+    val feature: Feature? = Features.forTheme(cfg.id)
+
+    /** Wilds held by Sticky Wilds during the current free games. */
+    val stickyCells: MutableSet<Cell> = LinkedHashSet()
+
+    private fun applyFeatures(base: Grid, free: Boolean): Pair<Grid, FeatureEffects> {
+        val wild = cfg.wildId
+        if (feature == null || wild < 0) return base to FeatureEffects()
+        val g = base.map { it.toMutableList() }
+        var fx = FeatureEffects()
+        when (feature) {
+            Feature.RANDOM_WILDS -> if (random.nextDouble() < Features.RANDOM_WILDS_CHANCE) {
+                val cells = (1 until machine.reelCount).flatMap { r -> (0 until machine.rowCount).map { Cell(r, it) } }
+                    .filter { g[it.reel][it.row] != cfg.scatterId }
+                    .shuffled(random).take(2 + random.nextInt(4)).toSet()
+                cells.forEach { g[it.reel][it.row] = wild }
+                fx = fx.copy(randomWilds = cells)
+            }
+            Feature.STICKY_WILDS -> if (free) {
+                stickyCells.forEach { g[it.reel][it.row] = wild }
+                g.forEachIndexed { r, col -> col.forEachIndexed { row, s -> if (s == wild) stickyCells += Cell(r, row) } }
+                fx = fx.copy(stickyWilds = stickyCells.toSet())
+            }
+            Feature.EXPANDING_WILD -> if (random.nextDouble() < Features.EXPANDING_CHANCE) {
+                val reels = (1 until machine.reelCount).filter { r -> g[r].contains(wild) }.toSet()
+                reels.forEach { r -> for (row in g[r].indices) g[r][row] = wild }
+                fx = fx.copy(expandedReels = reels)
+            }
+            else -> Unit
+        }
+        return g to fx
+    }
+
+    // ------------------------------------------------------------------ bonus games
+
+    fun scatterCells(grid: Grid): List<Cell> = grid.flatMapIndexed { r, col ->
+        col.mapIndexedNotNull { row, s -> if (s == cfg.scatterId) Cell(r, row) else null }
+    }
+
+    fun newHoldAndSpin(result: SpinResult): HoldAndSpinGame =
+        HoldAndSpinGame(result.totalBet, ::jackpotValueAtBet, scatterCells(result.baseGrid), random)
+
+    /** Hold & Spin started from four coins (for previews). */
+    fun previewHoldAndSpin(totalBet: Long): HoldAndSpinGame =
+        HoldAndSpinGame(totalBet, ::jackpotValueAtBet, listOf(Cell(0, 1), Cell(2, 0), Cell(3, 2), Cell(4, 1)), random)
+
+    fun newWheel(result: SpinResult): BonusWheel = BonusWheel(result.totalBet, ::jackpotValueAtBet)
+    fun newPick(result: SpinResult): PickBonus = PickBonus(result.totalBet, ::jackpotValueAtBet, random)
+
+    /** Credit a finished bonus game; jackpots won inside it empty their pools. */
+    fun awardBonus(coins: Long, jackpots: Collection<JackpotTier> = emptyList()) {
+        jackpots.toSet().forEach { store.setJackpotPool(cfg.id, it, 0L) }
+        store.coins += coins
+    }
+
+    private fun jackpotValueAtBet(t: JackpotTier): Long = jackpotValue(t)
+
+    /** Plays a started bonus automatically (used by simulations and tests). */
+    fun playBonusAuto(result: SpinResult): Long = when (result.effects.bonus) {
+        Feature.HOLD_AND_SPIN -> newHoldAndSpin(result).playToEnd()
+        Feature.BONUS_WHEEL -> newWheel(result).let { w -> w.prizeOf(w.spin(random)).coins }
+        Feature.PICK_BONUS -> newPick(result).let { p -> repeat(PickBonus.PICKS) { i -> p.pick(i) }; p.total() }
+        else -> 0L
+    }
 }
 
 class NotEnoughCoinsException : IllegalStateException("Not enough coins")

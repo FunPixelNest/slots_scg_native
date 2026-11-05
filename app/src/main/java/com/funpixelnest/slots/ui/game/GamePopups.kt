@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.data.AppGraph
 import com.funpixelnest.slots.data.ThemeAssets
+import com.funpixelnest.slots.engine.Features
 import com.funpixelnest.slots.engine.PayLineDef
 import com.funpixelnest.slots.engine.PlayerRules
 import com.funpixelnest.slots.engine.ThemeConfig
@@ -183,6 +184,15 @@ private fun PayTablePopup(assets: ThemeAssets, lineBet: Int, lines: Int, onDismi
     val cfg = assets.config
     PopupFrame("PAYTABLE", onDismiss, tone = SkinTone.Purple, widthFraction = 0.94f, heightFraction = 0.82f) {
         Text("$lines ways · pays left to right · line bet ${formatCoins(lineBet.toLong())}", style = outlinedText(12.sp, Skin.TextSoft))
+        Features.forTheme(cfg.id)?.let { f ->
+            Column(
+                Modifier.fillMaxWidth().background(Color.Black.copy(alpha = 0.3f), RoundedCornerShape(12.dp)).padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text("★ ${f.title.uppercase()} ★", style = outlinedText(15.sp, Color(0xFF7CF29A)))
+                Text(f.blurb, style = outlinedText(12.sp, Skin.TextSoft))
+            }
+        }
         val rows = payRows(cfg)
         LazyVerticalGrid(
             GridCells.Fixed(2), Modifier.weight(1f),

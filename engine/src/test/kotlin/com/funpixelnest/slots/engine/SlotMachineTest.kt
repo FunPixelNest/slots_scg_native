@@ -194,6 +194,66 @@ class SlotMachineTest {
     }
 
     @Test
+    fun `every theme has a feature`() {
+        val ids = themeFiles().map { ThemeConfig.parse(it.readText()).id }
+        assertEquals(23, ids.size)
+        assertTrue(ids.all { Features.forTheme(it) != null }, "missing: " + ids.filter { Features.forTheme(it) == null })
+    }
+
+    private fun sessionFor(id: String, seed: Int) =
+        GameSession(SlotMachine(theme(id)), InMemoryPlayerStore(coins = 1_000_000_000), Random(seed))
+
+    @Test
+    fun `expanding wild fills its reel`() {
+        val s = sessionFor("wolf", 1)
+        val r = generateSequence { s.spin().getOrThrow() }.take(5000).first { it.effects.expandedReels.isNotEmpty() }
+        val cfg = theme("wolf")
+        r.effects.expandedReels.forEach { reel -> assertTrue(r.outcome.grid[reel].all { it == cfg.wildId }) }
+        assertTrue(0 !in r.effects.expandedReels)
+    }
+
+    @Test
+    fun `random wilds and multiplier happen`() {
+        val rw = sessionFor("christmas_eve", 2)
+        val r = generateSequence { rw.spin().getOrThrow() }.take(5000).first { it.effects.randomWilds.isNotEmpty() }
+        assertTrue(r.effects.randomWilds.size in 2..5)
+        val mul = sessionFor("neon", 3)
+        val m = generateSequence { mul.spin().getOrThrow() }.take(20000).first { it.effects.multiplier > 1 }
+        assertEquals(m.outcome.payUnits * m.totalBet / mul.linesCount * m.effects.multiplier, m.winCoins)
+    }
+
+    @Test
+    fun `bonus games start on 3 scatters and pay`() {
+        for ((id, f) in listOf("china" to Feature.HOLD_AND_SPIN, "greek" to Feature.BONUS_WHEEL, "farm" to Feature.PICK_BONUS)) {
+            val s = sessionFor(id, 4)
+            val r = generateSequence { s.spin().getOrThrow() }.take(200_000).first { it.effects.bonus != null }
+            assertEquals(f, r.effects.bonus)
+            assertTrue(s.scatterCells(r.baseGrid).size >= Features.BONUS_SCATTERS)
+            assertTrue(s.playBonusAuto(r) > 0, "$id bonus paid nothing")
+        }
+        val game = HoldAndSpinGame(1000, { 1_000_000 }, listOf(Cell(0, 0), Cell(1, 1), Cell(2, 2)), Random(9))
+        assertEquals(3, game.coins.size)
+        while (!game.isOver) game.respin()
+        assertTrue(game.total() >= 3 * 500)
+    }
+
+    @Test
+    fun `sticky wilds hold through free spins`() {
+        val s = sessionFor("egypt", 5)
+        var sawSticky = false
+        repeat(300_000) {
+            val r = s.spin().getOrThrow()
+            if (r.wasFreeSpin && r.effects.stickyWilds.isNotEmpty()) {
+                val cfg = theme("egypt")
+                r.effects.stickyWilds.forEach { c -> assertEquals(cfg.wildId, r.outcome.grid[c.reel][c.row]) }
+                sawSticky = true
+                return
+            }
+        }
+        assertTrue(sawSticky, "no free spins with sticky wilds in 300k spins")
+    }
+
+    @Test
     fun `daily streak`() {
         val day = Economy.DAY_MS
         assertEquals(1, Economy.nextDailyDay(0, 0, 1000))
@@ -219,21 +279,24 @@ class SlotMachineTest {
             val cfg = ThemeConfig.parse(f.readText())
             val store = InMemoryPlayerStore(coins = Long.MAX_VALUE / 4, level = 1)
             val s = GameSession(SlotMachine(cfg), store, Random(42))
-            val spins = 20_000
+            val spins = 60_000
             var paid = 0L
             var bet = 0L
             var hits = 0
             var jp = 0
+            var bonuses = 0
             repeat(spins) {
                 val r = s.spin().getOrThrow()
                 if (!r.wasFreeSpin) bet += r.totalBet
-                paid += r.totalWin
+                paid += r.totalWin + (if (r.effects.bonus != null) s.playBonusAuto(r) else 0L)
+                r.effects.bonus?.let { bonuses++ }
                 if (r.outcome.isWin) hits++
                 if (r.jackpot != null) jp++
                 store.level = 1 // keep the bet constant
             }
             val rtp = paid.toDouble() / bet * 100
-            println("RTP %-16s %6.1f%%  hit %4.1f%%  jackpots %d".format(cfg.id, rtp, hits * 100.0 / spins, jp))
+            println("RTP %-16s %6.1f%%  hit %4.1f%%  jackpots %d  bonus games %d  [%s]".format(
+                cfg.id, rtp, hits * 100.0 / spins, jp, bonuses, Features.forTheme(cfg.id)))
             assertTrue(rtp in 20.0..400.0, "${cfg.id}: RTP $rtp looks broken")
         }
     }

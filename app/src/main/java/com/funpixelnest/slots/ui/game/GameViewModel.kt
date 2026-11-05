@@ -12,10 +12,14 @@ import com.funpixelnest.slots.data.AppGraph
 import com.funpixelnest.slots.data.ThemeAssets
 import com.funpixelnest.slots.engine.Economy
 import com.funpixelnest.slots.engine.GameSession
-import com.funpixelnest.slots.engine.JackpotTier
 import com.funpixelnest.slots.engine.JackpotWin
 import com.funpixelnest.slots.engine.SlotMachine
 import com.funpixelnest.slots.engine.SpinResult
+import com.funpixelnest.slots.engine.BonusWheel
+import com.funpixelnest.slots.engine.Feature
+import com.funpixelnest.slots.engine.HoldAndSpinGame
+import com.funpixelnest.slots.engine.JackpotTier
+import com.funpixelnest.slots.engine.PickBonus
 import com.funpixelnest.slots.engine.Unlocks
 import com.funpixelnest.slots.engine.WinTier
 import kotlinx.coroutines.Job
@@ -32,6 +36,13 @@ sealed interface Popup {
     data object Info : Popup
     data object Settings : Popup
     data object NoCoins : Popup
+}
+
+/** Bonus game shown over the machine. */
+sealed interface BonusUi {
+    data class HoldSpin(val game: HoldAndSpinGame) : BonusUi
+    data class Wheel(val wheel: BonusWheel) : BonusUi
+    data class Pick(val pick: PickBonus) : BonusUi
 }
 
 /** A spin the reels should animate to; [nonce] makes repeated identical stops distinct. */
@@ -57,6 +68,12 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
     var level by mutableIntStateOf(session.level); private set
     var levelProgress by mutableStateOf(session.levelProgress); private set
     var jackpots by mutableStateOf(readJackpots()); private set
+
+    /** Banner flashed over the reels when a feature fires ("RANDOM WILDS!", "x5 MULTIPLIER"). */
+    var featureBanner by mutableStateOf<String?>(null); private set
+    /** Bonus game in progress (Hold & Spin, wheel or pick), drawn over the machine. */
+    var bonus by mutableStateOf<BonusUi?>(null); private set
+    val feature: Feature? get() = session.feature
 
     /** XP from the last spin; [xpTick] increments each spin to replay the "+XP" float. */
     var xpGained by mutableIntStateOf(0); private set
@@ -133,6 +150,12 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
         val r = result ?: return
         phase = Phase.ShowingWin
         presentJob = viewModelScope.launch {
+            featureBannerFor(r)?.let { text ->
+                graph.sound.play(Sfx.Bonus, 0.8f)
+                featureBanner = text
+                delay(1300)
+                featureBanner = null
+            }
             if (r.winCoins > 0) {
                 val big = r.tier >= WinTier.BIG
                 graph.sound.play(if (big) Sfx.BigWin else Sfx.WinCoins)
@@ -149,6 +172,15 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
                 popup = Popup.Jackpot(jp)
                 countUp(r.totalWin)
                 jackpots = readJackpots()
+            }
+            r.effects.bonus?.let { f ->
+                while (popup != null) delay(200)
+                graph.sound.play(Sfx.Bonus)
+                featureBanner = "${f.title.uppercase()}!"
+                delay(1400)
+                featureBanner = null
+                bonus = newBonus(f, r)
+                while (bonus != null) delay(200)
             }
             if (r.freeSpinsWon > 0) {
                 while (popup != null) delay(200)
@@ -169,10 +201,48 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
             // keep going for free games and auto spins
             if (session.freeSpins > 0 || autoSpinsLeft > 0) {
                 delay(if (r.outcome.isWin) 1600 else 500)
-                while (popup != null) delay(200)
+                while (popup != null || bonus != null) delay(200)
                 spin()
             }
         }
+    }
+
+    private fun featureBannerFor(r: SpinResult): String? = with(r.effects) {
+        when {
+            multiplier > 1 -> "x$multiplier MULTIPLIER!"
+            randomWilds.isNotEmpty() -> "RANDOM WILDS!"
+            expandedReels.isNotEmpty() -> "EXPANDING WILDS!"
+            stickyWilds.isNotEmpty() && r.wasFreeSpin -> "STICKY WILDS x${stickyWilds.size}"
+            else -> null
+        }
+    }
+
+    private fun newBonus(f: Feature, r: SpinResult): BonusUi? = when (f) {
+        Feature.HOLD_AND_SPIN -> BonusUi.HoldSpin(session.newHoldAndSpin(r))
+        Feature.BONUS_WHEEL -> BonusUi.Wheel(session.newWheel(r))
+        Feature.PICK_BONUS -> BonusUi.Pick(session.newPick(r))
+        else -> null
+    }
+
+    /** Called by the bonus screen when the player collects. */
+    fun finishBonus(total: Long, jackpots: List<JackpotTier>) {
+        bonus = null
+        session.awardBonus(total, jackpots)
+        this.jackpots = readJackpots()
+        shownCoins = session.coins
+        if (total > 0) {
+            graph.sound.play(Sfx.BigWin)
+            shower(90)
+            popup = Popup.BigWin(Economy.winTier(total, totalBet).coerceAtLeast(WinTier.BIG), total)
+        }
+    }
+
+    /** Screenshot hook: open a bonus game straight away. */
+    fun previewBonus(f: Feature, stops: List<Int>) {
+        preview(stops)
+        val fake = result ?: return
+        bonus = newBonus(f, fake.copy(baseGrid = listOf(listOf(1, 1, 1), listOf(1, 1, 1), listOf(1, 1, 1), listOf(1, 1, 1), listOf(1, 1, 1))))
+            ?.let { b -> if (b is BonusUi.HoldSpin) BonusUi.HoldSpin(session.previewHoldAndSpin(totalBet)) else b }
     }
 
     private fun shower(coins: Int) {

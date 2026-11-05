@@ -1,6 +1,9 @@
 package com.funpixelnest.slots.ui.game
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
+import androidx.compose.ui.draw.scale
+import com.funpixelnest.slots.engine.Feature
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -61,6 +64,7 @@ import com.funpixelnest.slots.ui.lobby.LoadBar
 import com.funpixelnest.slots.ui.skin.CoinCapsule
 import com.funpixelnest.slots.ui.skin.GoldFrame
 import com.funpixelnest.slots.ui.skin.IconRoundButton
+import com.funpixelnest.slots.ui.skin.Ribbon
 import com.funpixelnest.slots.ui.skin.Skin
 import com.funpixelnest.slots.ui.skin.SkinButton
 import com.funpixelnest.slots.ui.skin.SkinIcon
@@ -102,6 +106,11 @@ fun GameScreen(
         Column(Modifier.fillMaxSize().statusBarsPadding()) {
             TopBar(vm, assets, onExit)
             TitleBanner(assets)
+            featureChip(vm.feature)?.let { chip ->
+                Box(Modifier.fillMaxWidth().padding(bottom = 4.dp), contentAlignment = Alignment.Center) {
+                    Ribbon("★ $chip ★", tone = SkinTone.Purple, textSize = 12.sp)
+                }
+            }
             JackpotBar(vm, assets)
 
             // ---------------- reels: full width, cells a little taller than wide
@@ -124,9 +133,11 @@ fun GameScreen(
                         initialStops = vm.initialStops,
                         outcome = vm.result?.outcome,
                         showWins = vm.phase == Phase.ShowingWin,
+                        effects = vm.result?.effects,
                         onStopped = vm::onReelsStopped,
                         modifier = Modifier.fillMaxSize().padding(if (cfg.frame != null) 8.dp else 4.dp),
                     )
+                    FeatureBanner(vm.featureBanner, Modifier.align(Alignment.Center))
                 }
             }
 
@@ -137,6 +148,7 @@ fun GameScreen(
         if (vm.phase == Phase.Loading) LoadingOverlay(graph, assets, vm.loadProgress)
         // coins rain behind popups so the win amount stays readable
         CoinShower(vm.showerTrigger, vm.showerCoins, Modifier.fillMaxSize())
+        BonusOverlay(graph, vm)
         GamePopups(graph, vm, assets)
     }
 }
@@ -289,3 +301,20 @@ private fun LoadingOverlay(graph: AppGraph, assets: ThemeAssets, progress: Float
         }
     }
 }
+
+/** Big flashing text over the reels when a feature fires. */
+@Composable
+private fun FeatureBanner(text: String?, modifier: Modifier) {
+    if (text == null) return
+    val pop = remember(text) { Animatable(0.4f) }
+    LaunchedEffect(text) { pop.animateTo(1f, spring(dampingRatio = 0.45f)) }
+    Box(
+        modifier.scale(pop.value)
+            .background(Skin.goldBorder, RoundedCornerShape(16.dp)).padding(3.dp)
+            .background(Brush.verticalGradient(listOf(Color(0xFFE53935), Color(0xFF6A0D0D))), RoundedCornerShape(13.dp))
+            .padding(horizontal = 22.dp, vertical = 10.dp),
+    ) { Text(text, style = outlinedText(26.sp, Skin.GoldLight)) }
+}
+
+/** Short feature name for the HUD chip and lobby cards. */
+fun featureChip(f: Feature?): String? = f?.title?.uppercase()

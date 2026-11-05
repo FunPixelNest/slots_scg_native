@@ -247,6 +247,21 @@ class PopupScreenshotTest : ScreenshotBase() {
     }
 
     @Test
+    fun holdAndSpin() = machineWith("china", "popup_07_hold_and_spin", 900) { vm, stops ->
+        vm.previewBonus(com.funpixelnest.slots.engine.Feature.HOLD_AND_SPIN, stops)
+    }
+
+    @Test
+    fun bonusWheel() = machineWith("greek", "popup_08_bonus_wheel", 900) { vm, stops ->
+        vm.previewBonus(com.funpixelnest.slots.engine.Feature.BONUS_WHEEL, stops)
+    }
+
+    @Test
+    fun pickBonus() = machineWith("farm", "popup_09_pick_bonus", 900) { vm, stops ->
+        vm.previewBonus(com.funpixelnest.slots.engine.Feature.PICK_BONUS, stops)
+    }
+
+    @Test
     fun settings() = machineWith("valentines_day", "popup_05_settings") { vm, _ -> vm.showPopup(Popup.Settings) }
 
     @Test

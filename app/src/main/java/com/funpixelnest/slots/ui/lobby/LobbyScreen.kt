@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.audio.Sfx
 import com.funpixelnest.slots.data.AppGraph
 import com.funpixelnest.slots.engine.Economy
+import com.funpixelnest.slots.engine.Features
 import com.funpixelnest.slots.engine.JackpotTier
 import com.funpixelnest.slots.engine.ThemeIndexEntry
 import com.funpixelnest.slots.engine.Unlock
@@ -308,6 +309,9 @@ private fun MachineCabinet(graph: AppGraph, entry: ThemeIndexEntry, open: Boolea
                 .padding(vertical = 2.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Features.forTheme(entry.id)?.let { f ->
+                Text(f.title.uppercase(), style = outlinedText(9.sp, Color(0xFF7CF29A)).copy(letterSpacing = 1.sp))
+            }
             Text("GRAND JACKPOT", style = outlinedText(8.sp, Skin.TextSoft).copy(letterSpacing = 1.sp))
             Text(formatCompact(grand), style = outlinedText(14.sp, Skin.GoldLight))
         }

@@ -93,6 +93,10 @@ class SlotMachine(val config: ThemeConfig) {
         List(rowCount) { row -> strip[(stop + row) % strip.size] }
     }
 
+    /** Evaluate a grid that features may have changed (e.g. extra wilds). */
+    fun evaluateGrid(stops: List<Int>, grid: Grid): SpinOutcome =
+        SpinOutcome(stops, grid, findLineWins(grid), findScatterWin(grid))
+
     fun evaluate(stops: List<Int>): SpinOutcome {
         val grid = gridAt(stops)
         return SpinOutcome(stops, grid, findLineWins(grid), findScatterWin(grid))

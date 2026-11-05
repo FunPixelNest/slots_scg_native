@@ -40,6 +40,7 @@ import com.funpixelnest.slots.data.Frame
 import com.funpixelnest.slots.data.ThemeAssets
 import com.funpixelnest.slots.engine.Cell
 import com.funpixelnest.slots.engine.SpinOutcome
+import com.funpixelnest.slots.engine.FeatureEffects
 import com.funpixelnest.slots.ui.common.rememberImage
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -66,6 +67,8 @@ fun ReelsView(
     initialStops: List<Int>,
     outcome: SpinOutcome?,
     showWins: Boolean,
+    /** Feature effects of the shown spin (extra wilds), highlighted once the reels rest. */
+    effects: FeatureEffects? = null,
     onStopped: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -138,6 +141,16 @@ fun ReelsView(
             for (reel in 0 until cfg.reels) {
                 val left = reel * cellW
                 reelBg?.let { drawImageFit(it, Offset(left, 0f), Size(cellW, size.height), stretch = true) }
+                // feature glow: expanded reel / extra wild cells
+                if (showWins && effects != null) {
+                    val glow = Color(0xFFFFD54F).copy(alpha = 0.28f + 0.12f * sin(clock / 160f))
+                    if (reel in effects.expandedReels) {
+                        drawRoundRect(glow, Offset(left + 2, 2f), Size(cellW - 4, size.height - 4), CornerRadius(cellW * 0.12f))
+                    }
+                    (effects.randomWilds + effects.stickyWilds).filter { it.reel == reel }.forEach { c ->
+                        drawRoundRect(glow, Offset(left + 2, c.row * cellH + 2), Size(cellW - 4, cellH - 4), CornerRadius(cellW * 0.12f))
+                    }
+                }
                 val anim = positions[reel]
                 val p = anim.value
                 val fast = abs(anim.velocity) > 6f
@@ -147,7 +160,9 @@ fun ReelsView(
                 val frac = p - base
                 clipRect(left, 0f, left + cellW, size.height) {
                     for (r in -1..cfg.rows) {
-                        val idx = strip[(((base + r) % n) + n) % n]
+                        // at rest, show the final grid (features may have turned symbols wild)
+                        val idx = if (showWins && frac == 0f && outcome != null && r in 0 until cfg.rows) outcome.grid[reel][r]
+                        else strip[(((base + r) % n) + n) % n]
                         val sym = cfg.symbols[idx]
                         val top = (r - frac) * cellH
                         val cell = Cell(reel, r)
