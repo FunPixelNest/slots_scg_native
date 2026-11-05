@@ -121,12 +121,7 @@ fun GameScreen(
             ) {
                 // use the free height: cells grow from slightly tall up to REEL_CELL_MAX_TALL
                 val tall = ((maxHeight / maxWidth) * cfg.reels / cfg.rows).coerceIn(REEL_CELL_TALL, REEL_CELL_MAX_TALL)
-                GoldFrame(Modifier.fillMaxWidth().aspectRatio(cfg.reels / (cfg.rows * tall)), corner = 18.dp) {
-                    if (cfg.frame != null) {
-                        AssetImage(assets, cfg.frame, Modifier.fillMaxSize(), ContentScale.FillBounds)
-                    } else {
-                        Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f), RoundedCornerShape(14.dp)))
-                    }
+                ReelBoard(boardAccent(cfg.id), Modifier.fillMaxWidth().aspectRatio(cfg.reels / (cfg.rows * tall))) {
                     ReelsView(
                         graph = graph,
                         assets = assets,
@@ -136,7 +131,8 @@ fun GameScreen(
                         showWins = vm.phase == Phase.ShowingWin,
                         effects = vm.result?.effects,
                         onStopped = vm::onReelsStopped,
-                        modifier = Modifier.fillMaxSize().padding(if (cfg.frame != null) 8.dp else 4.dp),
+                        accent = boardAccent(cfg.id),
+                        modifier = Modifier.fillMaxSize(),
                     )
                     FeatureBanner(vm.featureBanner, Modifier.align(Alignment.Center))
                 }

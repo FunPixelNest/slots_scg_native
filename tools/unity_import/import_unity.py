@@ -569,7 +569,7 @@ def main():
                       os.path.join(common_out, tile_rel), font_for_tiles)
         size_bytes = sum(os.path.getsize(os.path.join(dp, x)) for dp, _, fs in os.walk(root) for x in fs)
         # image keys never carry the extension (the app appends ".webp")
-        index.append({"id": tid, "name": tname, "order": order, "tile": tile_rel[:-len(".webp")],
+        index.append({"id": tid, "name": tname, "order": order, "tile": f"lobby/covers/{tid}",  # tools/covers/make_covers.py
                       "pack": f"theme_{tid}", "sizeBytes": size_bytes, "source": source})
         print(f"theme {tid:16s} symbols={len(symbols)} wild={wild} scatter={scatter} bg={bool(bg)} "
               f"frame={bool(frame)} ui={len(ui)} {source}")

@@ -3,7 +3,7 @@
   "id": "christmas_eve",
   "name": "Christmas Eve",
   "order": 0,
-  "tile": "lobby/tiles/christmas_eve",
+  "tile": "lobby/covers/christmas_eve",
   "pack": "theme_christmas_eve",
   "sizeBytes": 5722526,
   "source": "unity-scene:01h_Christmas_3X5Hor_243ways.unity"
@@ -12,7 +12,7 @@
   "id": "valentines_day",
   "name": "Valentine's Day",
   "order": 1,
-  "tile": "lobby/tiles/valentines_day",
+  "tile": "lobby/covers/valentines_day",
   "pack": "theme_valentines_day",
   "sizeBytes": 5536215,
   "source": "unity-scene:01h_ValentinesDay_3X5Hor_243ways.unity"
@@ -21,7 +21,7 @@
   "id": "witch",
   "name": "Witch's Cauldron",
   "order": 2,
-  "tile": "lobby/tiles/witch",
+  "tile": "lobby/covers/witch",
   "pack": "theme_witch",
   "sizeBytes": 4017834,
   "source": "unity-scene:01h_WitchCauldron_3X5Hor_243ways.unity"
@@ -30,7 +30,7 @@
   "id": "modern",
   "name": "Modern Suits",
   "order": 3,
-  "tile": "lobby/tiles/modern",
+  "tile": "lobby/covers/modern",
   "pack": "theme_modern",
   "sizeBytes": 5280139,
   "source": "generated"
@@ -39,7 +39,7 @@
   "id": "forest",
   "name": "Enchanted Forest",
   "order": 4,
-  "tile": "lobby/tiles/forest",
+  "tile": "lobby/covers/forest",
   "pack": "theme_forest",
   "sizeBytes": 12687843,
   "source": "generated"
@@ -48,7 +48,7 @@
   "id": "neon",
   "name": "Neon Nights",
   "order": 5,
-  "tile": "lobby/tiles/neon",
+  "tile": "lobby/covers/neon",
   "pack": "theme_neon",
   "sizeBytes": 4394128,
   "source": "generated"
@@ -57,7 +57,7 @@
   "id": "underwater",
   "name": "Underwater",
   "order": 6,
-  "tile": "lobby/tiles/underwater",
+  "tile": "lobby/covers/underwater",
   "pack": "theme_underwater",
   "sizeBytes": 5681928,
   "source": "generated"
@@ -66,7 +66,7 @@
   "id": "wolf",
   "name": "Wolf Moon",
   "order": 7,
-  "tile": "lobby/tiles/wolf",
+  "tile": "lobby/covers/wolf",
   "pack": "theme_wolf",
   "sizeBytes": 3847281,
   "source": "generated"
@@ -75,7 +75,7 @@
   "id": "candy",
   "name": "Candy Land",
   "order": 8,
-  "tile": "lobby/tiles/candy",
+  "tile": "lobby/covers/candy",
   "pack": "theme_candy",
   "sizeBytes": 2018175,
   "source": "generated"
@@ -84,7 +84,7 @@
   "id": "pirates",
   "name": "Pirates",
   "order": 9,
-  "tile": "lobby/tiles/pirates",
+  "tile": "lobby/covers/pirates",
   "pack": "theme_pirates",
   "sizeBytes": 5826416,
   "source": "generated"
@@ -93,7 +93,7 @@
   "id": "tropical",
   "name": "Tropical",
   "order": 10,
-  "tile": "lobby/tiles/tropical",
+  "tile": "lobby/covers/tropical",
   "pack": "theme_tropical",
   "sizeBytes": 720640,
   "source": "generated"
@@ -102,7 +102,7 @@
   "id": "gold_mine",
   "name": "Gold Mine",
   "order": 11,
-  "tile": "lobby/tiles/gold_mine",
+  "tile": "lobby/covers/gold_mine",
   "pack": "theme_gold_mine",
   "sizeBytes": 3050537,
   "source": "generated"
@@ -111,7 +111,7 @@
   "id": "farm",
   "name": "Happy Farm",
   "order": 12,
-  "tile": "lobby/tiles/farm",
+  "tile": "lobby/covers/farm",
   "pack": "theme_farm",
   "sizeBytes": 3802032,
   "source": "generated"
@@ -120,7 +120,7 @@
   "id": "most_wanted",
   "name": "Most Wanted",
   "order": 13,
-  "tile": "lobby/tiles/most_wanted",
+  "tile": "lobby/covers/most_wanted",
   "pack": "theme_most_wanted",
   "sizeBytes": 2922539,
   "source": "generated"
@@ -129,7 +129,7 @@
   "id": "gems",
   "name": "Gems",
   "order": 14,
-  "tile": "lobby/tiles/gems",
+  "tile": "lobby/covers/gems",
   "pack": "theme_gems",
   "sizeBytes": 2441809,
   "source": "generated"
@@ -138,7 +138,7 @@
   "id": "egypt",
   "name": "Egypt",
   "order": 15,
-  "tile": "lobby/tiles/egypt",
+  "tile": "lobby/covers/egypt",
   "pack": "theme_egypt",
   "sizeBytes": 14345029,
   "source": "generated"
@@ -147,7 +147,7 @@
   "id": "egypt_2",
   "name": "Egypt II",
   "order": 16,
-  "tile": "lobby/tiles/egypt_2",
+  "tile": "lobby/covers/egypt_2",
   "pack": "theme_egypt_2",
   "sizeBytes": 4787822,
   "source": "generated"
@@ -156,7 +156,7 @@
   "id": "china",
   "name": "China",
   "order": 17,
-  "tile": "lobby/tiles/china",
+  "tile": "lobby/covers/china",
   "pack": "theme_china",
   "sizeBytes": 11897359,
   "source": "generated"
@@ -165,7 +165,7 @@
   "id": "greek",
   "name": "Greek Gods",
   "order": 18,
-  "tile": "lobby/tiles/greek",
+  "tile": "lobby/covers/greek",
   "pack": "theme_greek",
   "sizeBytes": 9186879,
   "source": "generated"
@@ -174,7 +174,7 @@
   "id": "viking",
   "name": "Vikings",
   "order": 19,
-  "tile": "lobby/tiles/viking",
+  "tile": "lobby/covers/viking",
   "pack": "theme_viking",
   "sizeBytes": 4202996,
   "source": "generated"
@@ -183,7 +183,7 @@
   "id": "india",
   "name": "India",
   "order": 20,
-  "tile": "lobby/tiles/india",
+  "tile": "lobby/covers/india",
   "pack": "theme_india",
   "sizeBytes": 2816375,
   "source": "generated"
@@ -192,7 +192,7 @@
   "id": "arabian",
   "name": "Arabian Nights",
   "order": 21,
-  "tile": "lobby/tiles/arabian",
+  "tile": "lobby/covers/arabian",
   "pack": "theme_arabian",
   "sizeBytes": 4897372,
   "source": "generated"
@@ -201,7 +201,7 @@
   "id": "wild_west",
   "name": "Wild West",
   "order": 22,
-  "tile": "lobby/tiles/wild_west",
+  "tile": "lobby/covers/wild_west",
   "pack": "theme_wild_west",
   "sizeBytes": 2555906,
   "source": "generated"

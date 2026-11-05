@@ -22,7 +22,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
@@ -41,7 +41,6 @@ import com.funpixelnest.slots.data.ThemeAssets
 import com.funpixelnest.slots.engine.Cell
 import com.funpixelnest.slots.engine.SpinOutcome
 import com.funpixelnest.slots.engine.FeatureEffects
-import com.funpixelnest.slots.ui.common.rememberImage
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -50,10 +49,6 @@ import kotlin.math.floor
 import kotlin.math.min
 import kotlin.math.sin
 
-private val LINE_COLORS = listOf(
-    Color(0xFFFFEB3B), Color(0xFF00E5FF), Color(0xFFFF4081), Color(0xFF76FF03),
-    Color(0xFFFF9100), Color(0xFFE040FB), Color(0xFF18FFFF), Color(0xFFFFFFFF),
-)
 
 /**
  * Draws the 5x3 reel window and animates spins (Unity SlotGroupBehavior):
@@ -70,6 +65,8 @@ fun ReelsView(
     /** Feature effects of the shown spin (extra wilds), highlighted once the reels rest. */
     effects: FeatureEffects? = null,
     onStopped: () -> Unit,
+    /** Theme colour of the board, used for the reel columns and win highlights. */
+    accent: Color = Color(0xFFF5C451),
     modifier: Modifier = Modifier,
 ) {
     val cfg = assets.config
@@ -131,7 +128,6 @@ fun ReelsView(
     }
 
     Box(modifier.clipToBounds()) {
-        val reelBg = rememberImageState(assets, cfg.reelBackground)
         Canvas(Modifier.fillMaxSize()) {
             val cellW = size.width / cfg.reels
             val cellH = size.height / cfg.rows
@@ -140,7 +136,14 @@ fun ReelsView(
 
             for (reel in 0 until cfg.reels) {
                 val left = reel * cellW
-                reelBg?.let { drawImageFit(it, Offset(left, 0f), Size(cellW, size.height), stretch = true) }
+                // glass reel column with a thin gap between reels
+                val gap = cellW * 0.025f
+                drawRoundRect(
+                    Brush.verticalGradient(
+                        0f to Color.White.copy(alpha = 0.03f), 0.5f to Color.White.copy(alpha = 0.085f), 1f to Color.White.copy(alpha = 0.03f),
+                    ),
+                    Offset(left + gap, 0f), Size(cellW - 2 * gap, size.height), CornerRadius(cellW * 0.1f),
+                )
                 // feature glow: expanded reel / extra wild cells
                 if (showWins && effects != null) {
                     val glow = Color(0xFFFFD54F).copy(alpha = 0.28f + 0.12f * sin(clock / 160f))
@@ -170,6 +173,13 @@ fun ReelsView(
                         val dim = wins.isNotEmpty() && !isWin && frac == 0f
                         val key = if (fast && sym.blur != null) sym.blur else sym.image
                         val anims = if (isWin) frames[idx] else null
+                        if (isWin) {
+                            val inset = cellW * 0.035f
+                            drawRoundRect(
+                                Brush.radialGradient(listOf(accent.copy(alpha = 0.45f), accent.copy(alpha = 0.08f)), Offset(left + cellW / 2, top + cellH / 2), cellW * 0.7f),
+                                Offset(left + inset, top + inset), Size(cellW - 2 * inset, cellH - 2 * inset), CornerRadius(cellW * 0.12f),
+                            )
+                        }
                         val pad = min(cellW, cellH) * 0.04f
                         val dst = Offset(left + pad, top + pad)
                         val dstSize = Size(cellW - 2 * pad, cellH - 2 * pad)
@@ -181,7 +191,7 @@ fun ReelsView(
                             if (img != null) {
                                 val s = if (isWin) pulse else 1f
                                 withTransform({ scale(s, s, Offset(left + cellW / 2, top + cellH / 2)) }) {
-                                    drawImageFit(img, dst, dstSize, alpha = if (dim) 0.45f else 1f)
+                                    drawImageFit(img, dst, dstSize, alpha = if (dim) 0.38f else 1f)
                                 }
                             }
                         }
@@ -189,45 +199,45 @@ fun ReelsView(
                 }
             }
 
+            // drum shading: symbols roll in and out of the dark at the top and bottom edges
+            val fade = size.height * 0.09f
+            drawRect(Brush.verticalGradient(listOf(Color(0xCC05070F), Color.Transparent), 0f, fade), Offset.Zero, Size(size.width, fade))
+            drawRect(Brush.verticalGradient(listOf(Color.Transparent, Color(0xCC05070F)), size.height - fade, size.height), Offset(0f, size.height - fade), Size(size.width, fade))
+
             if (showWins && outcome != null && outcome.lineWins.isNotEmpty()) {
-                drawWinLines(outcome, clock, cellW, cellH)
+                drawWinLines(outcome, clock, cellW, cellH, accent)
             }
         }
     }
 }
 
-@Composable
-private fun rememberImageState(assets: ThemeAssets, key: String?): ImageBitmap? = rememberImage(assets, key)
-
-/** Cycle through the distinct winning lines (best first), as Unity's "Sequenced" flashing. */
-private fun DrawScope.drawWinLines(outcome: SpinOutcome, clock: Long, cellW: Float, cellH: Float) {
+/** Cycle through the distinct winning lines (best first): a glowing gold line and gold-rimmed cells. */
+private fun DrawScope.drawWinLines(outcome: SpinOutcome, clock: Long, cellW: Float, cellH: Float, accent: Color) {
     val lines = outcome.lineWins.sortedByDescending { it.pay }.take(24)
     val i = ((clock / 900) % lines.size).toInt()
     val w = lines[i]
-    val color = LINE_COLORS[i % LINE_COLORS.size]
+    val gold = Color(0xFFFFD66B)
     val path = Path()
     w.cells.forEachIndexed { k, c ->
         val x = (c.reel + 0.5f) * cellW
         val y = (c.row + 0.5f) * cellH
         if (k == 0) path.moveTo(x, y) else path.lineTo(x, y)
     }
-    drawPath(path, Color.Black.copy(alpha = 0.6f), style = Stroke(cellH * 0.09f, cap = StrokeCap.Round, join = StrokeJoin.Round))
-    drawPath(path, color, style = Stroke(cellH * 0.05f, cap = StrokeCap.Round, join = StrokeJoin.Round))
-    w.cells.forEach { c ->
-        drawRoundRectOutline(c, cellW, cellH, color)
-    }
+    val t = 0.75f + 0.25f * sin(clock / 120f)
+    w.cells.forEach { c -> drawCellRim(c, cellW, cellH, gold, accent, t) }
+    drawPath(path, accent.copy(alpha = 0.28f * t), style = Stroke(cellH * 0.14f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+    drawPath(path, Color.Black.copy(alpha = 0.45f), style = Stroke(cellH * 0.065f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+    drawPath(path, gold, style = Stroke(cellH * 0.04f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+    drawPath(path, Color.White.copy(alpha = 0.8f), style = Stroke(cellH * 0.012f, cap = StrokeCap.Round, join = StrokeJoin.Round))
 }
 
-private fun DrawScope.drawRoundRectOutline(c: Cell, cellW: Float, cellH: Float, color: Color) {
-    val inset = 3f
-    drawRoundRect(
-        color,
-        topLeft = Offset(c.reel * cellW + inset, c.row * cellH + inset),
-        size = Size(cellW - 2 * inset, cellH - 2 * inset),
-        cornerRadius = CornerRadius(cellW * 0.08f),
-        style = Stroke(4f),
-        blendMode = BlendMode.SrcOver,
-    )
+private fun DrawScope.drawCellRim(c: Cell, cellW: Float, cellH: Float, gold: Color, accent: Color, t: Float) {
+    val inset = cellW * 0.035f
+    val tl = Offset(c.reel * cellW + inset, c.row * cellH + inset)
+    val sz = Size(cellW - 2 * inset, cellH - 2 * inset)
+    val r = CornerRadius(cellW * 0.12f)
+    drawRoundRect(accent.copy(alpha = 0.35f * t), tl, sz, r, style = Stroke(cellW * 0.06f))
+    drawRoundRect(gold, tl, sz, r, style = Stroke(cellW * 0.022f))
 }
 
 /** Draw [img] inside the box keeping its aspect ratio (or stretched). */
