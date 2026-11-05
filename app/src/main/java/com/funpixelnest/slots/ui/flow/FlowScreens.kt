@@ -370,9 +370,10 @@ private fun PackCard(p: CoinPack, modifier: Modifier, onBuy: () -> Unit) {
             Text(if (p.bonusPercent > 0) "+${p.bonusPercent}% more" else " ", style = plain(11, Skin.Emerald))
             SkinButton(p.price, Modifier.fillMaxWidth().height(38.dp), tone = SkinTone.Green, textSize = 14.sp, onClick = onBuy)
         }
-        if (p.badge != null && accent != null) {
+        val badge = p.badge
+        if (badge != null && accent != null) {
             Text(
-                p.badge, style = plain(9, Color(0xFF08111F)).copy(letterSpacing = 1.sp),
+                badge, style = plain(9, Color(0xFF08111F)).copy(letterSpacing = 1.sp),
                 modifier = Modifier.align(Alignment.TopCenter).background(accent, RoundedCornerShape(50)).padding(horizontal = 9.dp, vertical = 3.dp),
             )
         }
