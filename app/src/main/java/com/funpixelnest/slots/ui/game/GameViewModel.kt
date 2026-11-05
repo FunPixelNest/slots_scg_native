@@ -36,6 +36,10 @@ sealed interface Popup {
     data object Info : Popup
     data object Settings : Popup
     data object NoCoins : Popup
+    /** Bonus game paid out (offers x2 video). */
+    data class BonusWin(val title: String, val coins: Long) : Popup
+    /** Free games finished: total won during them. */
+    data class FreeSpinsDone(val coins: Long) : Popup
 }
 
 /** Bonus game shown over the machine. */
@@ -131,6 +135,7 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
             return
         }
         if (autoSpinsLeft > 0 && !r.wasFreeSpin) autoSpinsLeft--
+        if (!r.wasFreeSpin) graph.player.feedPiggy(r.totalBet) else freeGamesWon += r.totalWin
         result = r
         shownWin = 0
         shownCoins = session.coins - r.totalWin - r.levelUpReward
@@ -181,6 +186,11 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
                 featureBanner = null
                 bonus = newBonus(f, r)
                 while (bonus != null) delay(200)
+            }
+            if (r.wasFreeSpin && session.freeSpins == 0 && r.freeSpinsWon == 0) {
+                while (popup != null) delay(200)
+                popup = Popup.FreeSpinsDone(freeGamesWon)
+                freeGamesWon = 0
             }
             if (r.freeSpinsWon > 0) {
                 while (popup != null) delay(200)
@@ -233,7 +243,7 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
         if (total > 0) {
             graph.sound.play(Sfx.BigWin)
             shower(90)
-            popup = Popup.BigWin(Economy.winTier(total, totalBet).coerceAtLeast(WinTier.BIG), total)
+            popup = Popup.BonusWin(feature?.title ?: "Bonus", total)
         }
     }
 
@@ -260,6 +270,11 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
     }
 
     fun showPopup(p: Popup) { graph.sound.play(Sfx.Button); popup = p }
+
+    /** Balance changed outside a spin (x2 video, refill, store). */
+    fun syncCoins() { shownCoins = session.coins }
+
+    private var freeGamesWon = 0L
     fun dismissPopup() { popup = null }
 
     fun addCoins(amount: Long) {

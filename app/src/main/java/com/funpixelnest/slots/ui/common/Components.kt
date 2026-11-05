@@ -64,7 +64,7 @@ fun outlinedText(size: TextUnit, color: Color = Color.White, family: FontFamily 
     fontSize = size,
     color = color,
     textAlign = TextAlign.Center,
-    shadow = Shadow(Color.Black, offset = androidx.compose.ui.geometry.Offset(0f, 2.5f), blurRadius = 3f),
+    shadow = Shadow(Color.Black.copy(alpha = 0.55f), offset = androidx.compose.ui.geometry.Offset(0f, 1.5f), blurRadius = 4f),
 )
 
 @Composable

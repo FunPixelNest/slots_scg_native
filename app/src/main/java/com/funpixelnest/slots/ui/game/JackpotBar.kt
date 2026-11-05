@@ -41,9 +41,9 @@ import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 private val TIER_COLORS = mapOf(
-    JackpotTier.MINI to listOf(Color(0xFF26C6DA), Color(0xFF00695C)),
-    JackpotTier.MINOR to listOf(Color(0xFF66BB6A), Color(0xFF1B5E20)),
-    JackpotTier.MAJOR to listOf(Color(0xFFAB47BC), Color(0xFF4A148C)),
+    JackpotTier.MINI to listOf(Color(0xFF38D6FF), Color(0xFF00695C)),
+    JackpotTier.MINOR to listOf(Color(0xFF3BE07A), Color(0xFF1B5E20)),
+    JackpotTier.MAJOR to listOf(Color(0xFFA995FF), Color(0xFF4A148C)),
     JackpotTier.GRAND to listOf(Color(0xFFE53935), Color(0xFF6A0D0D)),
 )
 
@@ -56,7 +56,7 @@ fun JackpotBar(vm: GameViewModel, assets: ThemeAssets) {
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         // GRAND sits in a light-bulb marquee
-        MarqueeLights(Modifier.fillMaxWidth().height(62.dp), bulbs = 34) {
+        MarqueeLights(Modifier.fillMaxWidth(0.82f).height(62.dp).align(Alignment.CenterHorizontally), bulbs = 34) {
             JackpotMeter(JackpotTier.GRAND, vm.jackpots[JackpotTier.GRAND] ?: 0L, font, Modifier.fillMaxSize())
         }
         Row(Modifier.fillMaxWidth().height(42.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -86,15 +86,22 @@ private fun JackpotMeter(tier: JackpotTier, value: Long, font: androidx.compose.
     val shape = RoundedCornerShape(50)
     Box(
         modifier
-            .background(Skin.goldBorder, shape)
-            .padding(2.dp)
-            .background(Brush.verticalGradient(listOf(colors[0], colors[1])), shape)
-            .border(1.5.dp, Color(0xFFFFFDE7).copy(alpha = glow * 0.7f), shape),
+            .then(
+                if (tier == JackpotTier.GRAND) Modifier
+                else Modifier.background(Color(0x14FFFFFF), RoundedCornerShape(14.dp)).border(1.dp, Skin.Hairline, RoundedCornerShape(14.dp))
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(if (tier == JackpotTier.GRAND) "GRAND JACKPOT" else tier.label, style = outlinedText(if (tier == JackpotTier.GRAND) 12.sp else 10.sp, Color.White, font))
-            Text(formatCoins(shown), style = outlinedText(if (tier == JackpotTier.GRAND) 22.sp else 14.sp, Color(0xFFFFF8E1)), maxLines = 1)
+            Text(
+                if (tier == JackpotTier.GRAND) "GRAND JACKPOT" else tier.label,
+                style = outlinedText(if (tier == JackpotTier.GRAND) 10.sp else 9.sp, if (tier == JackpotTier.GRAND) Color(0xFFFF9CC2) else colors[0]).copy(shadow = null, letterSpacing = 1.5.sp),
+            )
+            Text(
+                formatCoins(shown),
+                style = outlinedText(if (tier == JackpotTier.GRAND) 26.sp else 14.sp, if (tier == JackpotTier.GRAND) Skin.Gold else Color.White).copy(shadow = null),
+                maxLines = 1,
+            )
         }
     }
 }

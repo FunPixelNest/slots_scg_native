@@ -1,5 +1,6 @@
 package com.funpixelnest.slots.ui.game
 
+import androidx.compose.foundation.border
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.ui.draw.scale
@@ -104,7 +105,7 @@ fun GameScreen(
         AssetImage(assets, cfg.backgroundPortrait ?: cfg.background, Modifier.fillMaxSize(), ContentScale.Crop)
 
         Column(Modifier.fillMaxSize().statusBarsPadding()) {
-            TopBar(vm, assets, onExit)
+            TopBar(vm, graph, onExit)
             TitleBanner(assets)
             featureChip(vm.feature)?.let { chip ->
                 Box(Modifier.fillMaxWidth().padding(bottom = 4.dp), contentAlignment = Alignment.Center) {
@@ -158,32 +159,20 @@ private const val REEL_CELL_TALL = 1.22f
 private const val REEL_CELL_MAX_TALL = 1.55f
 
 @Composable
-private fun TopBar(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets, onExit: () -> Unit) {
+private fun TopBar(vm: GameViewModel, graph: AppGraph, onExit: () -> Unit) {
     Row(
-        Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp),
+        Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        IconRoundButton(SkinIcon.Back, size = 40.dp, tone = SkinTone.Red) { onExit() }
-        // player plate: level medallion + XP bar, with "+XP" floating up after every spin
+        IconRoundButton(SkinIcon.Back, size = 40.dp) { onExit() }
+        LevelMedallion(vm.level, vm.levelProgress, size = 42.dp)
         Box(Modifier.weight(1f)) {
-            Row(
-                Modifier.fillMaxWidth()
-                    .shadow(8.dp, RoundedCornerShape(50))
-                    .background(Skin.goldBorder, RoundedCornerShape(50))
-                    .padding(2.dp)
-                    .background(Brush.verticalGradient(listOf(Color(0xFF3B0D5C), Color(0xFF14031F))), RoundedCornerShape(50))
-                    .padding(end = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                LevelMedallion(vm.level, vm.levelProgress, size = 50.dp)
-                XpBar(vm.level, vm.levelProgress, Modifier.weight(1f).padding(start = 6.dp))
-            }
+            XpBar(vm.level, vm.levelProgress, Modifier.fillMaxWidth())
             XpFloat(vm.xpTick, vm.xpGained, Modifier.align(Alignment.TopEnd))
         }
-        CoinCapsule(vm.shownCoins)
-        IconRoundButton(SkinIcon.Info, size = 34.dp) { vm.showPopup(Popup.Info) }
-        IconRoundButton(SkinIcon.Gear, size = 34.dp) { vm.showPopup(Popup.Settings) }
+        CoinCapsule(vm.shownCoins, onPlus = { graph.openStore() })
+        IconRoundButton(SkinIcon.Info, size = 38.dp) { vm.showPopup(Popup.Info) }
     }
 }
 
@@ -208,7 +197,7 @@ private fun TitleBanner(assets: ThemeAssets) {
         if (assets.config.title != null) {
             AssetImage(assets, assets.config.title, Modifier.fillMaxHeight().fillMaxWidth(0.8f))
         } else {
-            Text(assets.config.name.uppercase(), style = outlinedText(28.sp, Skin.GoldLight, themeFont(assets.config.id)))
+            Text(assets.config.name.uppercase(), style = outlinedText(26.sp, Color.White).copy(shadow = null, letterSpacing = 3.sp))
         }
     }
 }
@@ -216,8 +205,8 @@ private fun TitleBanner(assets: ThemeAssets) {
 @Composable
 private fun WinBanner(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets) {
     val win = vm.shownWin
-    Box(Modifier.fillMaxWidth().padding(horizontal = 56.dp, vertical = 4.dp), contentAlignment = Alignment.Center) {
-        ValueWell(if (win > 0) "YOU WIN" else "WIN", formatCoins(win), Modifier.fillMaxWidth(), highlight = win > 0)
+    Box(Modifier.fillMaxWidth().padding(vertical = 2.dp), contentAlignment = Alignment.Center) {
+        ValueWell("Win", formatCoins(win), highlight = win > 0)
     }
 }
 
@@ -226,67 +215,38 @@ private fun WinBanner(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: T
 private fun BottomPanel(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets) {
     val busy = vm.phase == Phase.Spinning || vm.phase == Phase.Loading
     val betLocked = busy || vm.freeSpins > 0
-
-    val chase by rememberInfiniteTransition(label = "console").animateFloat(
-        0f, 3f, infiniteRepeatable(tween(900, easing = LinearEasing)), label = "c",
-    )
-    Column(
-        Modifier.fillMaxWidth()
-            .drawWithContent {
-                drawContent()
-                // cabinet light strip and corner rivets
-                val n = 18
-                for (k in 0 until n) {
-                    val x = size.width * (k + 0.5f) / n
-                    val lit = (k + chase.toInt()) % 3 == 0
-                    drawCircle(if (lit) Color(0xFFFFFDE7) else Color(0xFFB98A2A), 2.6.dp.toPx(), Offset(x, 7.dp.toPx()))
-                    if (lit) drawCircle(Color(0x55FFF59D), 5.dp.toPx(), Offset(x, 7.dp.toPx()))
-                }
-                listOf(14.dp.toPx() to size.height - 14.dp.toPx(), size.width - 14.dp.toPx() to size.height - 14.dp.toPx())
-                    .forEach { (x, y) ->
-                        drawCircle(Skin.GoldDark, 4.dp.toPx(), Offset(x, y))
-                        drawCircle(Skin.GoldLight, 2.dp.toPx(), Offset(x - 1, y - 1))
-                    }
-            }
-            .background(Skin.goldBorder, RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp))
-            .padding(top = 2.5.dp)
-            .background(Skin.velvetFill, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .padding(start = 14.dp, end = 14.dp, top = 16.dp, bottom = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    val shape = RoundedCornerShape(28.dp)
+    Box(
+        Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp).height(178.dp)
+            .shadow(24.dp, shape).background(Color(0xE60E1324), shape).border(1.dp, Skin.Hairline, shape),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            IconRoundButton(SkinIcon.Minus, size = 44.dp, tone = SkinTone.Blue, enabled = !betLocked) { vm.changeBet(-1) }
+        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            IconRoundButton(SkinIcon.Minus, size = 40.dp, enabled = !betLocked) { vm.changeBet(-1) }
             ValueWell(
-                "TOTAL BET  ·  LEVEL ${vm.betIndex + 1}/${vm.session.unlockedSteps}",
-                formatCompact(vm.totalBet), Modifier.width(210.dp),
-                footnote = vm.nextBetUnlockLevel?.takeIf { vm.isMaxBet }?.let { "Level $it unlocks higher bets" },
+                "Total bet", formatCoins(vm.totalBet), Modifier.weight(1f),
+                footnote = vm.nextBetUnlockLevel?.takeIf { vm.isMaxBet }?.let { "Level $it unlocks higher bets" }
+                    ?: "Bet level ${vm.betIndex + 1} of ${vm.session.unlockedSteps}",
             )
-            IconRoundButton(SkinIcon.Plus, size = 44.dp, tone = SkinTone.Blue, enabled = !betLocked) { vm.changeBet(1) }
+            IconRoundButton(SkinIcon.Plus, size = 40.dp, enabled = !betLocked) { vm.changeBet(1) }
         }
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             SkinButton(
-                if (vm.autoSpinsLeft > 0) "STOP\n${vm.autoSpinsLeft}" else "AUTO\nSPIN",
-                Modifier.width(94.dp).height(58.dp),
-                tone = if (vm.autoSpinsLeft > 0) SkinTone.Red else SkinTone.Purple, textSize = 14.sp,
+                if (vm.autoSpinsLeft > 0) "Stop ${vm.autoSpinsLeft}" else "Auto",
+                Modifier.width(86.dp).height(46.dp),
+                tone = if (vm.autoSpinsLeft > 0) SkinTone.Red else SkinTone.Glass, textSize = 13.sp,
             ) { vm.toggleAuto() }
-
-            SpinButton(
-                if (vm.freeSpins > 0) "FREE" else "SPIN",
-                Modifier.size(124.dp),
-                sub = if (vm.freeSpins > 0) "${vm.freeSpins} LEFT" else null,
-                enabled = !busy,
-            ) { vm.onSpinClick() }
-
-            SkinButton(
-                "MAX\nBET", Modifier.width(94.dp).height(58.dp),
-                tone = SkinTone.Gold, enabled = !betLocked, textSize = 14.sp,
-            ) { vm.maxBet() }
+            Spacer(Modifier.weight(1f))
+            SkinButton("Max bet", Modifier.width(86.dp).height(46.dp), tone = SkinTone.Glass, enabled = !betLocked, textSize = 13.sp) { vm.maxBet() }
         }
+        SpinButton(
+            if (vm.freeSpins > 0) "FREE" else "SPIN",
+            Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp).size(96.dp),
+            sub = if (vm.freeSpins > 0) "${vm.freeSpins} left" else null,
+            enabled = !busy,
+        ) { vm.onSpinClick() }
     }
 }
 

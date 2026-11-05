@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import com.funpixelnest.slots.ui.common.CoinIcon
 import com.funpixelnest.slots.ui.common.formatCompact
 import com.funpixelnest.slots.ui.skin.Skin
+import com.funpixelnest.slots.ui.flow.RewardClaimDialog
 import com.funpixelnest.slots.ui.skin.SkinButton
 import com.funpixelnest.slots.ui.skin.SkinDialog
 import com.funpixelnest.slots.ui.skin.SkinTone
@@ -80,47 +81,44 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
                 Text("COINS", style = outlinedText(14.sp, Skin.TextSoft).copy(letterSpacing = 3.sp))
             }
         }
-        is Popup.Jackpot -> {
-            AutoDismiss(4500, vm::dismissPopup)
-            PopupFrame("${p.win.tier.label} JACKPOT", vm::dismissPopup, tone = SkinTone.Red, sunburst = true) {
-                Text("CONGRATULATIONS!", style = outlinedText(18.sp, Skin.TextSoft))
-                CoinIcon(Modifier.size(64.dp))
-                CountingText(p.win.coins, outlinedText(44.sp, Skin.GoldLight, font))
-            }
+        is Popup.Jackpot -> RewardClaimDialog(
+            graph, "${p.win.tier.label} Jackpot", "Congratulations!", p.win.coins, alreadyGranted = true,
+        ) { vm.syncCoins(); vm.dismissPopup() }
+        is Popup.BonusWin -> RewardClaimDialog(graph, p.title, "Bonus complete", p.coins, alreadyGranted = true) {
+            vm.syncCoins(); vm.dismissPopup()
         }
         is Popup.FreeSpins -> {
             AutoDismiss(3000, vm::dismissPopup)
-            PopupFrame("FREE SPINS", vm::dismissPopup, tone = SkinTone.Green, sunburst = true) {
-                Text("${p.count}", style = outlinedText(64.sp, Color.White, font))
-                Text("FREE GAMES WON", style = outlinedText(16.sp, Skin.GoldLight))
+            PopupFrame("Free Spins", vm::dismissPopup, tone = SkinTone.Green, sunburst = true) {
+                Text("${p.count}", style = outlinedText(64.sp, Color.White, font).copy(shadow = null))
+                Text("FREE GAMES WON", style = outlinedText(14.sp, Skin.Gold).copy(shadow = null, letterSpacing = 2.sp))
             }
         }
-        is Popup.LevelUp -> {
-            AutoDismiss(3000, vm::dismissPopup)
-            PopupFrame("LEVEL UP!", vm::dismissPopup, tone = SkinTone.Purple, sunburst = true) {
-                Text("LEVEL ${p.level}", style = outlinedText(36.sp, Color.White))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    CoinIcon(Modifier.size(28.dp))
-                    Spacer(Modifier.width(6.dp))
-                    Text("+${formatCoins(p.reward)}", style = outlinedText(24.sp, Skin.GoldLight))
+        is Popup.FreeSpinsDone -> {
+            AutoDismiss(4000, vm::dismissPopup)
+            PopupFrame("Free Spins Over", vm::dismissPopup, tone = SkinTone.Green, sunburst = true) {
+                Text("You won", style = outlinedText(14.sp, Skin.TextSoft).copy(shadow = null))
+                CoinIcon(Modifier.size(56.dp))
+                CountingText(p.coins, outlinedText(38.sp, Skin.Gold, font).copy(shadow = null))
+                SkinButton("CONTINUE", Modifier.fillMaxWidth().height(48.dp), tone = SkinTone.Gold) { vm.dismissPopup() }
+            }
+        }
+        is Popup.LevelUp -> RewardClaimDialog(
+            graph, "Level Up!", "You reached level ${p.level}", p.reward, alreadyGranted = true,
+            extra = {
+                if (p.betUnlocked) Text("Higher bets unlocked", style = outlinedText(13.sp, Skin.Sapphire).copy(shadow = null))
+                p.machines.forEach { Text("New machine: $it", style = outlinedText(13.sp, Skin.Emerald).copy(shadow = null)) }
+            },
+        ) { vm.syncCoins(); vm.dismissPopup() }
+        Popup.NoCoins -> RewardClaimDialog(
+            graph, "Out of Coins", "Here's a refill to keep playing", PlayerRules.START_COINS,
+            extra = {
+                Spacer(Modifier.height(10.dp))
+                SkinButton("VISIT STORE", Modifier.fillMaxWidth().height(42.dp), tone = SkinTone.Glass, textSize = 13.sp) {
+                    vm.dismissPopup(); graph.openStore()
                 }
-                if (p.betUnlocked) Text("Higher bets unlocked!", style = outlinedText(15.sp, Color(0xFFFFCC80)))
-                p.machines.forEach { name ->
-                    Text("NEW MACHINE: ${name.uppercase()}", style = outlinedText(15.sp, Color(0xFF7CF29A)))
-                }
-            }
-        }
-        Popup.NoCoins -> PopupFrame("OUT OF COINS", vm::dismissPopup, tone = SkinTone.Red) {
-            Text("Here are some free coins\nto keep playing!", style = outlinedText(17.sp))
-            Spacer(Modifier.height(4.dp))
-            SkinButton(
-                "GET ${formatCompact(PlayerRules.START_COINS)}", Modifier.width(220.dp).height(52.dp),
-                tone = SkinTone.Green, textSize = 20.sp,
-            ) {
-                vm.addCoins(PlayerRules.START_COINS)
-                vm.dismissPopup()
-            }
-        }
+            },
+        ) { vm.syncCoins(); vm.dismissPopup() }
         Popup.Info -> PayTablePopup(assets, vm.lineBet, vm.session.linesCount, vm::dismissPopup)
         Popup.Settings -> SettingsPopup(graph, assets, null, vm::dismissPopup)
     }

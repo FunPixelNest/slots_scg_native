@@ -254,6 +254,18 @@ class SlotMachineTest {
     }
 
     @Test
+    fun `daily wheel, piggy and store packs`() {
+        val r = Random(11)
+        val hits = IntArray(Rewards.DAILY_WHEEL.size)
+        repeat(10_000) { hits[Rewards.spinDailyWheel(r)]++ }
+        assertTrue(hits.all { it > 0 }, "every wheel segment can win")
+        assertTrue(Rewards.wheelPrize(0, 10) > Rewards.wheelPrize(0, 1))
+        assertTrue(Rewards.piggyCap(5) > Rewards.piggyCap(1))
+        assertEquals(30, Store.PACKS[1].bonusPercent)
+        assertEquals(300, Store.WELCOME_OFFER.bonusPercent)
+    }
+
+    @Test
     fun `daily streak`() {
         val day = Economy.DAY_MS
         assertEquals(1, Economy.nextDailyDay(0, 0, 1000))

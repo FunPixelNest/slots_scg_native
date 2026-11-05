@@ -11,6 +11,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.funpixelnest.slots.data.AppGraph
 import com.funpixelnest.slots.ui.common.RewardedVideoOverlay
+import com.funpixelnest.slots.data.Overlay
+import com.funpixelnest.slots.ui.flow.DisclaimerScreen
+import com.funpixelnest.slots.ui.flow.PiggyBankDialog
+import com.funpixelnest.slots.ui.flow.StoreSheet
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.funpixelnest.slots.ui.game.GameScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +43,12 @@ class MainActivity : ComponentActivity() {
             Column(Modifier.fillMaxSize()) {
             val nav = rememberNavController()
             // screens use everything above the banner safe area
-            NavHost(nav, startDestination = "lobby", modifier = Modifier.weight(1f)) {
+            Box(Modifier.weight(1f)) {
+            var accepted by remember { mutableStateOf(graph.player.disclaimerAccepted) }
+            if (!accepted) {
+                DisclaimerScreen { graph.player.disclaimerAccepted = true; accepted = true }
+            } else {
+            NavHost(nav, startDestination = "lobby", modifier = Modifier.fillMaxSize()) {
                 composable("lobby") {
                     LobbyScreen(
                         graph = graph,
@@ -46,6 +59,14 @@ class MainActivity : ComponentActivity() {
                     val id = entry.arguments?.getString("id").orEmpty()
                     GameScreen(graph, id, onExit = { nav.popBackStack("lobby", inclusive = false) })
                 }
+            }
+            }
+            // store / piggy bank open above whichever screen asked for them
+            when (graph.overlay) {
+                Overlay.Store -> StoreSheet(graph) { graph.overlay = null }
+                Overlay.Piggy -> PiggyBankDialog(graph) { graph.overlay = null }
+                null -> Unit
+            }
             }
             // safe area for a bottom banner ad on every screen
             AdBannerSlot()

@@ -80,6 +80,7 @@ abstract class ScreenshotBase {
     fun freshGraph() {
         AppGraph.resetForTests()
         compose.mainClock.autoAdvance = false
+        graph.player.coins = 12_500_000 // a typical balance for the screenshots
     }
 
     /** Let frames, coroutines and image decoding (IO threads) progress for [ms] of virtual time. */
@@ -147,7 +148,8 @@ class LobbyScreenshotTest : ScreenshotBase() {
     @Test
     fun lobby() {
         graph.player.claimDaily(System.currentTimeMillis()) // daily already taken -> no popup
-        setScreen { LobbyScreen(graph, onOpenTheme = {}) }
+        graph.player.coins = 12_500_000
+        setScreen { LobbyScreen(graph, onOpenTheme = {}, skipStartup = true) }
         waitForTag("lobby")
         settle(3000)
         shot("lobby_01_main")
@@ -158,10 +160,10 @@ class LobbyScreenshotTest : ScreenshotBase() {
         val now = System.currentTimeMillis()
         graph.player.lastDailyAt = now - 30 * 60 * 60 * 1000L // claimed yesterday...
         graph.player.lastDailyDay = 3                       // ...on day 3 -> today is day 4
-        setScreen { LobbyScreen(graph, onOpenTheme = {}) }
+        setScreen { LobbyScreen(graph, onOpenTheme = {}, startWithDailyBonus = true) }
         waitForTag("daily-bonus")
         settle(2500)
-        shot("lobby_02_daily_bonus")
+        shot("flow_03_daily_bonus")
     }
 
     @Test
@@ -190,6 +192,44 @@ class LobbyScreenshotTest : ScreenshotBase() {
         compose.setContent { com.funpixelnest.slots.ui.common.RewardedVideoOverlay(graph.ads) }
         settle(1500)
         shot("lobby_06_rewarded_video")
+    }
+
+    @Test
+    fun disclaimer() {
+        setScreen { com.funpixelnest.slots.ui.flow.DisclaimerScreen {} }
+        waitForTag("disclaimer"); settle(1500)
+        shot("flow_01_disclaimer")
+    }
+
+    @Test
+    fun welcomeBonus() {
+        // fresh player: welcome bonus is the first startup popup
+        setScreen { LobbyScreen(graph, onOpenTheme = {}) }
+        waitForTag("reward-claim"); settle(2000)
+        shot("flow_02_welcome_bonus")
+    }
+
+    @Test
+    fun dailyWheel() {
+        setScreen { com.funpixelnest.slots.ui.flow.DailyWheelDialog(graph) {} }
+        waitForTag("daily-wheel"); settle(1500)
+        shot("flow_04_daily_wheel")
+    }
+
+    @Test
+    fun store() {
+        graph.player.coins = 12_500_000
+        setScreen { com.funpixelnest.slots.ui.flow.StoreSheet(graph) {} }
+        waitForTag("store"); settle(2000)
+        shot("flow_06_store")
+    }
+
+    @Test
+    fun piggyBank() {
+        graph.player.piggy = 1_350_000
+        setScreen { com.funpixelnest.slots.ui.flow.PiggyBankDialog(graph) {} }
+        waitForTag("piggy-bank"); settle(1500)
+        shot("flow_07_piggy_bank")
     }
 
     /** All 23 lobby tiles at once, to check every machine has its card art. */
@@ -259,6 +299,16 @@ class PopupScreenshotTest : ScreenshotBase() {
     @Test
     fun pickBonus() = machineWith("farm", "popup_09_pick_bonus", 900) { vm, stops ->
         vm.previewBonus(com.funpixelnest.slots.engine.Feature.PICK_BONUS, stops)
+    }
+
+    @Test
+    fun freeSpinsDone() = machineWith("egypt_2", "popup_10_free_spins_done", 1200) { vm, stops ->
+        vm.preview(stops, Popup.FreeSpinsDone(3_480_000))
+    }
+
+    @Test
+    fun bonusWinClaim() = machineWith("greek", "popup_11_bonus_win_x2", 1500) { vm, stops ->
+        vm.preview(stops, Popup.BonusWin("Bonus Wheel", 365_000))
     }
 
     @Test

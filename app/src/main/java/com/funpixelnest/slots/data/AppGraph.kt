@@ -2,9 +2,12 @@ package com.funpixelnest.slots.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import com.funpixelnest.slots.audio.SoundPlayer
 import com.funpixelnest.slots.engine.Economy
+import com.funpixelnest.slots.engine.Rewards
 import com.funpixelnest.slots.engine.JackpotTier
 import com.funpixelnest.slots.engine.PlayerStore
 import com.funpixelnest.slots.engine.ThemeConfig
@@ -17,8 +20,12 @@ import kotlinx.serialization.builtins.ListSerializer
 /** Coins, level, bets, bonuses and settings saved in SharedPreferences (Unity used PlayerPrefs). */
 class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
     init {
-        // move players of the first build (5,000 coins) onto the million-coin economy
-        if (!prefs.getBoolean(K_ECONOMY_V2, false)) {
+        // brand-new players start at 0 and get the welcome bonus; players of earlier builds
+        // (5,000 coins) are moved onto the million-coin economy and skip the welcome
+        if (!prefs.contains(K_COINS)) {
+            prefs.edit().putLong(K_COINS, 0L).putBoolean(K_ECONOMY_V2, true).apply()
+        } else if (!prefs.getBoolean(K_ECONOMY_V2, false)) {
+            prefs.edit().putBoolean("welcome_claimed", true).apply()
             prefs.edit()
                 .putLong(K_COINS, maxOf(prefs.getLong(K_COINS, 0L), Economy.START_COINS))
                 .putBoolean(K_ECONOMY_V2, true)
@@ -92,6 +99,36 @@ class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
         return amount
     }
 
+    // ---------------------------------------------------------------- first launch
+
+    var disclaimerAccepted: Boolean
+        get() = prefs.getBoolean("disclaimer_ok", false)
+        set(v) { prefs.edit().putBoolean("disclaimer_ok", v).apply() }
+    var welcomeClaimed: Boolean
+        get() = prefs.getBoolean("welcome_claimed", false)
+        set(v) { prefs.edit().putBoolean("welcome_claimed", v).apply() }
+
+    // ---------------------------------------------------------------- daily wheel (once a day)
+
+    var lastWheelAt: Long
+        get() = prefs.getLong("wheel_at", 0L)
+        set(v) { prefs.edit().putLong("wheel_at", v).apply() }
+    fun wheelReadyIn(now: Long): Long = (lastWheelAt + Economy.DAY_MS - now).coerceAtLeast(0L)
+
+    // ---------------------------------------------------------------- piggy bank
+
+    private val _piggy = MutableStateFlow(prefs.getLong("piggy", 0L))
+    val piggyFlow: StateFlow<Long> = _piggy
+    var piggy: Long
+        get() = _piggy.value
+        set(v) { _piggy.value = v; prefs.edit().putLong("piggy", v).apply() }
+    fun piggyCap(): Long = Rewards.piggyCap(level)
+    fun feedPiggy(totalBet: Long) { piggy = (piggy + (totalBet * Rewards.PIGGY_SHARE).toLong()).coerceAtMost(piggyCap()) }
+    fun canBreakPiggy(): Boolean = piggy >= piggyCap() * Rewards.PIGGY_MIN_FILL
+
+    /** Hand out coins (any source); returns the amount for chaining. */
+    fun grant(amount: Long): Long { coins += amount; return amount }
+
     // ---------------------------------------------------------------- machine unlocks
 
     fun videosWatched(themeId: String): Int = prefs.getInt("video_$themeId", 0)
@@ -132,6 +169,12 @@ class AppGraph(context: Context) {
     val player = PrefsPlayerStore(app.getSharedPreferences("player", Context.MODE_PRIVATE))
     val sound = SoundPlayer(app, player)
     val ads = PlaceholderRewardedAds()
+    val billing: Billing = PlaceholderBilling()
+
+    /** Store / piggy bank sheet shown above the current screen. */
+    var overlay by androidx.compose.runtime.mutableStateOf<Overlay?>(null)
+    fun openStore() { overlay = Overlay.Store }
+    fun openPiggy() { overlay = Overlay.Piggy }
 
     val themes: List<ThemeIndexEntry> by lazy {
         ThemeConfig.json.decodeFromString(ListSerializer(ThemeIndexEntry.serializer()), common.readText("themes.json"))

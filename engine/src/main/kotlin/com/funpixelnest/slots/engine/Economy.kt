@@ -120,3 +120,45 @@ object Unlocks {
         }
     }
 }
+
+/** First-launch, daily-wheel, piggy-bank and store rules. */
+object Rewards {
+    /** Coins given once on first launch, after the disclaimer. */
+    const val WELCOME_BONUS = 1_000_000L
+
+    /** Watching a video doubles a reward ("Collect x2"). */
+    const val VIDEO_MULTIPLIER = 2
+
+    /** Daily wheel prizes (coins at level 1, weight); scaled by [wheelScale]. */
+    val DAILY_WHEEL = listOf(
+        50_000L to 22, 100_000L to 20, 75_000L to 20, 250_000L to 10,
+        150_000L to 14, 500_000L to 6, 60_000L to 22, 1_000_000L to 2,
+    )
+
+    fun wheelScale(level: Int): Double = 1 + 0.05 * (level - 1)
+    fun wheelPrize(index: Int, level: Int): Long = (DAILY_WHEEL[index].first * wheelScale(level)).toLong()
+    fun spinDailyWheel(random: kotlin.random.Random): Int = random.weighted(DAILY_WHEEL.mapIndexed { i, p -> i to p.second })
+
+    /** Piggy bank: every paid spin drops this share of the bet in, up to [piggyCap]. */
+    const val PIGGY_SHARE = 0.03
+    fun piggyCap(level: Int): Long = 2_000_000L + 500_000L * (level - 1)
+    const val PIGGY_PRICE = "$2.99"
+    /** Piggy can be broken once it holds at least this share of its cap. */
+    const val PIGGY_MIN_FILL = 0.2
+}
+
+data class CoinPack(val id: String, val coins: Long, val baseCoins: Long, val price: String, val badge: String? = null) {
+    val bonusPercent: Int get() = if (baseCoins <= 0) 0 else ((coins - baseCoins) * 100 / baseCoins).toInt()
+}
+
+object Store {
+    val PACKS = listOf(
+        CoinPack("coins_1", 1_000_000, 1_000_000, "$0.99"),
+        CoinPack("coins_2", 2_600_000, 2_000_000, "$1.99"),
+        CoinPack("coins_3", 7_500_000, 5_000_000, "$4.99", "MOST POPULAR"),
+        CoinPack("coins_4", 18_000_000, 10_000_000, "$9.99"),
+        CoinPack("coins_5", 50_000_000, 25_000_000, "$19.99", "BEST VALUE"),
+        CoinPack("coins_6", 120_000_000, 50_000_000, "$39.99"),
+    )
+    val WELCOME_OFFER = CoinPack("welcome_offer", 10_000_000, 2_500_000, "$4.99", "WELCOME OFFER")
+}
