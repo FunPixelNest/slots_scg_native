@@ -45,6 +45,8 @@ data class SpinResult(
     val jackpot: JackpotWin?,
     val levelUp: Int?,
     val levelUpReward: Long,
+    /** XP this spin earned (shown as "+N XP" in the HUD). */
+    val xpGained: Int = 0,
 ) {
     val totalWin: Long get() = winCoins + (jackpot?.coins ?: 0L)
 }
@@ -108,11 +110,11 @@ class GameSession(
         val jackpot = if (free) null else rollJackpot()
         store.coins += winCoins + (jackpot?.coins ?: 0L)
 
-        val xp = (betIndex + 1f) * if (outcome.isWin) 2f else 1f
-        val (levelUp, reward) = addXp(xp)
+        val xp = xpForSpin(outcome.isWin)
+        val (levelUp, reward) = addXp(xp.toFloat())
 
         val tier = Economy.winTier(winCoins, totalBet)
-        return Result.success(SpinResult(outcome, totalBet, free, winCoins, spinsWon, tier, jackpot, levelUp, reward))
+        return Result.success(SpinResult(outcome, totalBet, free, winCoins, spinsWon, tier, jackpot, levelUp, reward, xp))
     }
 
     private fun rollJackpot(): JackpotWin? {
@@ -125,6 +127,9 @@ class GameSession(
         store.setJackpotPool(cfg.id, hit, 0L)
         return win
     }
+
+    /** Every spin earns XP: more at higher bets, double on a win. */
+    fun xpForSpin(win: Boolean): Int = (betIndex + 1) * if (win) 2 else 1
 
     private fun addXp(points: Float): Pair<Int?, Long> {
         var p = store.levelProgress + points * 100f / Economy.xpForLevel(store.level)

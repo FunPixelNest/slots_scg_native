@@ -156,6 +156,34 @@ class LobbyScreenshotTest : ScreenshotBase() {
         shot("lobby_02_daily_bonus")
     }
 
+    @Test
+    fun unlocksList() {
+        graph.player.claimDaily(System.currentTimeMillis())
+        graph.player.level = 6
+        compose.setContent { LobbyScreen(graph, onOpenTheme = {}, startWithUnlocks = true) }
+        waitForTag("lobby")
+        settle(3000)
+        shot("lobby_04_unlocks")
+    }
+
+    @Test
+    fun lockedVideoMachine() {
+        graph.player.claimDaily(System.currentTimeMillis())
+        val videoMachine = graph.themes.first { com.funpixelnest.slots.engine.Unlocks.rule(it.order) is com.funpixelnest.slots.engine.Unlock.WatchVideo }
+        compose.setContent { LobbyScreen(graph, onOpenTheme = {}, startWithLocked = videoMachine.id) }
+        waitForTag("lobby")
+        settle(3000)
+        shot("lobby_05_locked_watch_video")
+    }
+
+    @Test
+    fun rewardedVideo() {
+        graph.ads.show("free_coins") {}
+        compose.setContent { com.funpixelnest.slots.ui.common.RewardedVideoOverlay(graph.ads) }
+        settle(1500)
+        shot("lobby_06_rewarded_video")
+    }
+
     /** All 23 lobby tiles at once, to check every machine has its card art. */
     @Test
     fun allTiles() {
@@ -207,7 +235,7 @@ class PopupScreenshotTest : ScreenshotBase() {
 
     @Test
     fun levelUp() = machineWith("pirates", "popup_04_level_up") { vm, stops ->
-        vm.preview(stops, Popup.LevelUp(5, 250_000, betUnlocked = true))
+        vm.preview(stops, Popup.LevelUp(5, 250_000, betUnlocked = true, machines = listOf("Wolf Moon")))
     }
 
     @Test

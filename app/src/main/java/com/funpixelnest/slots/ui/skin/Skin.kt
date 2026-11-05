@@ -181,7 +181,7 @@ fun SkinButton(
     }
 }
 
-enum class SkinIcon { Menu, Back, Info, Gear, Plus, Minus }
+enum class SkinIcon { Menu, Back, Info, Gear, Plus, Minus, Clock, Gift, Video, Lock, Trophy, Close }
 
 /** Small round gold-rimmed icon button (menu, info, settings, +/-). */
 @Composable
@@ -212,10 +212,9 @@ fun IconRoundButton(
     }
 }
 
-private fun DrawScope.drawSkinIcon(icon: SkinIcon) {
+fun DrawScope.drawSkinIcon(icon: SkinIcon, c: Color = Color.White) {
     val w = size.width
     val stroke = w * 0.16f
-    val c = Color.White
     fun line(x1: Float, y1: Float, x2: Float, y2: Float) =
         drawLine(c, Offset(x1 * w, y1 * w), Offset(x2 * w, y2 * w), stroke, StrokeCap.Round)
     when (icon) {
@@ -234,6 +233,105 @@ private fun DrawScope.drawSkinIcon(icon: SkinIcon) {
             }
             drawCircle(c, w * 0.32f, center)
             drawCircle(Color(0xFF5B1FA8), w * 0.13f, center)
+        }
+        SkinIcon.Clock -> {
+            drawCircle(c, w * 0.45f, Offset(w / 2, w / 2), style = Stroke(stroke * 0.8f))
+            line(0.5f, 0.5f, 0.5f, 0.22f); line(0.5f, 0.5f, 0.72f, 0.6f)
+        }
+        SkinIcon.Gift -> {
+            drawRoundRect(c, Offset(0.08f * w, 0.42f * w), Size(0.84f * w, 0.55f * w), CornerRadius(w * 0.06f))
+            drawRoundRect(c, Offset(0f, 0.26f * w), Size(w, 0.2f * w), CornerRadius(w * 0.05f))
+            drawRect(Color(0xFFE53935), Offset(0.42f * w, 0.26f * w), Size(0.16f * w, 0.71f * w))
+            drawOval(c, Offset(0.18f * w, 0.02f * w), Size(0.3f * w, 0.26f * w), style = Stroke(stroke * 0.7f))
+            drawOval(c, Offset(0.52f * w, 0.02f * w), Size(0.3f * w, 0.26f * w), style = Stroke(stroke * 0.7f))
+        }
+        SkinIcon.Video -> {
+            drawRoundRect(c, Offset(0f, 0.18f * w), Size(w, 0.64f * w), CornerRadius(w * 0.14f))
+            val tri = Path().apply {
+                moveTo(0.4f * w, 0.33f * w); lineTo(0.68f * w, 0.5f * w); lineTo(0.4f * w, 0.67f * w); close()
+            }
+            drawPath(tri, Color(0xFFE53935))
+        }
+        SkinIcon.Lock -> drawPadlock(Offset(0f, 0f), w, c)
+        SkinIcon.Close -> { line(0.15f, 0.15f, 0.85f, 0.85f); line(0.85f, 0.15f, 0.15f, 0.85f) }
+        SkinIcon.Trophy -> {
+            val cup = Path().apply {
+                moveTo(0.15f * w, 0.05f * w); lineTo(0.85f * w, 0.05f * w)
+                quadraticBezierTo(0.85f * w, 0.6f * w, 0.5f * w, 0.62f * w)
+                quadraticBezierTo(0.15f * w, 0.6f * w, 0.15f * w, 0.05f * w); close()
+            }
+            drawPath(cup, c)
+            line(0.5f, 0.62f, 0.5f, 0.82f)
+            drawRoundRect(c, Offset(0.25f * w, 0.82f * w), Size(0.5f * w, 0.14f * w), CornerRadius(w * 0.04f))
+        }
+    }
+}
+
+/** Gold padlock (shackle + body + keyhole) inside a [size]-wide square at [topLeft]. */
+fun DrawScope.drawPadlock(topLeft: Offset, size: Float, c: Color = Skin.Gold) {
+    val x = topLeft.x
+    val y = topLeft.y
+    drawArc(
+        c, 180f, 180f, false, Offset(x + size * 0.22f, y + size * 0.04f), Size(size * 0.56f, size * 0.6f),
+        style = Stroke(size * 0.12f, cap = StrokeCap.Round),
+    )
+    drawLine(c, Offset(x + size * 0.22f, y + size * 0.34f), Offset(x + size * 0.22f, y + size * 0.46f), size * 0.12f)
+    drawLine(c, Offset(x + size * 0.78f, y + size * 0.34f), Offset(x + size * 0.78f, y + size * 0.46f), size * 0.12f)
+    drawRoundRect(c, Offset(x + size * 0.1f, y + size * 0.42f), Size(size * 0.8f, size * 0.56f), CornerRadius(size * 0.1f))
+    drawCircle(Skin.GoldDeep, size * 0.08f, Offset(x + size * 0.5f, y + size * 0.62f))
+    drawRect(Skin.GoldDeep, Offset(x + size * 0.47f, y + size * 0.64f), Size(size * 0.06f, size * 0.18f))
+}
+
+/**
+ * Player medallion: velvet disc with the level number, ringed by a circular XP bar
+ * that fills towards the next level.
+ */
+@Composable
+fun LevelMedallion(level: Int, progress: Float, modifier: Modifier = Modifier, size: Dp = 52.dp) {
+    val anim by animateFloatAsState((progress / 100f).coerceIn(0f, 1f), tween(600), label = "xp")
+    Box(modifier.size(size), contentAlignment = Alignment.Center) {
+        Canvas(Modifier.fillMaxSize()) {
+            val r = this.size.minDimension / 2
+            val ring = r * 0.2f
+            drawCircle(Color.Black.copy(alpha = 0.5f), r)
+            drawArc(
+                Color(0xFF2A0846), -90f, 360f, false,
+                Offset(ring / 2, ring / 2), Size(this.size.width - ring, this.size.height - ring), style = Stroke(ring),
+            )
+            drawArc(
+                Brush.sweepGradient(listOf(Color(0xFF7CF29A), Color(0xFF16A34A), Color(0xFF7CF29A))), -90f, 360f * anim, false,
+                Offset(ring / 2, ring / 2), Size(this.size.width - ring, this.size.height - ring), style = Stroke(ring, cap = StrokeCap.Round),
+            )
+            drawCircle(Skin.goldBorder, r - ring * 1.05f)
+            drawCircle(Brush.radialGradient(listOf(Color(0xFF8E44E8), Color(0xFF3B0D5C))), r - ring * 1.35f)
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("LV", style = outlinedText((size.value * 0.16f).sp, Skin.GoldLight))
+            Text("$level", style = outlinedText((size.value * 0.3f).sp, Color.White))
+        }
+    }
+}
+
+/** Slim XP bar with "LEVEL n" and percentage, used next to the medallion. */
+@Composable
+fun XpBar(level: Int, progress: Float, modifier: Modifier = Modifier) {
+    val anim by animateFloatAsState((progress / 100f).coerceIn(0f, 1f), tween(600), label = "xpbar")
+    Column(modifier) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("LEVEL $level", style = outlinedText(10.sp, Skin.GoldLight))
+            Spacer(Modifier.weight(1f))
+            Text("${(anim * 100).toInt()}%", style = outlinedText(9.sp, Skin.TextSoft))
+        }
+        Box(
+            Modifier.fillMaxWidth().height(12.dp)
+                .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(50))
+                .border(1.5.dp, Skin.goldBorder, RoundedCornerShape(50))
+                .padding(2.dp)
+        ) {
+            Box(
+                Modifier.fillMaxHeight().fillMaxWidth(anim.coerceAtLeast(0.03f))
+                    .background(Brush.horizontalGradient(listOf(Color(0xFF7CF29A), Color(0xFF16A34A))), RoundedCornerShape(50))
+            )
         }
     }
 }

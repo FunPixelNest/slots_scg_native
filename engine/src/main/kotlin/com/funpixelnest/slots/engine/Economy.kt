@@ -80,3 +80,43 @@ enum class JackpotTier(val label: String, val betMultiple: Int, val odds: Int, v
 }
 
 data class JackpotWin(val tier: JackpotTier, val coins: Long)
+
+/** How a machine is opened in the lobby. */
+sealed interface Unlock {
+    data object Free : Unlock
+    /** Opens automatically when the player reaches [level]. */
+    data class AtLevel(val level: Int) : Unlock
+    /** Opens after the player watches [videos] rewarded videos (or reaches [level], whichever is first). */
+    data class WatchVideo(val videos: Int, val level: Int) : Unlock
+}
+
+object Unlocks {
+    /** The first machines in lobby order are always open. */
+    const val FREE_MACHINES = 4
+
+    /**
+     * Lobby order -> unlock rule. After the free machines, every third machine is a
+     * watch-video machine; the others open at rising player levels (2, 3, 5, 6, 8, ...).
+     */
+    fun rule(order: Int): Unlock {
+        if (order < FREE_MACHINES) return Unlock.Free
+        val i = order - FREE_MACHINES
+        val level = 2 + i
+        return if (i % 3 == 2) Unlock.WatchVideo(videos = 1, level = level + 4) else Unlock.AtLevel(level)
+    }
+
+    fun isOpen(order: Int, playerLevel: Int, videosWatched: Int): Boolean = when (val r = rule(order)) {
+        Unlock.Free -> true
+        is Unlock.AtLevel -> playerLevel >= r.level
+        is Unlock.WatchVideo -> videosWatched >= r.videos || playerLevel >= r.level
+    }
+
+    /** Machines (by lobby order) that open exactly when reaching [newLevel]. */
+    fun openedAtLevel(newLevel: Int, count: Int): List<Int> = (0 until count).filter { o ->
+        when (val r = rule(o)) {
+            is Unlock.AtLevel -> r.level == newLevel
+            is Unlock.WatchVideo -> r.level == newLevel
+            Unlock.Free -> false
+        }
+    }
+}

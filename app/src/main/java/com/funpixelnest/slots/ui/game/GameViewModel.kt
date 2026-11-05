@@ -16,6 +16,7 @@ import com.funpixelnest.slots.engine.JackpotTier
 import com.funpixelnest.slots.engine.JackpotWin
 import com.funpixelnest.slots.engine.SlotMachine
 import com.funpixelnest.slots.engine.SpinResult
+import com.funpixelnest.slots.engine.Unlocks
 import com.funpixelnest.slots.engine.WinTier
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -27,7 +28,7 @@ sealed interface Popup {
     data class BigWin(val tier: WinTier, val coins: Long) : Popup
     data class Jackpot(val win: JackpotWin) : Popup
     data class FreeSpins(val count: Int) : Popup
-    data class LevelUp(val level: Int, val reward: Long, val betUnlocked: Boolean) : Popup
+    data class LevelUp(val level: Int, val reward: Long, val betUnlocked: Boolean, val machines: List<String> = emptyList()) : Popup
     data object Info : Popup
     data object Settings : Popup
     data object NoCoins : Popup
@@ -56,6 +57,10 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
     var level by mutableIntStateOf(session.level); private set
     var levelProgress by mutableStateOf(session.levelProgress); private set
     var jackpots by mutableStateOf(readJackpots()); private set
+
+    /** XP from the last spin; [xpTick] increments each spin to replay the "+XP" float. */
+    var xpGained by mutableIntStateOf(0); private set
+    var xpTick by mutableIntStateOf(0); private set
 
     /** Increments to launch a coin shower; [showerCoins] sets its size. */
     var showerTrigger by mutableIntStateOf(0); private set
@@ -117,6 +122,10 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
         phase = Phase.Spinning
         spinRequest = SpinRequest(r.outcome.stops, ++nonce)
         graph.sound.play(Sfx.Spin, 0.7f)
+        // XP shows up right away; a level-up is presented after the reels stop
+        xpGained = r.xpGained
+        xpTick++
+        if (r.levelUp == null) levelProgress = session.levelProgress
     }
 
     /** Called by the reels when the last reel has settled. */
@@ -152,7 +161,8 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
             r.levelUp?.let {
                 while (popup != null) delay(200)
                 val unlocked = Economy.unlockedBetSteps(it) > Economy.unlockedBetSteps(it - 1)
-                popup = Popup.LevelUp(it, r.levelUpReward, unlocked)
+                val machines = Unlocks.openedAtLevel(it, graph.themes.size).mapNotNull { o -> graph.themes.getOrNull(o)?.name }
+                popup = Popup.LevelUp(it, r.levelUpReward, unlocked, machines)
                 shower(40)
             }
             shownCoins = session.coins

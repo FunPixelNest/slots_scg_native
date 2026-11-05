@@ -165,6 +165,35 @@ class SlotMachineTest {
     }
 
     @Test
+    fun `machine unlocks by level and video`() {
+        assertEquals(Unlock.Free, Unlocks.rule(0))
+        assertEquals(Unlock.Free, Unlocks.rule(3))
+        assertEquals(Unlock.AtLevel(2), Unlocks.rule(4))
+        assertTrue(Unlocks.rule(6) is Unlock.WatchVideo)
+        assertTrue(!Unlocks.isOpen(4, playerLevel = 1, videosWatched = 0))
+        assertTrue(Unlocks.isOpen(4, playerLevel = 2, videosWatched = 0))
+        assertTrue(!Unlocks.isOpen(6, playerLevel = 1, videosWatched = 0))
+        assertTrue(Unlocks.isOpen(6, playerLevel = 1, videosWatched = 1))
+        assertEquals(listOf(4), Unlocks.openedAtLevel(2, 23))
+        // every machine eventually opens by level
+        assertTrue((0 until 23).all { Unlocks.isOpen(it, playerLevel = 40, videosWatched = 0) })
+        val kinds = (0 until 23).map { Unlocks.rule(it)::class.simpleName }
+        println("unlocks: " + (0 until 23).joinToString { "$it=${Unlocks.rule(it)}" })
+        assertTrue(kinds.count { it == "WatchVideo" } >= 5)
+    }
+
+    @Test
+    fun `every spin earns xp`() {
+        val store = InMemoryPlayerStore(coins = 10_000_000)
+        val s = GameSession(SlotMachine(theme("wolf")), store, Random(3))
+        repeat(20) {
+            val r = s.spin().getOrThrow()
+            assertTrue(r.xpGained >= 1)
+        }
+        assertTrue(store.level > 1 || store.levelProgress > 0f)
+    }
+
+    @Test
     fun `daily streak`() {
         val day = Economy.DAY_MS
         assertEquals(1, Economy.nextDailyDay(0, 0, 1000))

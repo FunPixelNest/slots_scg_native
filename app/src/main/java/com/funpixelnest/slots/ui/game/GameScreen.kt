@@ -1,5 +1,19 @@
 package com.funpixelnest.slots.ui.game
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.offset
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import com.funpixelnest.slots.ui.skin.LevelMedallion
+import com.funpixelnest.slots.ui.skin.XpBar
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Brush
@@ -47,7 +61,6 @@ import com.funpixelnest.slots.ui.lobby.LoadBar
 import com.funpixelnest.slots.ui.skin.CoinCapsule
 import com.funpixelnest.slots.ui.skin.GoldFrame
 import com.funpixelnest.slots.ui.skin.IconRoundButton
-import com.funpixelnest.slots.ui.skin.LevelStar
 import com.funpixelnest.slots.ui.skin.Skin
 import com.funpixelnest.slots.ui.skin.SkinButton
 import com.funpixelnest.slots.ui.skin.SkinIcon
@@ -134,23 +147,47 @@ private const val REEL_CELL_MAX_TALL = 1.55f
 
 @Composable
 private fun TopBar(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets, onExit: () -> Unit) {
-    Column {
-        Row(
-            Modifier.fillMaxWidth()
-                .background(Brush.verticalGradient(listOf(Color(0xF0170327), Color(0xC0170327))))
-                .padding(horizontal = 10.dp, vertical = 7.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            IconRoundButton(SkinIcon.Back, size = 38.dp) { onExit() }
-            LevelStar(vm.level, vm.levelProgress, barWidth = 52.dp)
-            Spacer(Modifier.weight(1f))
-            CoinCapsule(vm.shownCoins)
-            IconRoundButton(SkinIcon.Info, size = 36.dp) { vm.showPopup(Popup.Info) }
-            IconRoundButton(SkinIcon.Gear, size = 36.dp) { vm.showPopup(Popup.Settings) }
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        IconRoundButton(SkinIcon.Back, size = 40.dp, tone = SkinTone.Red) { onExit() }
+        // player plate: level medallion + XP bar, with "+XP" floating up after every spin
+        Box(Modifier.weight(1f)) {
+            Row(
+                Modifier.fillMaxWidth()
+                    .shadow(8.dp, RoundedCornerShape(50))
+                    .background(Skin.goldBorder, RoundedCornerShape(50))
+                    .padding(2.dp)
+                    .background(Brush.verticalGradient(listOf(Color(0xFF3B0D5C), Color(0xFF14031F))), RoundedCornerShape(50))
+                    .padding(end = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                LevelMedallion(vm.level, vm.levelProgress, size = 50.dp)
+                XpBar(vm.level, vm.levelProgress, Modifier.weight(1f).padding(start = 6.dp))
+            }
+            XpFloat(vm.xpTick, vm.xpGained, Modifier.align(Alignment.TopEnd))
         }
-        Box(Modifier.fillMaxWidth().height(2.dp).background(Skin.goldBorder))
+        CoinCapsule(vm.shownCoins)
+        IconRoundButton(SkinIcon.Info, size = 34.dp) { vm.showPopup(Popup.Info) }
+        IconRoundButton(SkinIcon.Gear, size = 34.dp) { vm.showPopup(Popup.Settings) }
     }
+}
+
+/** "+N XP" that rises and fades each time [tick] changes. */
+@Composable
+private fun XpFloat(tick: Int, xp: Int, modifier: Modifier) {
+    if (tick == 0 || xp <= 0) return
+    val anim = remember(tick) { Animatable(0f) }
+    LaunchedEffect(tick) { anim.animateTo(1f, tween(1100)) }
+    val t = anim.value
+    if (t >= 1f) return
+    Text(
+        "+$xp XP",
+        style = outlinedText(15.sp, Color(0xFF7CF29A)),
+        modifier = modifier.offset(y = (12 - 26 * t).dp).alpha(1f - t * t).padding(end = 18.dp),
+    )
 }
 
 @Composable
@@ -178,12 +215,31 @@ private fun BottomPanel(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets:
     val busy = vm.phase == Phase.Spinning || vm.phase == Phase.Loading
     val betLocked = busy || vm.freeSpins > 0
 
+    val chase by rememberInfiniteTransition(label = "console").animateFloat(
+        0f, 3f, infiniteRepeatable(tween(900, easing = LinearEasing)), label = "c",
+    )
     Column(
         Modifier.fillMaxWidth()
+            .drawWithContent {
+                drawContent()
+                // cabinet light strip and corner rivets
+                val n = 18
+                for (k in 0 until n) {
+                    val x = size.width * (k + 0.5f) / n
+                    val lit = (k + chase.toInt()) % 3 == 0
+                    drawCircle(if (lit) Color(0xFFFFFDE7) else Color(0xFFB98A2A), 2.6.dp.toPx(), Offset(x, 7.dp.toPx()))
+                    if (lit) drawCircle(Color(0x55FFF59D), 5.dp.toPx(), Offset(x, 7.dp.toPx()))
+                }
+                listOf(14.dp.toPx() to size.height - 14.dp.toPx(), size.width - 14.dp.toPx() to size.height - 14.dp.toPx())
+                    .forEach { (x, y) ->
+                        drawCircle(Skin.GoldDark, 4.dp.toPx(), Offset(x, y))
+                        drawCircle(Skin.GoldLight, 2.dp.toPx(), Offset(x - 1, y - 1))
+                    }
+            }
             .background(Skin.goldBorder, RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp))
             .padding(top = 2.5.dp)
             .background(Skin.velvetFill, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .padding(horizontal = 14.dp, vertical = 10.dp),
+            .padding(start = 14.dp, end = 14.dp, top = 16.dp, bottom = 10.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

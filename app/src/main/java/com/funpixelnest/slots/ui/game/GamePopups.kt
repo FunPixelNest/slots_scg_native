@@ -104,6 +104,9 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
                     Text("+${formatCoins(p.reward)}", style = outlinedText(24.sp, Skin.GoldLight))
                 }
                 if (p.betUnlocked) Text("Higher bets unlocked!", style = outlinedText(15.sp, Color(0xFFFFCC80)))
+                p.machines.forEach { name ->
+                    Text("NEW MACHINE: ${name.uppercase()}", style = outlinedText(15.sp, Color(0xFF7CF29A)))
+                }
             }
         }
         Popup.NoCoins -> PopupFrame("OUT OF COINS", vm::dismissPopup, tone = SkinTone.Red) {

@@ -9,6 +9,7 @@ import com.funpixelnest.slots.engine.JackpotTier
 import com.funpixelnest.slots.engine.PlayerStore
 import com.funpixelnest.slots.engine.ThemeConfig
 import com.funpixelnest.slots.engine.ThemeIndexEntry
+import com.funpixelnest.slots.engine.Unlocks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.builtins.ListSerializer
@@ -91,11 +92,36 @@ class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
         return amount
     }
 
+    // ---------------------------------------------------------------- machine unlocks
+
+    fun videosWatched(themeId: String): Int = prefs.getInt("video_$themeId", 0)
+    fun addVideoWatched(themeId: String) { prefs.edit().putInt("video_$themeId", videosWatched(themeId) + 1).apply() }
+
+    fun isOpen(entry: ThemeIndexEntry): Boolean = Unlocks.isOpen(entry.order, level, videosWatched(entry.id))
+
+    // ---------------------------------------------------------------- free coins for a video
+
+    var lastVideoCoinsAt: Long
+        get() = prefs.getLong("video_coins_at", 0L)
+        set(v) { prefs.edit().putLong("video_coins_at", v).apply() }
+
+    fun videoCoinsReadyIn(now: Long): Long = (lastVideoCoinsAt + VIDEO_COINS_INTERVAL_MS - now).coerceAtLeast(0L)
+    fun videoCoinsAmount(): Long = 100_000L + 20_000L * (level - 1)
+
+    fun claimVideoCoins(now: Long): Long {
+        if (videoCoinsReadyIn(now) > 0) return 0
+        lastVideoCoinsAt = now
+        val amount = videoCoinsAmount()
+        coins += amount
+        return amount
+    }
+
     companion object {
         private const val K_COINS = "coins"
         private const val K_LEVEL = "level"
         private const val K_PROGRESS = "level_progress"
         private const val K_ECONOMY_V2 = "economy_v2"
+        const val VIDEO_COINS_INTERVAL_MS = 10 * 60 * 1000L
     }
 }
 
@@ -105,6 +131,7 @@ class AppGraph(context: Context) {
     val common = ApkAssetSource(app.assets, "common")
     val player = PrefsPlayerStore(app.getSharedPreferences("player", Context.MODE_PRIVATE))
     val sound = SoundPlayer(app, player)
+    val ads = PlaceholderRewardedAds()
 
     val themes: List<ThemeIndexEntry> by lazy {
         ThemeConfig.json.decodeFromString(ListSerializer(ThemeIndexEntry.serializer()), common.readText("themes.json"))

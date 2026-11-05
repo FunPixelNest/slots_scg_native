@@ -10,7 +10,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.funpixelnest.slots.data.AppGraph
+import com.funpixelnest.slots.ui.common.RewardedVideoOverlay
 import com.funpixelnest.slots.ui.game.GameScreen
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import com.funpixelnest.slots.ui.lobby.LobbyScreen
 
 class MainActivity : ComponentActivity() {
@@ -25,6 +29,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
+            Box(Modifier.fillMaxSize()) {
             val nav = rememberNavController()
             NavHost(nav, startDestination = "lobby") {
                 composable("lobby") {
@@ -37,6 +42,9 @@ class MainActivity : ComponentActivity() {
                     val id = entry.arguments?.getString("id").orEmpty()
                     GameScreen(graph, id, onExit = { nav.popBackStack("lobby", inclusive = false) })
                 }
+            }
+            // rewarded videos (machine unlocks, free coins) play above every screen
+            RewardedVideoOverlay(graph.ads)
             }
         }
     }
