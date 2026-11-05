@@ -291,7 +291,7 @@ private fun MachineCabinet(graph: AppGraph, entry: ThemeIndexEntry, open: Boolea
             if (open) {
                 // round play button that gently bobs
                 Box(
-                    Modifier.align(Alignment.BottomCenter).offset(y = (6 - 4 * bob).dp).size(38.dp)
+                    Modifier.align(Alignment.TopStart).offset(x = (-4).dp, y = (-4 - 3 * bob).dp).size(36.dp)
                         .shadow(6.dp, CircleShape)
                         .background(Skin.goldBorder, CircleShape).padding(2.5.dp)
                         .background(Brush.radialGradient(listOf(Color(0xFF7CF29A), Color(0xFF138A3A))), CircleShape),
