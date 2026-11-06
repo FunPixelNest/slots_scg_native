@@ -242,9 +242,8 @@ class LobbyScreenshotTest : ScreenshotBase() {
                 Modifier.fillMaxSize().background(Color(0xFF1A0533)).padding(6.dp),
             ) {
                 items(themes) { e ->
-                    Box(Modifier.padding(3.dp).aspectRatio(392f / 588f).clip(RoundedCornerShape(8.dp))) {
+                    Box(Modifier.padding(3.dp).aspectRatio(600f / 504f).clip(RoundedCornerShape(8.dp))) {
                         AssetImage(graph.commonImages, e.tile, Modifier.fillMaxSize(), ContentScale.Crop)
-                        Text(e.name, style = outlinedText(8.sp), modifier = Modifier.align(Alignment.BottomCenter))
                     }
                 }
             }
