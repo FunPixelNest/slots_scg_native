@@ -333,7 +333,11 @@ private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, 
     val rule = Unlocks.rule(entry.order)
     val grey = remember { ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0.1f) }) }
     Box(
-        Modifier.fillMaxWidth().aspectRatio(0.78f).shadow(14.dp, RoundedCornerShape(20.dp)).clip(RoundedCornerShape(20.dp))
+        // painted icon (600x504) inside a glowing gold frame
+        Modifier.fillMaxWidth().aspectRatio(600f / 504f)
+            .shadow(14.dp, RoundedCornerShape(20.dp), ambientColor = Skin.Gold, spotColor = Skin.Gold)
+            .border(3.dp, Brush.verticalGradient(listOf(Color(0xFFFFF3B0), Skin.Gold, Color(0xFFB8740F), Skin.Gold)), RoundedCornerShape(20.dp))
+            .padding(3.dp).clip(RoundedCornerShape(17.dp))
             .clickable(onClick = onClick),
     ) {
         val img = rememberImage(graph.commonImages, entry.tile)
@@ -362,15 +366,6 @@ private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, 
                     Unlock.Free -> Unit
                 }
             }
-        }
-        // the icon art carries the machine name; the feature sits in a small chip
-        Features.forTheme(entry.id)?.let {
-            Text(
-                it.title.uppercase(), style = plain(8, Color.White).copy(letterSpacing = 0.6.sp),
-                modifier = Modifier.align(Alignment.TopEnd).padding(10.dp)
-                    .background(Color(0x99070B16), RoundedCornerShape(50)).border(1.dp, Color(0x5938D6FF), RoundedCornerShape(50))
-                    .padding(horizontal = 7.dp, vertical = 3.dp),
-            )
         }
     }
 }
@@ -473,7 +468,7 @@ private fun DailyBonusPopup(graph: AppGraph, now: Long, onDone: () -> Unit) {
 private fun LockedMachinePopup(graph: AppGraph, entry: ThemeIndexEntry, level: Int, onWatch: () -> Unit, onDismiss: () -> Unit) {
     val rule = Unlocks.rule(entry.order)
     PopupFrame(entry.name, onDismiss, tone = SkinTone.Purple, widthFraction = 0.86f) {
-        Box(Modifier.width(140.dp).aspectRatio(392f / 588f)) {
+        Box(Modifier.width(200.dp).aspectRatio(600f / 504f)) {
             GoldFrame(Modifier.fillMaxSize()) { AssetImage(graph.commonImages, entry.tile, Modifier.fillMaxSize(), ContentScale.Crop) }
         }
         when (rule) {
@@ -501,7 +496,7 @@ private fun UnlocksPopup(graph: AppGraph, level: Int, onDismiss: () -> Unit) {
                 val open = graph.player.isOpen(e)
                 val rule = Unlocks.rule(e.order)
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(Modifier.fillMaxWidth().aspectRatio(392f / 588f).clip(RoundedCornerShape(12.dp))) {
+                    Box(Modifier.fillMaxWidth().aspectRatio(600f / 504f).clip(RoundedCornerShape(12.dp))) {
                         AssetImage(graph.commonImages, e.tile, Modifier.fillMaxSize(), ContentScale.Crop, alpha = if (open) 1f else 0.4f)
                         if (!open) Canvas(Modifier.size(24.dp).align(Alignment.Center)) { drawPadlock(Offset.Zero, size.width, Color.White) }
                     }
