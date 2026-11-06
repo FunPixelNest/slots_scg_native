@@ -12,7 +12,7 @@ enum class Sfx(val file: String) {
     WinCoins("win_coins"), BigWin("big_win"), Lose("loose"), Bonus("bonus"), Buy("buy"), Choose("choose"),
 }
 
-class SoundPlayer(private val context: Context, private val prefs: PrefsPlayerStore) {
+class SoundPlayer(private val context: Context, private val prefs: PrefsPlayerStore, private val haptics: Haptics? = null) {
     private val pool = SoundPool.Builder()
         .setMaxStreams(6)
         .setAudioAttributes(
@@ -34,6 +34,7 @@ class SoundPlayer(private val context: Context, private val prefs: PrefsPlayerSt
     }
 
     fun play(s: Sfx, volume: Float = 1f) {
+        haptics?.forSfx(s) // vibration follows the game events even with the sound off
         if (!prefs.soundOn) return
         ids[s]?.let { pool.play(it, volume, volume, 1, 0, 1f) }
     }

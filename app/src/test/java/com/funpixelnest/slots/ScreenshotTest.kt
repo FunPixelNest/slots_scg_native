@@ -167,13 +167,28 @@ class LobbyScreenshotTest : ScreenshotBase() {
     }
 
     @Test
-    fun unlocksList() {
+    fun dailyTasks() {
         graph.player.claimDaily(System.currentTimeMillis())
         graph.player.level = 6
-        setScreen { LobbyScreen(graph, onOpenTheme = {}, startWithUnlocks = true) }
-        waitForTag("lobby")
-        settle(3000)
-        shot("lobby_04_unlocks")
+        graph.player.track(com.funpixelnest.slots.engine.QuestStat.SPINS, 50)
+        graph.player.track(com.funpixelnest.slots.engine.QuestStat.WINS, 9)
+        graph.player.track(com.funpixelnest.slots.engine.QuestStat.COINS_WON, 180_000)
+        setScreen { LobbyScreen(graph, onOpenTheme = {}, startWithQuests = "tasks") }
+        waitForTag("tasks")
+        settle(1500)
+        shot("lobby_04_tasks")
+    }
+
+    @Test
+    fun missions() {
+        graph.player.claimDaily(System.currentTimeMillis())
+        graph.player.level = 6
+        listOf("china", "pirates", "egypt").forEach { graph.player.trackMachinePlayed(it) }
+        graph.player.track(com.funpixelnest.slots.engine.QuestStat.SPINS, 220)
+        setScreen { LobbyScreen(graph, onOpenTheme = {}, startWithQuests = "missions") }
+        waitForTag("missions")
+        settle(1500)
+        shot("lobby_07_missions")
     }
 
     @Test

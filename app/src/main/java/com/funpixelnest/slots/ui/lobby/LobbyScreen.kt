@@ -1,5 +1,10 @@
 package com.funpixelnest.slots.ui.lobby
 
+import com.funpixelnest.slots.ui.flow.QuestsDialog
+import androidx.compose.foundation.layout.offset
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -108,6 +113,8 @@ fun LobbyScreen(
     startWithUnlocks: Boolean = false,
     startWithLocked: String? = null,
     skipStartup: Boolean = false,
+    /** Screenshot hook: "tasks" or "missions". */
+    startWithQuests: String? = null,
 ) {
     val player = graph.player
     val coins by player.coinsFlow.collectAsState()
@@ -116,6 +123,8 @@ fun LobbyScreen(
     var showSettings by remember { mutableStateOf(false) }
     var showUnlocks by remember { mutableStateOf(startWithUnlocks) }
     var hourlyClaim by remember { mutableStateOf(false) }
+    var quests by remember { mutableStateOf(startWithQuests) }
+    val questTick by player.questsFlow.collectAsState()
     var locked by remember { mutableStateOf(graph.themes.firstOrNull { it.id == startWithLocked }) }
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
     var shower by remember { mutableIntStateOf(0) }
@@ -127,7 +136,7 @@ fun LobbyScreen(
         mutableStateOf(
             when {
                 startWithDailyBonus -> listOf(Startup.Daily)
-                skipStartup || startWithUnlocks || startWithLocked != null -> emptyList()
+                skipStartup || startWithUnlocks || startWithLocked != null || startWithQuests != null -> emptyList()
                 else -> buildList {
                     if (!player.welcomeClaimed) add(Startup.Welcome)
                     if (player.nextDailyDay(now) != null) add(Startup.Daily)
@@ -171,8 +180,10 @@ fun LobbyScreen(
                 }
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
-                val hero = graph.themes.firstOrNull { it.id == "china" } ?: graph.themes.first()
-                HeroBanner(graph, hero, player.isOpen(hero)) { if (player.isOpen(hero)) onOpenTheme(hero.id) else locked = hero }
+                val featured = remember { FEATURED.mapNotNull { id -> graph.themes.firstOrNull { it.id == id } } }
+                FeaturedCarousel(graph, featured, isOpen = { player.isOpen(it) }) { hero ->
+                    if (player.isOpen(hero)) onOpenTheme(hero.id) else locked = hero
+                }
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 QuickRow(graph, now, onDaily = { startup = listOf(Startup.Daily) }, onHourly = { hourlyClaim = true }, onPiggy = { graph.openPiggy() })
@@ -199,15 +210,20 @@ fun LobbyScreen(
         }
         // fade + floating tab bar
         Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(110.dp).background(Brush.verticalGradient(listOf(Color.Transparent, Skin.VelvetDeep))))
+        val taskAlert = remember(questTick, now / 60_000) { player.claimableTasks() > 0 }
+        val missionAlert = remember(questTick, now / 60_000, level) { player.claimableMissions() > 0 }
         TabBar(
-            Modifier.align(Alignment.BottomCenter),
-            onStore = { graph.openStore() }, onBonus = { startup = listOf(Startup.Wheel).takeIf { player.wheelReadyIn(now) == 0L } ?: listOf(Startup.Daily) },
-            onUnlocks = { showUnlocks = true }, onPiggy = { graph.openPiggy() },
+            Modifier.align(Alignment.BottomCenter), taskAlert, missionAlert,
+            onStore = { graph.sound.play(Sfx.Button); graph.openStore() },
+            onTasks = { graph.sound.play(Sfx.Button); quests = "tasks" },
+            onMissions = { graph.sound.play(Sfx.Button); quests = "missions" },
+            onPiggy = { graph.sound.play(Sfx.Button); graph.openPiggy() },
         )
 
         if (showSettings) SettingsPopup(graph, graph.commonImages, null) { showSettings = false }
         CoinShower(shower, 60, Modifier.fillMaxSize())
         if (showUnlocks) UnlocksPopup(graph, level) { showUnlocks = false }
+        quests?.let { q -> QuestsDialog(graph, daily = q == "tasks") { quests = null; shower++ } }
         if (hourlyClaim) {
             RewardClaimDialog(graph, "Hourly Bonus", "Free coins every hour", Economy.hourlyBonus(level)) {
                 player.lastHourlyAt = System.currentTimeMillis(); hourlyClaim = false; shower++
@@ -244,6 +260,37 @@ fun ProfileBar(level: Int, progress: Float, coins: Long, onPlus: () -> Unit, onS
         CoinCapsule(coins, onPlus = onPlus)
         Spacer(Modifier.width(8.dp))
         IconRoundButton(SkinIcon.Gear, size = 38.dp, onClick = onSettings)
+    }
+}
+
+/** Machines shown in the auto-scrolling banner at the top of the lobby. */
+private val FEATURED = listOf("china", "pirates", "egypt", "greek", "wild_west")
+private const val FEATURED_INTERVAL_MS = 4_000L
+
+/** Five featured machines that slide by themselves every [FEATURED_INTERVAL_MS] (and can be swiped). */
+@Composable
+private fun FeaturedCarousel(graph: AppGraph, featured: List<ThemeIndexEntry>, isOpen: (ThemeIndexEntry) -> Boolean, onPlay: (ThemeIndexEntry) -> Unit) {
+    if (featured.isEmpty()) return
+    val start = (Int.MAX_VALUE / 2).let { it - it % featured.size }
+    val pager = rememberPagerState(initialPage = start) { Int.MAX_VALUE }
+    LaunchedEffect(pager.settledPage) {
+        delay(FEATURED_INTERVAL_MS)
+        pager.animateScrollToPage(pager.settledPage + 1, animationSpec = tween(600))
+    }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        HorizontalPager(pager, Modifier.fillMaxWidth(), pageSpacing = 12.dp) { page ->
+            val e = featured[page % featured.size]
+            HeroBanner(graph, e, isOpen(e)) { onPlay(e) }
+        }
+        Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            val cur = pager.currentPage % featured.size
+            featured.indices.forEach { i ->
+                Box(
+                    Modifier.height(6.dp).width(if (i == cur) 18.dp else 6.dp)
+                        .background(if (i == cur) Skin.Gold else Color(0x40FFFFFF), RoundedCornerShape(50)),
+                )
+            }
+        }
     }
 }
 
@@ -329,7 +376,6 @@ private fun FilterChip(text: String, on: Boolean, onClick: () -> Unit) {
 /** Machine card: art, name, feature, jackpot chip; locked ones greyed with the unlock rule. */
 @Composable
 private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, onClick: () -> Unit) {
-    val grand = Economy.TOTAL_BETS[0].toLong() * JackpotTier.GRAND.betMultiple + graph.player.jackpotPool(entry.id, JackpotTier.GRAND)
     val rule = Unlocks.rule(entry.order)
     val grey = remember { ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0.1f) }) }
     Box(
@@ -347,14 +393,6 @@ private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, 
                 colorFilter = if (open) null else grey, alpha = if (open) 1f else 0.55f,
             )
         }
-        Row(
-            Modifier.padding(10.dp).background(Color(0xB3070B16), RoundedCornerShape(50)).border(1.dp, Color(0x73F5C451), RoundedCornerShape(50))
-                .padding(horizontal = 8.dp, vertical = 3.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            CoinIcon(Modifier.size(12.dp)); Spacer(Modifier.width(4.dp))
-            Text(formatCompact(grand), style = plain(11, Skin.Gold))
-        }
         if (!open) {
             Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Box(Modifier.size(44.dp).background(Color(0x1FFFFFFF), CircleShape).border(1.dp, Skin.Hairline, CircleShape), contentAlignment = Alignment.Center) {
@@ -371,31 +409,48 @@ private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, 
 }
 
 @Composable
-private fun TabBar(modifier: Modifier, onStore: () -> Unit, onBonus: () -> Unit, onUnlocks: () -> Unit, onPiggy: () -> Unit) {
-    Row(
-        modifier.padding(horizontal = 12.dp, vertical = 10.dp).fillMaxWidth().height(64.dp)
-            .shadow(24.dp, RoundedCornerShape(22.dp))
-            .background(Color(0xE60E1324), RoundedCornerShape(22.dp)).border(1.dp, Skin.Hairline, RoundedCornerShape(22.dp)),
-        horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically,
-    ) {
-        TabItem(SkinIcon.Menu, "Lobby", true) { }
-        TabItem(SkinIcon.Plus, "Store", false, onStore)
-        TabItem(SkinIcon.Gift, "Bonus", false, onBonus)
-        TabItem(SkinIcon.Lock, "Unlocks", false, onUnlocks)
-        TabItem(SkinIcon.Trophy, "Piggy", false, onPiggy)
+private fun TabBar(
+    modifier: Modifier, taskAlert: Boolean, missionAlert: Boolean,
+    onStore: () -> Unit, onTasks: () -> Unit, onMissions: () -> Unit, onPiggy: () -> Unit,
+) {
+    Box(modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp), contentAlignment = Alignment.BottomCenter) {
+        Row(
+            Modifier.fillMaxWidth().height(64.dp)
+                .shadow(24.dp, RoundedCornerShape(22.dp))
+                .background(Color(0xE60E1324), RoundedCornerShape(22.dp)).border(1.dp, Skin.Hairline, RoundedCornerShape(22.dp)),
+            horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TabItem(SkinIcon.Cart, "Store", false, onClick = onStore)
+            TabItem(SkinIcon.Tasks, "Tasks", taskAlert, onClick = onTasks)
+            Spacer(Modifier.width(72.dp)) // room for the raised Lobby button
+            TabItem(SkinIcon.Target, "Missions", missionAlert, onClick = onMissions)
+            TabItem(SkinIcon.Piggy, "Piggy", false, onClick = onPiggy)
+        }
+        // Lobby: raised gold button in the middle (current screen)
+        Column(Modifier.padding(bottom = 6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                Modifier.size(64.dp).shadow(16.dp, CircleShape, spotColor = Skin.Gold, ambientColor = Skin.Gold)
+                    .background(Brush.verticalGradient(listOf(Color(0xFFFFE08A), Skin.Gold, Color(0xFFC77A0A))), CircleShape)
+                    .padding(3.dp).background(Brush.verticalGradient(listOf(Color(0xFF2A1B4A), Color(0xFF120A26))), CircleShape),
+                contentAlignment = Alignment.Center,
+            ) { Canvas(Modifier.size(28.dp)) { drawSkinIcon(SkinIcon.Home, Skin.Gold) } }
+            Text("Lobby", style = plain(10, Skin.Gold), modifier = Modifier.padding(top = 2.dp))
+        }
     }
 }
 
 @Composable
-private fun TabItem(icon: SkinIcon, label: String, on: Boolean, onClick: () -> Unit) {
+private fun TabItem(icon: SkinIcon, label: String, alert: Boolean, onClick: () -> Unit) {
     Column(
         Modifier.width(60.dp).clickable(remember { MutableInteractionSource() }, null, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Canvas(Modifier.size(20.dp)) { drawSkinIcon(icon, if (on) Skin.Gold else Skin.TextSoft) }
+        Box {
+            Canvas(Modifier.size(22.dp)) { drawSkinIcon(icon, Color.White) }
+            if (alert) Box(Modifier.align(Alignment.TopEnd).offset(x = 5.dp, y = (-3).dp).size(9.dp).background(Skin.Ruby, CircleShape))
+        }
         Spacer(Modifier.height(4.dp))
-        Text(label, style = plain(10, if (on) Skin.Gold else Skin.TextSoft))
-        if (on) Box(Modifier.padding(top = 3.dp).size(4.dp).background(Skin.Gold, CircleShape))
+        Text(label, style = plain(10, Skin.TextSoft))
     }
 }
 

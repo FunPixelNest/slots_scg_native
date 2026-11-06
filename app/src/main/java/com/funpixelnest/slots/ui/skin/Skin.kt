@@ -152,7 +152,7 @@ fun SkinButton(
             .then(if (tone == SkinTone.Glass) Modifier else Modifier.shadow(10.dp, shape, ambientColor = tone.bottom, spotColor = tone.bottom))
             .background(Brush.verticalGradient(listOf(tone.top, tone.bottom)), shape)
             .then(if (tone == SkinTone.Glass) Modifier.border(1.dp, Skin.Hairline, shape) else Modifier)
-            .clickable(interaction, indication = null, enabled = enabled, onClick = onClick),
+            .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -164,7 +164,7 @@ fun SkinButton(
     }
 }
 
-enum class SkinIcon { Menu, Back, Info, Gear, Plus, Minus, Clock, Gift, Video, Lock, Trophy, Close }
+enum class SkinIcon { Menu, Back, Info, Gear, Plus, Minus, Clock, Gift, Video, Lock, Trophy, Close, Home, Cart, Tasks, Target, Piggy }
 
 /** Rounded glass icon button; [tone] tints the icon. */
 @Composable
@@ -192,7 +192,7 @@ fun IconRoundButton(
                 shape,
             )
             .border(1.dp, Skin.Hairline, shape)
-            .clickable(interaction, indication = null, enabled = enabled, onClick = onClick),
+            .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
         contentAlignment = Alignment.Center,
     ) {
         val tint = when (tone) {
@@ -247,6 +247,43 @@ fun DrawScope.drawSkinIcon(icon: SkinIcon, c: Color = Color.White) {
         }
         SkinIcon.Lock -> drawPadlock(Offset(0f, 0f), w, c)
         SkinIcon.Close -> { line(0.15f, 0.15f, 0.85f, 0.85f); line(0.85f, 0.15f, 0.15f, 0.85f) }
+        SkinIcon.Home -> {
+            val roof = Path().apply { moveTo(0.02f * w, 0.5f * w); lineTo(0.5f * w, 0.06f * w); lineTo(0.98f * w, 0.5f * w); close() }
+            drawPath(roof, c)
+            drawRoundRect(c, Offset(0.16f * w, 0.42f * w), Size(0.68f * w, 0.54f * w), CornerRadius(w * 0.06f))
+            drawRoundRect(Skin.VelvetDeep, Offset(0.4f * w, 0.62f * w), Size(0.2f * w, 0.34f * w), CornerRadius(w * 0.04f))
+        }
+        SkinIcon.Cart -> {
+            line(0.02f, 0.12f, 0.18f, 0.12f)
+            val basket = Path().apply {
+                moveTo(0.18f * w, 0.12f * w); lineTo(0.95f * w, 0.24f * w); lineTo(0.85f * w, 0.62f * w); lineTo(0.28f * w, 0.62f * w); close()
+            }
+            drawPath(basket, c)
+            drawCircle(c, w * 0.09f, Offset(0.34f * w, 0.85f * w)); drawCircle(c, w * 0.09f, Offset(0.8f * w, 0.85f * w))
+        }
+        SkinIcon.Tasks -> {
+            drawRoundRect(c, Offset(0.12f * w, 0.04f * w), Size(0.76f * w, 0.92f * w), CornerRadius(w * 0.1f), style = Stroke(stroke * 0.7f))
+            for (i in 0..2) {
+                val y = 0.28f + i * 0.24f
+                drawCircle(c, w * 0.05f, Offset(0.32f * w, y * w))
+                line(0.46f, y, 0.72f, y)
+            }
+        }
+        SkinIcon.Target -> {
+            drawCircle(c, w * 0.44f, Offset(w / 2, w / 2), style = Stroke(stroke * 0.7f))
+            drawCircle(c, w * 0.27f, Offset(w / 2, w / 2), style = Stroke(stroke * 0.7f))
+            drawCircle(c, w * 0.1f, Offset(w / 2, w / 2))
+        }
+        SkinIcon.Piggy -> {
+            drawOval(c, Offset(0.1f * w, 0.22f * w), Size(0.78f * w, 0.6f * w))
+            drawCircle(c, w * 0.1f, Offset(0.9f * w, 0.5f * w))
+            val ear = Path().apply { moveTo(0.3f * w, 0.28f * w); lineTo(0.36f * w, 0.08f * w); lineTo(0.5f * w, 0.24f * w); close() }
+            drawPath(ear, c)
+            drawRect(c, Offset(0.24f * w, 0.72f * w), Size(0.12f * w, 0.22f * w))
+            drawRect(c, Offset(0.6f * w, 0.72f * w), Size(0.12f * w, 0.22f * w))
+            drawRoundRect(Skin.VelvetDeep, Offset(0.4f * w, 0.26f * w), Size(0.2f * w, 0.05f * w), CornerRadius(w * 0.02f))
+            drawCircle(Skin.VelvetDeep, w * 0.04f, Offset(0.7f * w, 0.42f * w))
+        }
         SkinIcon.Trophy -> {
             val cup = Path().apply {
                 moveTo(0.15f * w, 0.05f * w); lineTo(0.85f * w, 0.05f * w)
@@ -450,7 +487,7 @@ fun SpinButton(
         modifier
             .scale(scale)
             .alpha(if (enabled) 1f else 0.55f)
-            .clickable(interaction, indication = null, enabled = enabled, onClick = onClick),
+            .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Canvas(Modifier.fillMaxSize()) {

@@ -247,9 +247,11 @@ private fun payRows(cfg: ThemeConfig): List<PayRow> {
 fun SettingsPopup(graph: AppGraph, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets, @Suppress("UNUSED_PARAMETER") art: String?, onDismiss: () -> Unit) {
     var sound by remember { mutableStateOf(graph.player.soundOn) }
     var music by remember { mutableStateOf(graph.player.musicOn) }
+    var haptics by remember { mutableStateOf(graph.player.hapticsOn) }
     PopupFrame("SETTINGS", onDismiss, tone = SkinTone.Purple, widthFraction = 0.82f) {
         Toggle("Sound", sound) { sound = it; graph.sound.setSound(it) }
         Toggle("Music", music) { music = it; graph.sound.setMusic(it) }
+        Toggle("Vibration", haptics) { haptics = it; graph.player.hapticsOn = it; if (it) graph.haptics.play(com.funpixelnest.slots.audio.Haptic.Medium) }
         Spacer(Modifier.height(4.dp))
         SkinButton("DONE", Modifier.width(160.dp).height(46.dp), tone = SkinTone.Green, onClick = onDismiss)
         Text("FunPixelNest", style = outlinedText(10.sp, Skin.TextSoft))
@@ -264,7 +266,7 @@ private fun Toggle(label: String, on: Boolean, onChange: (Boolean) -> Unit) {
         Modifier.clickable { onChange(!on) }.padding(4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(label, style = outlinedText(20.sp), modifier = Modifier.width(96.dp))
+        Text(label, style = outlinedText(18.sp), modifier = Modifier.width(110.dp))
         Box(
             Modifier.width(64.dp).height(32.dp)
                 .background(Skin.goldBorder, RoundedCornerShape(50))

@@ -1,5 +1,7 @@
 package com.funpixelnest.slots.ui.game
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
@@ -167,7 +169,8 @@ private fun TopBar(vm: GameViewModel, graph: AppGraph, onExit: () -> Unit) {
             XpBar(vm.level, vm.levelProgress, Modifier.fillMaxWidth())
             XpFloat(vm.xpTick, vm.xpGained, Modifier.align(Alignment.TopEnd))
         }
-        CoinCapsule(vm.shownCoins, onPlus = { graph.openStore() })
+        // balance only (no + button); tapping it still opens the store
+        CoinCapsule(vm.shownCoins, Modifier.clickable(remember { MutableInteractionSource() }, null) { graph.openStore() })
         IconRoundButton(SkinIcon.Info, size = 38.dp) { vm.showPopup(Popup.Info) }
     }
 }

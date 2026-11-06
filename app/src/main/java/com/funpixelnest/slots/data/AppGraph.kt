@@ -10,6 +10,9 @@ import com.funpixelnest.slots.engine.Economy
 import com.funpixelnest.slots.engine.Rewards
 import com.funpixelnest.slots.engine.JackpotTier
 import com.funpixelnest.slots.engine.PlayerStore
+import com.funpixelnest.slots.engine.Quest
+import com.funpixelnest.slots.engine.QuestStat
+import com.funpixelnest.slots.engine.Quests
 import com.funpixelnest.slots.engine.ThemeConfig
 import com.funpixelnest.slots.engine.ThemeIndexEntry
 import com.funpixelnest.slots.engine.Unlocks
@@ -63,6 +66,9 @@ class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
     var soundOn: Boolean
         get() = prefs.getBoolean("sound", true)
         set(v) { prefs.edit().putBoolean("sound", v).apply() }
+    var hapticsOn: Boolean
+        get() = prefs.getBoolean("haptics", true)
+        set(v) { prefs.edit().putBoolean("haptics", v).apply() }
     var musicOn: Boolean
         get() = prefs.getBoolean("music", true)
         set(v) { prefs.edit().putBoolean("music", v).apply() }
@@ -129,6 +135,67 @@ class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
     /** Hand out coins (any source); returns the amount for chaining. */
     fun grant(amount: Long): Long { coins += amount; return amount }
 
+    // ------------------------------------------------------------------ tasks & missions
+    /** Bumped whenever quest progress changes, so lobby badges recompose. */
+    val questsFlow = MutableStateFlow(0)
+
+    private fun rollQuestDay(now: Long) {
+        val today = Quests.day(now)
+        if (prefs.getLong("qd_day", -1) != today) {
+            val e = prefs.edit().putLong("qd_day", today).remove("qd_claimed")
+            QuestStat.entries.forEach { e.remove("qd_${it.name}") }
+            e.apply()
+        }
+    }
+
+    /** Count [amount] towards today's tasks and lifetime missions. */
+    fun track(stat: QuestStat, amount: Long = 1, now: Long = System.currentTimeMillis()) {
+        if (amount <= 0) return
+        rollQuestDay(now)
+        prefs.edit()
+            .putLong("qd_${stat.name}", prefs.getLong("qd_${stat.name}", 0) + amount)
+            .putLong("ql_${stat.name}", prefs.getLong("ql_${stat.name}", 0) + amount)
+            .apply()
+        questsFlow.value++
+    }
+
+    fun trackMachinePlayed(themeId: String) {
+        val played = prefs.getStringSet("played_machines", emptySet()).orEmpty()
+        if (themeId !in played) {
+            prefs.edit().putStringSet("played_machines", played + themeId).apply()
+            questsFlow.value++
+        }
+    }
+
+    fun questProgress(q: Quest, daily: Boolean, now: Long = System.currentTimeMillis()): Long {
+        rollQuestDay(now)
+        return when (q.stat) {
+            QuestStat.LEVEL -> level.toLong()
+            QuestStat.MACHINES -> prefs.getStringSet("played_machines", emptySet()).orEmpty().size.toLong()
+            else -> prefs.getLong(if (daily) "qd_${q.stat.name}" else "ql_${q.stat.name}", 0)
+        }.coerceAtMost(q.target)
+    }
+
+    private fun claimedKey(daily: Boolean) = if (daily) "qd_claimed" else "ql_claimed"
+
+    fun isClaimed(q: Quest, daily: Boolean, now: Long = System.currentTimeMillis()): Boolean {
+        rollQuestDay(now)
+        return q.id in prefs.getStringSet(claimedKey(daily), emptySet()).orEmpty()
+    }
+
+    fun canClaim(q: Quest, daily: Boolean, now: Long = System.currentTimeMillis()) =
+        !isClaimed(q, daily, now) && questProgress(q, daily, now) >= q.target
+
+    fun markClaimed(q: Quest, daily: Boolean) {
+        val set = prefs.getStringSet(claimedKey(daily), emptySet()).orEmpty()
+        prefs.edit().putStringSet(claimedKey(daily), set + q.id).apply()
+        questsFlow.value++
+    }
+
+    fun claimableTasks(now: Long = System.currentTimeMillis()) = Quests.DAILY_TASKS.count { canClaim(it, true, now) }
+    fun claimableMissions(now: Long = System.currentTimeMillis()) = Quests.MISSIONS.count { canClaim(it, false, now) }
+
+
     // ---------------------------------------------------------------- machine unlocks
 
     fun videosWatched(themeId: String): Int = prefs.getInt("video_$themeId", 0)
@@ -167,7 +234,8 @@ class AppGraph(context: Context) {
     private val app = context.applicationContext
     val common = ApkAssetSource(app.assets, "common")
     val player = PrefsPlayerStore(app.getSharedPreferences("player", Context.MODE_PRIVATE))
-    val sound = SoundPlayer(app, player)
+    val haptics = com.funpixelnest.slots.audio.Haptics(app, player)
+    val sound = SoundPlayer(app, player, haptics)
     val ads = PlaceholderRewardedAds()
     val billing: Billing = PlaceholderBilling()
 

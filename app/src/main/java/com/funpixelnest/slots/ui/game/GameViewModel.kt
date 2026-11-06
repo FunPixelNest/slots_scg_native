@@ -22,6 +22,7 @@ import com.funpixelnest.slots.engine.JackpotTier
 import com.funpixelnest.slots.engine.PickBonus
 import com.funpixelnest.slots.engine.Unlocks
 import com.funpixelnest.slots.engine.WinTier
+import com.funpixelnest.slots.engine.QuestStat
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -96,6 +97,7 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
     private var presentJob: Job? = null
 
     init {
+        graph.player.trackMachinePlayed(assets.config.id)
         viewModelScope.launch {
             assets.preload { loadProgress = it }
             phase = Phase.Idle
@@ -135,6 +137,7 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
         }
         if (autoSpinsLeft > 0 && !r.wasFreeSpin) autoSpinsLeft--
         if (!r.wasFreeSpin) graph.player.feedPiggy(r.totalBet) else freeGamesWon += r.totalWin
+        trackQuests(r)
         result = r
         shownWin = 0
         shownCoins = session.coins - r.totalWin - r.levelUpReward
@@ -147,6 +150,15 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
         xpGained = r.xpGained
         xpTick++
         if (r.levelUp == null) levelProgress = session.levelProgress
+    }
+
+    /** Daily tasks and missions progress from one spin. */
+    private fun trackQuests(r: SpinResult) {
+        val p = graph.player
+        p.track(QuestStat.SPINS)
+        if (!r.wasFreeSpin && isMaxBet) p.track(QuestStat.MAX_BET_SPINS)
+        if (r.totalWin > 0) { p.track(QuestStat.WINS); p.track(QuestStat.COINS_WON, r.totalWin) }
+        if (r.tier >= WinTier.BIG) p.track(QuestStat.BIG_WINS)
     }
 
     /** Called by the reels when the last reel has settled. */
@@ -203,6 +215,7 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
                 while (popup != null) delay(200)
                 val unlocked = Economy.unlockedBetSteps(it) > Economy.unlockedBetSteps(it - 1)
                 val machines = Unlocks.openedAtLevel(it, graph.themes.size).mapNotNull { o -> graph.themes.getOrNull(o)?.name }
+                graph.haptics.play(com.funpixelnest.slots.audio.Haptic.Success)
                 popup = Popup.LevelUp(it, r.levelUpReward, unlocked, machines)
                 shower(40)
             }
@@ -236,6 +249,8 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
     /** Called by the bonus screen when the player collects. */
     fun finishBonus(total: Long, jackpots: List<JackpotTier>) {
         bonus = null
+        graph.player.track(QuestStat.BONUS_GAMES)
+        graph.player.track(QuestStat.COINS_WON, total)
         session.awardBonus(total, jackpots)
         this.jackpots = readJackpots()
         shownCoins = session.coins

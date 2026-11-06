@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -61,6 +62,8 @@ import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.audio.Sfx
 import com.funpixelnest.slots.data.AppGraph
 import com.funpixelnest.slots.engine.CoinPack
+import com.funpixelnest.slots.engine.Quest
+import com.funpixelnest.slots.engine.Quests
 import com.funpixelnest.slots.engine.Rewards
 import com.funpixelnest.slots.engine.Store
 import com.funpixelnest.slots.ui.common.CoinIcon
@@ -496,3 +499,76 @@ fun PiggyBankDialog(graph: AppGraph, onClose: () -> Unit) {
     }
 }
 
+
+// =========================================================================== tasks & missions
+
+/** Daily tasks ([daily] = true) or long-term missions; each finished one is claimed with the x2 video option. */
+@Composable
+fun QuestsDialog(graph: AppGraph, daily: Boolean, onClose: () -> Unit) {
+    val p = graph.player
+    val tick by p.questsFlow.collectAsState()
+    var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(Unit) { while (true) { kotlinx.coroutines.delay(1000); now = System.currentTimeMillis() } }
+    var claiming by remember { mutableStateOf<Quest?>(null) }
+    val list = if (daily) Quests.DAILY_TASKS else Quests.MISSIONS
+    Modal(onClose, tag = if (daily) "tasks" else "missions") {
+        SkinDialog(if (daily) "Daily Tasks" else "Missions", Modifier.fillMaxWidth(), tone = SkinTone.Purple) {
+            val left = Quests.msToReset(now) / 1000
+            Text(
+                if (daily) "New tasks in %d:%02d:%02d".format(left / 3600, left / 60 % 60, left % 60) else "Long-term goals with big rewards",
+                style = plain(12, Skin.TextSoft),
+            )
+            Spacer(Modifier.height(12.dp))
+            Column(Modifier.heightIn(max = 470.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                list.forEach { q ->
+                    // tick: re-read progress whenever the store reports a change
+                    val progress = remember(tick, now / 60_000) { p.questProgress(q, daily) }
+                    val claimed = remember(tick) { p.isClaimed(q, daily) }
+                    QuestRow(q, progress, claimed) { graph.sound.play(Sfx.Button); claiming = q }
+                }
+            }
+            Spacer(Modifier.height(14.dp))
+            SkinButton("CLOSE", Modifier.fillMaxWidth().height(44.dp), tone = SkinTone.Glass, textSize = 14.sp, onClick = onClose)
+        }
+    }
+    claiming?.let { q ->
+        RewardClaimDialog(graph, q.title, if (daily) "Daily task complete!" else "Mission complete!", q.reward) {
+            p.markClaimed(q, daily); claiming = null
+        }
+    }
+}
+
+@Composable
+private fun QuestRow(q: Quest, progress: Long, claimed: Boolean, onClaim: () -> Unit) {
+    val done = progress >= q.target
+    Row(
+        Modifier.fillMaxWidth().background(Color(0x14FFFFFF), RoundedCornerShape(14.dp))
+            .border(1.dp, if (done && !claimed) Skin.Gold.copy(alpha = 0.7f) else Skin.Hairline, RoundedCornerShape(14.dp))
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(q.title, style = plain(13).copy(textAlign = TextAlign.Start))
+            Spacer(Modifier.height(6.dp))
+            Box(Modifier.fillMaxWidth().height(8.dp).background(Color(0x1FFFFFFF), RoundedCornerShape(50))) {
+                Box(
+                    Modifier.fillMaxHeight().fillMaxWidth((progress.toFloat() / q.target).coerceIn(0.02f, 1f))
+                        .background(Brush.horizontalGradient(listOf(Skin.Sapphire, Skin.Emerald)), RoundedCornerShape(50)),
+                )
+            }
+            Spacer(Modifier.height(4.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("${formatCompact(progress)} / ${formatCompact(q.target)}", style = plain(10, Skin.TextSoft))
+                Spacer(Modifier.width(10.dp))
+                CoinIcon(Modifier.size(12.dp)); Spacer(Modifier.width(3.dp))
+                Text(formatCompact(q.reward), style = plain(11, Skin.Gold))
+            }
+        }
+        Spacer(Modifier.width(10.dp))
+        when {
+            claimed -> Text("✓ DONE", style = plain(12, Skin.Emerald), modifier = Modifier.width(76.dp))
+            done -> SkinButton("CLAIM", Modifier.width(76.dp).height(36.dp), tone = SkinTone.Green, textSize = 13.sp, onClick = onClaim)
+            else -> Text("${(progress * 100 / q.target)}%", style = plain(13, Skin.TextSoft), modifier = Modifier.width(76.dp))
+        }
+    }
+}
