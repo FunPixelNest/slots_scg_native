@@ -128,8 +128,7 @@ class SlotMachineTest {
         val store = InMemoryPlayerStore(coins = 10_000_000_000)
         val s = GameSession(SlotMachine(cfg), store, Random(7))
         s.setBetIndex(1)
-        assertEquals(20, s.lineBet)
-        assertEquals(4_860, s.totalBet)
+        assertEquals(5_000, s.totalBet)
         var expected = store.coins
         var jackpots = 0
         repeat(5_000) {
@@ -157,9 +156,9 @@ class SlotMachineTest {
         assertEquals(Economy.FREE_BET_STEPS - 1, s.betIndex) // locked steps stay locked
         store.level = 30
         s.maxBet()
-        assertEquals(Economy.LINE_BETS.size - 1, s.betIndex)
+        assertEquals(Economy.TOTAL_BETS.size - 1, s.betIndex)
         assertEquals(null, s.nextBetUnlockLevel)
-        for (i in Economy.LINE_BETS.indices) {
+        for (i in Economy.TOTAL_BETS.indices) {
             assertTrue(Economy.unlockedBetSteps(Economy.levelForBetStep(i)) > i, "step $i")
         }
     }

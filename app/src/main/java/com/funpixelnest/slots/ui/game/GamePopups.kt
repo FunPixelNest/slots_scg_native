@@ -119,7 +119,7 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
                 }
             },
         ) { vm.syncCoins(); vm.dismissPopup() }
-        Popup.Info -> PayTablePopup(assets, vm.lineBet, vm.session.linesCount, vm::dismissPopup)
+        Popup.Info -> PayTablePopup(assets, vm.session::coinsFor, vm.totalBet, vm.session.linesCount, vm::dismissPopup)
         Popup.Settings -> SettingsPopup(graph, assets, null, vm::dismissPopup)
     }
 }
@@ -178,10 +178,10 @@ fun PopupFrame(
 }
 
 @Composable
-private fun PayTablePopup(assets: ThemeAssets, lineBet: Int, lines: Int, onDismiss: () -> Unit) {
+private fun PayTablePopup(assets: ThemeAssets, coinsFor: (Long) -> Long, totalBet: Long, lines: Int, onDismiss: () -> Unit) {
     val cfg = assets.config
     PopupFrame("PAYTABLE", onDismiss, tone = SkinTone.Purple, widthFraction = 0.94f, heightFraction = 0.82f) {
-        Text("$lines ways · pays left to right · line bet ${formatCoins(lineBet.toLong())}", style = outlinedText(12.sp, Skin.TextSoft))
+        Text("$lines ways · pays left to right · total bet ${formatCoins(totalBet)}", style = outlinedText(12.sp, Skin.TextSoft))
         Features.forTheme(cfg.id)?.let { f ->
             Column(
                 Modifier.fillMaxWidth().background(Color.Black.copy(alpha = 0.3f), RoundedCornerShape(12.dp)).padding(8.dp),
@@ -206,7 +206,7 @@ private fun PayTablePopup(assets: ThemeAssets, lineBet: Int, lines: Int, onDismi
                         r.pays.forEach { (count, pay) ->
                             Row {
                                 Text("$count× ", style = outlinedText(13.sp, Skin.TextSoft))
-                                Text(formatCompact(pay.toLong() * lineBet), style = outlinedText(13.sp, Skin.GoldLight))
+                                Text(formatCompact(coinsFor(pay.toLong())), style = outlinedText(13.sp, Skin.GoldLight))
                             }
                         }
                     }
@@ -218,7 +218,7 @@ private fun PayTablePopup(assets: ThemeAssets, lineBet: Int, lines: Int, onDismi
             cfg.scatterPays.forEach { s ->
                 add("${s.count} SCATTERS anywhere: " + listOfNotNull(
                     s.freeSpins.takeIf { it > 0 }?.let { "$it free spins" },
-                    s.pay.takeIf { it > 0 }?.let { "${formatCoins(it.toLong() * lineBet)} coins" },
+                    s.pay.takeIf { it > 0 }?.let { "${formatCoins(coinsFor(it.toLong()))} coins" },
                 ).joinToString(" + "))
             }
         }

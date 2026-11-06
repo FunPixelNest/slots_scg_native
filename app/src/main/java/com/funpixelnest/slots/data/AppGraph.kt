@@ -51,9 +51,9 @@ class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
         set(v) { _progress.value = v; prefs.edit().putFloat(K_PROGRESS, v).apply() }
 
     override fun lineBet(themeId: String): Int? =
-        prefs.getInt("bet_$themeId", -1).takeIf { it > 0 }
+        prefs.getInt("tbet_$themeId", -1).takeIf { it > 0 }
 
-    override fun setLineBet(themeId: String, bet: Int) { prefs.edit().putInt("bet_$themeId", bet).apply() }
+    override fun setLineBet(themeId: String, bet: Int) { prefs.edit().putInt("tbet_$themeId", bet).apply() }
 
     override fun jackpotPool(themeId: String, tier: JackpotTier): Long = prefs.getLong("jp_${themeId}_$tier", 0L)
     override fun setJackpotPool(themeId: String, tier: JackpotTier, value: Long) {

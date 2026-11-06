@@ -249,7 +249,7 @@ fun ProfileBar(level: Int, progress: Float, coins: Long, onPlus: () -> Unit, onS
 
 @Composable
 private fun HeroBanner(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, onPlay: () -> Unit) {
-    val grand = Economy.LINE_BETS[0].toLong() * 243 * JackpotTier.GRAND.betMultiple + graph.player.jackpotPool(entry.id, JackpotTier.GRAND)
+    val grand = Economy.TOTAL_BETS[0].toLong() * JackpotTier.GRAND.betMultiple + graph.player.jackpotPool(entry.id, JackpotTier.GRAND)
     val assets = remember(entry.id) { graph.theme(entry.id) }
     val bgKey = assets?.config?.let { it.backgroundPortrait ?: it.background }
     Box(
@@ -329,7 +329,7 @@ private fun FilterChip(text: String, on: Boolean, onClick: () -> Unit) {
 /** Machine card: art, name, feature, jackpot chip; locked ones greyed with the unlock rule. */
 @Composable
 private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, onClick: () -> Unit) {
-    val grand = Economy.LINE_BETS[0].toLong() * 243 * JackpotTier.GRAND.betMultiple + graph.player.jackpotPool(entry.id, JackpotTier.GRAND)
+    val grand = Economy.TOTAL_BETS[0].toLong() * JackpotTier.GRAND.betMultiple + graph.player.jackpotPool(entry.id, JackpotTier.GRAND)
     val rule = Unlocks.rule(entry.order)
     val grey = remember { ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0.1f) }) }
     Box(

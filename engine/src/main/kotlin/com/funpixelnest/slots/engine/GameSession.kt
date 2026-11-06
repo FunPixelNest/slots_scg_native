@@ -65,21 +65,23 @@ class GameSession(
     private val random: Random = Random.Default,
 ) {
     private val cfg = machine.config
-    private val bets = Economy.LINE_BETS
+    private val bets = Economy.TOTAL_BETS
     val linesCount: Int get() = machine.lines.size
 
-    /** Index into [Economy.LINE_BETS]. */
+    /** Index into [Economy.TOTAL_BETS]. */
     var betIndex: Int = (store.lineBet(cfg.id)?.let { saved -> bets.indexOfLast { it <= saved } } ?: 0)
         .coerceIn(0, Economy.unlockedBetSteps(store.level) - 1)
         private set
     var freeSpins: Int = 0
         private set
 
-    val lineBet: Int get() = bets[betIndex]
     val coins: Long get() = store.coins
     val level: Int get() = store.level
     val levelProgress: Float get() = store.levelProgress
-    val totalBet: Long get() = lineBet.toLong() * linesCount
+    val totalBet: Long get() = bets[betIndex].toLong()
+
+    /** Coins paid for [payUnits] (pay table units are per way-bet = total bet / ways). */
+    fun coinsFor(payUnits: Long): Long = payUnits * totalBet / linesCount
     val unlockedSteps: Int get() = Economy.unlockedBetSteps(store.level)
     val isMaxBet: Boolean get() = betIndex == unlockedSteps - 1
 
@@ -93,7 +95,7 @@ class GameSession(
     fun setBetIndex(index: Int) {
         if (freeSpins > 0) return // bet is locked during free games
         betIndex = index.coerceIn(0, unlockedSteps - 1)
-        store.setLineBet(cfg.id, lineBet)
+        store.setLineBet(cfg.id, bets[betIndex])
     }
 
     fun jackpotValue(tier: JackpotTier): Long = totalBet * tier.betMultiple + store.jackpotPool(cfg.id, tier)
@@ -110,7 +112,7 @@ class GameSession(
         val (grid, fx) = applyFeatures(baseGrid, free)
         val outcome = machine.evaluateGrid(stops, grid)
         var effects = fx
-        var winCoins = outcome.payUnits * lineBet
+        var winCoins = coinsFor(outcome.payUnits)
         if (feature == Feature.MULTIPLIER && winCoins > 0 && random.nextDouble() < Features.MULTIPLIER_CHANCE) {
             val m = random.weighted(Features.MULTIPLIERS)
             winCoins *= m

@@ -87,7 +87,6 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
     var showerTrigger by mutableIntStateOf(0); private set
     var showerCoins by mutableIntStateOf(0); private set
 
-    val lineBet: Int get() = session.lineBet
     val totalBet: Long get() = session.totalBet
     val isMaxBet: Boolean get() = betIndex == session.unlockedSteps - 1
     val nextBetUnlockLevel: Int? get() = session.nextBetUnlockLevel
@@ -289,7 +288,7 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
      */
     fun preview(stops: List<Int>, showPopup: Popup? = null) {
         val outcome = machine.evaluate(stops)
-        val win = outcome.payUnits * session.lineBet
+        val win = session.coinsFor(outcome.payUnits)
         result = SpinResult(
             outcome, totalBet, false, win, 0,
             Economy.winTier(win, totalBet), null, null, 0,

@@ -9,15 +9,18 @@ import kotlin.math.roundToLong
 object Economy {
     const val START_COINS = 1_000_000L
 
-    /** Coins per line; total bet = line bet x 243 ways (2.4K ... 24.3M). */
-    val LINE_BETS = listOf(10, 20, 40, 100, 200, 400, 1_000, 2_000, 4_000, 10_000, 20_000, 40_000, 100_000)
+    /** Total bet per spin (all 243 ways); wins pay pay-units x total bet / ways. */
+    val TOTAL_BETS = listOf(
+        2_500, 5_000, 10_000, 25_000, 50_000,
+        100_000, 250_000, 500_000, 1_000_000, 2_500_000, 5_000_000, 10_000_000, 25_000_000,
+    )
 
     /** Bet steps open at level 1; one more every [LEVELS_PER_BET_STEP] levels. */
-    const val FREE_BET_STEPS = 4
+    const val FREE_BET_STEPS = 5
     const val LEVELS_PER_BET_STEP = 2
 
     fun unlockedBetSteps(level: Int): Int =
-        (FREE_BET_STEPS + (level - 1) / LEVELS_PER_BET_STEP).coerceIn(1, LINE_BETS.size)
+        (FREE_BET_STEPS + (level - 1) / LEVELS_PER_BET_STEP).coerceIn(1, TOTAL_BETS.size)
 
     /** Level at which bet step [index] opens. */
     fun levelForBetStep(index: Int): Int =
