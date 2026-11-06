@@ -106,13 +106,17 @@ fun GameScreen(
         // portrait art when the theme has it, otherwise the centre of the landscape background
         AssetImage(assets, cfg.backgroundPortrait ?: cfg.background, Modifier.fillMaxSize(), ContentScale.Crop)
 
+        // dark scrim behind the HUD, title and jackpots so they read on bright machine art
+        Box(
+            Modifier.fillMaxWidth().height(330.dp).background(
+                Brush.verticalGradient(0f to Color(0xE6070B16), 0.7f to Color(0xA6070B16), 1f to Color.Transparent),
+            ),
+        )
         Column(Modifier.fillMaxSize().statusBarsPadding()) {
             TopBar(vm, graph, onExit)
             TitleBanner(assets)
             featureChip(vm.feature)?.let { chip ->
-                Box(Modifier.fillMaxWidth().padding(bottom = 4.dp), contentAlignment = Alignment.Center) {
-                    Ribbon("★ $chip ★", tone = SkinTone.Purple, textSize = 12.sp)
-                }
+                Box(Modifier.fillMaxWidth().padding(bottom = 6.dp), contentAlignment = Alignment.Center) { FeatureChip(chip) }
             }
             JackpotBar(vm, assets)
 
@@ -192,13 +196,27 @@ private fun XpFloat(tick: Int, xp: Int, modifier: Modifier) {
 
 @Composable
 private fun TitleBanner(assets: ThemeAssets) {
-    Box(Modifier.fillMaxWidth().height(60.dp).padding(top = 4.dp), contentAlignment = Alignment.Center) {
-        if (assets.config.title != null) {
-            AssetImage(assets, assets.config.title, Modifier.fillMaxHeight().fillMaxWidth(0.8f))
-        } else {
-            Text(assets.config.name.uppercase(), style = outlinedText(26.sp, Color.White).copy(shadow = null, letterSpacing = 3.sp))
-        }
+    // same gold title on every machine (the old logo images were hard to read on bright art)
+    Box(Modifier.fillMaxWidth().height(50.dp).padding(horizontal = 16.dp), contentAlignment = Alignment.Center) {
+        GoldText(assets.config.name.uppercase(), 30.sp, italic = true)
     }
+}
+
+/** Machine feature ("HOLD & SPIN") on a solid plum pill with a gold rim. */
+@Composable
+private fun FeatureChip(text: String) {
+    Text(
+        "★  $text  ★",
+        style = androidx.compose.ui.text.TextStyle(
+            fontFamily = com.funpixelnest.slots.ui.common.Montserrat, fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
+            fontSize = 11.sp, letterSpacing = 1.5.sp, color = Color(0xFFFFE08A),
+        ),
+        modifier = Modifier
+            .shadow(6.dp, RoundedCornerShape(50))
+            .background(Brush.verticalGradient(listOf(Color(0xFF3A1D6E), Color(0xFF1B0C38))), RoundedCornerShape(50))
+            .border(1.2.dp, Skin.Gold.copy(alpha = 0.8f), RoundedCornerShape(50))
+            .padding(horizontal = 14.dp, vertical = 4.dp),
+    )
 }
 
 @Composable

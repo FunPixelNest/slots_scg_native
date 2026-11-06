@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,48 +27,67 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.draw.shadow
+import com.funpixelnest.slots.ui.common.Montserrat
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.data.ThemeAssets
 import com.funpixelnest.slots.engine.JackpotTier
-import com.funpixelnest.slots.ui.skin.MarqueeLights
 import com.funpixelnest.slots.ui.skin.Skin
 import com.funpixelnest.slots.ui.common.formatCoins
-import com.funpixelnest.slots.ui.common.outlinedText
-import com.funpixelnest.slots.ui.common.themeFont
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 private val TIER_COLORS = mapOf(
-    JackpotTier.MINI to listOf(Color(0xFF38D6FF), Color(0xFF00695C)),
-    JackpotTier.MINOR to listOf(Color(0xFF3BE07A), Color(0xFF1B5E20)),
-    JackpotTier.MAJOR to listOf(Color(0xFFA995FF), Color(0xFF4A148C)),
-    JackpotTier.GRAND to listOf(Color(0xFFE53935), Color(0xFF6A0D0D)),
+    JackpotTier.MINI to Color(0xFF38D6FF),
+    JackpotTier.MINOR to Color(0xFF3BE07A),
+    JackpotTier.MAJOR to Color(0xFFB59CFF),
+    JackpotTier.GRAND to Color(0xFFFF3D6E),
 )
 
-/** Progressive jackpots for the portrait layout: a wide GRAND meter over MAJOR · MINOR · MINI. */
+/** Gold text with a dark outline: readable on any machine background. */
 @Composable
-fun JackpotBar(vm: GameViewModel, assets: ThemeAssets) {
-    val font = themeFont(assets.config.id)
+fun GoldText(text: String, size: TextUnit, modifier: Modifier = Modifier, family: FontFamily = Montserrat, italic: Boolean = false) {
+    val base = TextStyle(
+        fontFamily = family, fontWeight = FontWeight.Black, fontSize = size,
+        fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal, textAlign = TextAlign.Center,
+    )
+    Box(modifier, contentAlignment = Alignment.Center) {
+        Text(text, maxLines = 1, style = base.copy(color = Color(0xFF2A1000), drawStyle = Stroke(width = size.value * 0.42f, join = StrokeJoin.Round)))
+        Text(
+            text, maxLines = 1,
+            style = base.copy(brush = Brush.verticalGradient(listOf(Color(0xFFFFFBE0), Color(0xFFFFE27A), Color(0xFFF5B728), Color(0xFFD9850E)))),
+        )
+    }
+}
+
+/** Progressive jackpots: a solid GRAND plate over MAJOR · MINOR · MINI, all opaque so they read on any art. */
+@Composable
+fun JackpotBar(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets) {
     Column(
-        Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 2.dp),
+        Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        // GRAND sits in a light-bulb marquee
-        MarqueeLights(Modifier.fillMaxWidth(0.82f).height(62.dp).align(Alignment.CenterHorizontally), bulbs = 34) {
-            JackpotMeter(JackpotTier.GRAND, vm.jackpots[JackpotTier.GRAND] ?: 0L, font, Modifier.fillMaxSize())
-        }
-        Row(Modifier.fillMaxWidth().height(42.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        GrandPlate(vm.jackpots[JackpotTier.GRAND] ?: 0L, Modifier.fillMaxWidth(0.88f).height(66.dp).align(Alignment.CenterHorizontally))
+        Row(Modifier.fillMaxWidth().height(44.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             listOf(JackpotTier.MAJOR, JackpotTier.MINOR, JackpotTier.MINI).forEach { t ->
-                JackpotMeter(t, vm.jackpots[t] ?: 0L, font, Modifier.weight(1f).fillMaxHeight())
+                SmallPlate(t, vm.jackpots[t] ?: 0L, Modifier.weight(1f).fillMaxHeight())
             }
         }
     }
 }
 
+/** Shown value creeps upwards between spins, like a networked progressive. */
 @Composable
-private fun JackpotMeter(tier: JackpotTier, value: Long, font: androidx.compose.ui.text.font.FontFamily, modifier: Modifier) {
-    // the shown value creeps upwards between spins, like a networked progressive
+private fun creeping(tier: JackpotTier, value: Long): Long {
     var shown by remember { mutableLongStateOf(value) }
     LaunchedEffect(value) {
         shown = value
@@ -79,29 +97,52 @@ private fun JackpotMeter(tier: JackpotTier, value: Long, font: androidx.compose.
             shown += (value / 20_000L).coerceAtLeast(1L) * (1 + rnd.nextInt(5))
         }
     }
-    val glow by rememberInfiniteTransition(label = "jp").animateFloat(
-        0.55f, 1f, infiniteRepeatable(tween(900 + tier.ordinal * 150), RepeatMode.Reverse), label = "glow",
+    return shown
+}
+
+@Composable
+private fun GrandPlate(value: Long, modifier: Modifier) {
+    val shown = creeping(JackpotTier.GRAND, value)
+    val glow by rememberInfiniteTransition(label = "grand").animateFloat(
+        0.5f, 1f, infiniteRepeatable(tween(1100), RepeatMode.Reverse), label = "g",
     )
-    val colors = TIER_COLORS.getValue(tier)
-    val shape = RoundedCornerShape(50)
+    val shape = RoundedCornerShape(18.dp)
     Box(
         modifier
-            .then(
-                if (tier == JackpotTier.GRAND) Modifier
-                else Modifier.background(Color(0x14FFFFFF), RoundedCornerShape(14.dp)).border(1.dp, Skin.Hairline, RoundedCornerShape(14.dp))
-            ),
+            .shadow(16.dp, shape, ambientColor = Skin.Gold, spotColor = Skin.Gold)
+            .background(Brush.linearGradient(listOf(Color(0xFFFFF0B0), Skin.Gold, Color(0xFFB8740F), Skin.Gold)), shape)
+            .padding(2.dp)
+            .background(Brush.verticalGradient(listOf(Color(0xFF3D0C26), Color(0xFF1A0620), Color(0xFF0E0414))), RoundedCornerShape(16.dp))
+            .border(1.dp, Color(0xFFFF3D6E).copy(alpha = 0.35f + 0.4f * glow), RoundedCornerShape(16.dp)),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                if (tier == JackpotTier.GRAND) "GRAND JACKPOT" else tier.label,
-                style = outlinedText(if (tier == JackpotTier.GRAND) 10.sp else 9.sp, if (tier == JackpotTier.GRAND) Color(0xFFFF9CC2) else colors[0]).copy(shadow = null, letterSpacing = 1.5.sp),
+                "GRAND JACKPOT",
+                style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.ExtraBold, fontSize = 10.sp, letterSpacing = 2.sp, color = Color.White),
+                modifier = Modifier.background(Brush.horizontalGradient(listOf(Color(0xFFFF3D6E), Color(0xFFC2185B))), RoundedCornerShape(50))
+                    .padding(horizontal = 10.dp, vertical = 1.dp),
             )
-            Text(
-                formatCoins(shown),
-                style = outlinedText(if (tier == JackpotTier.GRAND) 26.sp else 14.sp, if (tier == JackpotTier.GRAND) Skin.Gold else Color.White).copy(shadow = null),
-                maxLines = 1,
-            )
+            GoldText(formatCoins(shown), 28.sp)
+        }
+    }
+}
+
+@Composable
+private fun SmallPlate(tier: JackpotTier, value: Long, modifier: Modifier) {
+    val shown = creeping(tier, value)
+    val c = TIER_COLORS.getValue(tier)
+    val shape = RoundedCornerShape(14.dp)
+    Box(
+        modifier
+            .shadow(8.dp, shape)
+            .background(Brush.verticalGradient(listOf(Color(0xFF1C2340), Color(0xFF0A0E1C))), shape)
+            .border(1.5.dp, c.copy(alpha = 0.85f), shape),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(tier.label, style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.ExtraBold, fontSize = 10.sp, letterSpacing = 1.5.sp, color = c))
+            Text(formatCoins(shown), maxLines = 1, style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.Black, fontSize = 15.sp, color = Color.White))
         }
     }
 }
