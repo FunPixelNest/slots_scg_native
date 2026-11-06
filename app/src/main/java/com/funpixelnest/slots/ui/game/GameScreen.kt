@@ -109,7 +109,7 @@ fun GameScreen(
         // dark scrim behind the HUD, title and jackpots so they read on bright machine art
         Box(
             Modifier.fillMaxWidth().height(330.dp).background(
-                Brush.verticalGradient(0f to Color(0xE6070B16), 0.7f to Color(0xA6070B16), 1f to Color.Transparent),
+                Brush.verticalGradient(0f to Color(0xE616052C), 0.7f to Color(0xA616052C), 1f to Color.Transparent),
             ),
         )
         Column(Modifier.fillMaxSize().statusBarsPadding()) {
@@ -235,7 +235,7 @@ private fun BottomPanel(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets:
     val shape = RoundedCornerShape(28.dp)
     Box(
         Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp).height(178.dp)
-            .shadow(24.dp, shape).background(Color(0xE60E1324), shape).border(1.dp, Skin.Hairline, shape),
+            .shadow(24.dp, shape).background(Color(0xE62A0B4A), shape).border(1.dp, Skin.Hairline, shape),
     ) {
         Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             IconRoundButton(SkinIcon.Minus, size = 40.dp, enabled = !betLocked) { vm.changeBet(-1) }

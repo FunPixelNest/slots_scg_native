@@ -89,7 +89,7 @@ fun Modal(onDismiss: (() -> Unit)?, tag: String, content: @Composable BoxScope.(
     val pop = remember { Animatable(0.85f) }
     LaunchedEffect(Unit) { pop.animateTo(1f, spring(dampingRatio = 0.6f, stiffness = Spring.StiffnessMediumLow)) }
     Box(
-        Modifier.fillMaxSize().background(Color(0xB3030510))
+        Modifier.fillMaxSize().background(Color(0xB30E0220))
             .clickable(remember { MutableInteractionSource() }, null) { onDismiss?.invoke() }
             .testTag(tag),
         contentAlignment = Alignment.Center,
@@ -261,7 +261,7 @@ fun StoreSheet(graph: AppGraph, onClose: () -> Unit) {
     var bought by remember { mutableStateOf<CoinPack?>(null) }
     var shower by remember { mutableIntStateOf(0) }
     Box(
-        Modifier.fillMaxSize().background(Color(0x99030510))
+        Modifier.fillMaxSize().background(Color(0x990E0220))
             .clickable(remember { MutableInteractionSource() }, null, onClick = onClose)
             .testTag("store"),
         contentAlignment = Alignment.BottomCenter,
@@ -376,7 +376,7 @@ private fun PackCard(p: CoinPack, modifier: Modifier, onBuy: () -> Unit) {
         val badge = p.badge
         if (badge != null && accent != null) {
             Text(
-                badge, style = plain(9, Color(0xFF08111F)).copy(letterSpacing = 1.sp),
+                badge, style = plain(9, Color(0xFF1C0738)).copy(letterSpacing = 1.sp),
                 modifier = Modifier.align(Alignment.TopCenter).background(accent, RoundedCornerShape(50)).padding(horizontal = 9.dp, vertical = 3.dp),
             )
         }

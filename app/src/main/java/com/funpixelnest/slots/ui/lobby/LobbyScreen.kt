@@ -254,7 +254,7 @@ fun ProfileBar(level: Int, progress: Float, coins: Long, onPlus: () -> Unit, onS
             Text("Lucky Player", style = plain(14).copy(textAlign = TextAlign.Start))
             Text("LEVEL $level · ${progress.toInt()}%", style = plain(10, Skin.TextSoft).copy(letterSpacing = 1.sp, textAlign = TextAlign.Start))
             Box(Modifier.padding(top = 4.dp).width(110.dp).height(5.dp).background(Color(0x1FFFFFFF), RoundedCornerShape(50))) {
-                Box(Modifier.fillMaxHeight().fillMaxWidth((progress / 100f).coerceIn(0.03f, 1f)).background(Brush.horizontalGradient(listOf(Skin.Sapphire, Skin.Amethyst)), RoundedCornerShape(50)))
+                Box(Modifier.fillMaxHeight().fillMaxWidth((progress / 100f).coerceIn(0.03f, 1f)).background(Brush.horizontalGradient(listOf(Color(0xFFFF3DB4), Color(0xFFB45CFF))), RoundedCornerShape(50)))
             }
         }
         CoinCapsule(coins, onPlus = onPlus)
@@ -304,7 +304,7 @@ private fun HeroBanner(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, o
             .clickable(onClick = onPlay),
     ) {
         if (assets != null) AssetImage(assets, bgKey, Modifier.fillMaxSize(), ContentScale.Crop)
-        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xEB070B16), Color(0x8C070B16), Color.Transparent))))
+        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xEB16052C), Color(0x8C16052C), Color.Transparent))))
         Column(Modifier.fillMaxHeight().padding(18.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Features.forTheme(entry.id)?.let { f ->
                 Text("● ${f.title.uppercase()}", style = plain(11, Color(0xFFFF8DB8)), modifier = Modifier
@@ -348,11 +348,13 @@ private fun QuickRow(graph: AppGraph, now: Long, onDaily: () -> Unit, onHourly: 
 @Composable
 private fun QuickTile(icon: SkinIcon, accent: Color, label: String, alert: Boolean, modifier: Modifier, onClick: () -> Unit) {
     Box(
-        modifier.height(80.dp).background(Color(0x0FFFFFFF), RoundedCornerShape(18.dp)).border(1.dp, Skin.Hairline, RoundedCornerShape(18.dp))
+        modifier.height(80.dp).shadow(10.dp, RoundedCornerShape(18.dp), spotColor = Skin.Ruby)
+            .background(Brush.verticalGradient(listOf(Color(0xFF5A1C9A), Color(0xFF2E0A5A))), RoundedCornerShape(18.dp))
+            .border(1.5.dp, Skin.goldBorder, RoundedCornerShape(18.dp))
             .clickable(remember { MutableInteractionSource() }, null, onClick = onClick),
     ) {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Box(Modifier.size(36.dp).background(accent.copy(alpha = 0.16f), RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
+            Box(Modifier.size(36.dp).background(accent.copy(alpha = 0.28f), RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
                 Canvas(Modifier.size(18.dp)) { drawSkinIcon(icon, accent) }
             }
             Spacer(Modifier.height(6.dp))
@@ -365,10 +367,10 @@ private fun QuickTile(icon: SkinIcon, accent: Color, label: String, alert: Boole
 @Composable
 private fun FilterChip(text: String, on: Boolean, onClick: () -> Unit) {
     Text(
-        text, style = plain(11, if (on) Skin.VelvetDeep else Color.White),
+        text, style = plain(11, if (on) Color(0xFF3A1800) else Color.White),
         modifier = Modifier
-            .background(if (on) Color(0xFFF4F6FB) else Color(0x0FFFFFFF), RoundedCornerShape(50))
-            .border(1.dp, if (on) Color.Transparent else Skin.Hairline, RoundedCornerShape(50))
+            .background(if (on) Skin.goldFill else Brush.verticalGradient(listOf(Color(0xFF4A1580), Color(0xFF2A0B4A))), RoundedCornerShape(50))
+            .border(1.dp, if (on) Skin.goldBorder else Brush.verticalGradient(listOf(Skin.Hairline, Skin.Hairline)), RoundedCornerShape(50))
             .clickable(onClick = onClick).padding(horizontal = 12.dp, vertical = 6.dp),
     )
 }
@@ -417,7 +419,7 @@ private fun TabBar(
         Row(
             Modifier.fillMaxWidth().height(64.dp)
                 .shadow(24.dp, RoundedCornerShape(22.dp))
-                .background(Color(0xE60E1324), RoundedCornerShape(22.dp)).border(1.dp, Skin.Hairline, RoundedCornerShape(22.dp)),
+                .background(Color(0xE62A0B4A), RoundedCornerShape(22.dp)).border(1.dp, Skin.Hairline, RoundedCornerShape(22.dp)),
             horizontalArrangement = Arrangement.SpaceAround, verticalAlignment = Alignment.CenterVertically,
         ) {
             TabItem(SkinIcon.Cart, "Store", false, onClick = onStore)

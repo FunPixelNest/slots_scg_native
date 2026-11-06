@@ -201,8 +201,8 @@ fun ReelsView(
 
             // drum shading: symbols roll in and out of the dark at the top and bottom edges
             val fade = size.height * 0.09f
-            drawRect(Brush.verticalGradient(listOf(Color(0xCC05070F), Color.Transparent), 0f, fade), Offset.Zero, Size(size.width, fade))
-            drawRect(Brush.verticalGradient(listOf(Color.Transparent, Color(0xCC05070F)), size.height - fade, size.height), Offset(0f, size.height - fade), Size(size.width, fade))
+            drawRect(Brush.verticalGradient(listOf(Color(0xCC0E0220), Color.Transparent), 0f, fade), Offset.Zero, Size(size.width, fade))
+            drawRect(Brush.verticalGradient(listOf(Color.Transparent, Color(0xCC0E0220)), size.height - fade, size.height), Offset(0f, size.height - fade), Size(size.width, fade))
 
             if (showWins && outcome != null && outcome.lineWins.isNotEmpty()) {
                 drawWinLines(outcome, clock, cellW, cellH, accent)

@@ -63,12 +63,12 @@ fun ReelBoard(accent: Color, modifier: Modifier = Modifier, content: @Composable
                 outer,
             )
             .padding(3.dp)
-            .background(Color(0xFF05070F), inner)
+            .background(Color(0xFF0E0220), inner)
             .padding(1.dp)
             .clip(inner)
             .background(
                 Brush.verticalGradient(
-                    listOf(lerp(Color(0xFF151B33), accent, 0.12f), Color(0xFF0A0E1C), lerp(Color(0xFF0A0E1C), accent, 0.08f)),
+                    listOf(lerp(Color(0xFF331058), accent, 0.12f), Color(0xFF1C0738), lerp(Color(0xFF1C0738), accent, 0.08f)),
                 ),
             )
             .border(1.dp, accent.copy(alpha = 0.35f), inner),

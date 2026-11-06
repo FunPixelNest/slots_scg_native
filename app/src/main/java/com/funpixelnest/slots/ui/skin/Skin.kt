@@ -59,18 +59,18 @@ import com.funpixelnest.slots.ui.common.formatCompact
 import com.funpixelnest.slots.ui.common.outlinedText
 
 /**
- * "Vegas Night" skin shared by every screen: midnight background with soft neon glow,
- * frosted-glass panels with hairline borders, clean Montserrat type, gold only for coins,
+ * "Royal casino" skin shared by every screen: purple and magenta background with spotlights,
+ * glossy purple panels and buttons with gold rims, clean Montserrat type, gold only for coins,
  * jackpots and the main call to action. Each machine keeps its own Unity art for
  * background, title, reels and symbols; everything around it is drawn here.
  */
 object Skin {
     // surfaces (names kept from the first skin so every screen picks up the new look)
-    val VelvetTop = Color(0xFF161D38)
-    val Velvet = Color(0xFF0E1324)
-    val VelvetDeep = Color(0xFF070B16)
+    val VelvetTop = Color(0xFF3E1270)
+    val Velvet = Color(0xFF2A0B4A)
+    val VelvetDeep = Color(0xFF16052C)
     val Glass = Color(0x0FFFFFFF)
-    val Hairline = Color(0x1FFFFFFF)
+    val Hairline = Color(0x59F5C451)  // thin gold rim, as on casino cabinets
     // accents
     val GoldLight = Color(0xFFFFE9A8)
     val Gold = Color(0xFFF5C451)
@@ -80,11 +80,11 @@ object Skin {
     val Emerald = Color(0xFF22C55E)
     val Sapphire = Color(0xFF38D6FF)  // neon cyan
     val Amethyst = Color(0xFF7C5CFF)
-    val TextSoft = Color(0xFF9AA3B8)
+    val TextSoft = Color(0xFFCDB8EC)  // soft lavender
 
     val goldBorder = Brush.verticalGradient(listOf(Color(0xCCFFE9A8), Color(0x99F5C451)))
     val goldFill = Brush.verticalGradient(listOf(GoldLight, Gold, GoldDark))
-    val velvetFill = Brush.verticalGradient(listOf(Color(0xFF141A30), Color(0xFF0E1324)))
+    val velvetFill = Brush.verticalGradient(listOf(Color(0xFF3A1068), Color(0xFF2A0B4A)))
     val hairline = Brush.verticalGradient(listOf(Hairline, Hairline))
 }
 
@@ -94,7 +94,7 @@ enum class SkinTone(val top: Color, val bottom: Color, val text: Color) {
     Red(Color(0xFFFF5C9A), Color(0xFFE11D63), Color.White),
     Purple(Color(0xFF9B7BFF), Color(0xFF6D3BEF), Color.White),
     Blue(Color(0xFF5FE0FF), Color(0xFF2563EB), Color.White),
-    Glass(Color(0x1AFFFFFF), Color(0x0DFFFFFF), Color(0xFFF4F6FB)),
+    Glass(Color(0xFF6A2FB8), Color(0xFF34107A), Color(0xFFFFF4D6)),  // glossy purple
 }
 
 /** Frosted-glass card. */
@@ -108,9 +108,9 @@ fun SkinPanel(
     val shape = RoundedCornerShape(corner)
     Box(
         modifier
-            .shadow(24.dp, shape, ambientColor = Color.Black, spotColor = Color.Black)
+            .shadow(24.dp, shape, ambientColor = Skin.Ruby, spotColor = Color.Black)
             .background(Skin.velvetFill, shape)
-            .border(1.dp, Skin.Hairline, shape)
+            .border(2.dp, Skin.goldBorder, shape)
             .padding(padding),
         contentAlignment = Alignment.Center,
         content = content,
@@ -151,10 +151,15 @@ fun SkinButton(
             .alpha(if (enabled) 1f else 0.45f)
             .then(if (tone == SkinTone.Glass) Modifier else Modifier.shadow(10.dp, shape, ambientColor = tone.bottom, spotColor = tone.bottom))
             .background(Brush.verticalGradient(listOf(tone.top, tone.bottom)), shape)
-            .then(if (tone == SkinTone.Glass) Modifier.border(1.dp, Skin.Hairline, shape) else Modifier)
+            .border(1.5.dp, if (tone == SkinTone.Glass) Skin.goldBorder else Brush.verticalGradient(listOf(Color(0x99FFFFFF), tone.bottom)), shape)
             .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
         contentAlignment = Alignment.Center,
     ) {
+        // glossy top highlight, like a casino cabinet button
+        Box(
+            Modifier.matchParentSize().padding(2.dp)
+                .background(Brush.verticalGradient(0f to Color(0x55FFFFFF), 0.48f to Color(0x14FFFFFF), 0.5f to Color.Transparent), shape),
+        )
         Text(
             text,
             style = outlinedText(textSize, tone.text).copy(shadow = null, fontWeight = FontWeight.ExtraBold),
@@ -187,11 +192,11 @@ fun IconRoundButton(
             .scale(scale)
             .alpha(if (enabled) 1f else 0.4f)
             .background(
-                if (glass) Brush.verticalGradient(listOf(Color(0x1FFFFFFF), Color(0x0DFFFFFF)))
+                if (glass) Brush.verticalGradient(listOf(Color(0xFF6A2FB8), Color(0xFF34107A)))
                 else Brush.verticalGradient(listOf(tone.top, tone.bottom)),
                 shape,
             )
-            .border(1.dp, Skin.Hairline, shape)
+            .border(1.5.dp, Skin.goldBorder, shape)
             .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
         contentAlignment = Alignment.Center,
     ) {
@@ -324,10 +329,10 @@ fun LevelMedallion(level: Int, progress: Float, modifier: Modifier = Modifier, s
             val sz = Size(this.size.width - ring, this.size.height - ring)
             drawArc(Color(0x22FFFFFF), -90f, 360f, false, tl, sz, style = Stroke(ring))
             drawArc(
-                Brush.sweepGradient(listOf(Skin.Sapphire, Skin.Amethyst, Skin.Sapphire)), -90f, 360f * anim, false, tl, sz,
+                Brush.sweepGradient(listOf(Skin.GoldLight, Skin.GoldDark, Skin.GoldLight)), -90f, 360f * anim, false, tl, sz,
                 style = Stroke(ring, cap = StrokeCap.Round),
             )
-            drawCircle(Brush.radialGradient(listOf(Color(0xFF26305A), Color(0xFF121833))), this.size.minDimension / 2 - ring * 1.8f)
+            drawCircle(Brush.radialGradient(listOf(Color(0xFF6A2FB8), Color(0xFF2A0B4A))), this.size.minDimension / 2 - ring * 1.8f)
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text("LV", style = outlinedText((size.value * 0.15f).sp, Skin.TextSoft).copy(shadow = null))
@@ -350,7 +355,7 @@ fun XpBar(level: Int, progress: Float, modifier: Modifier = Modifier) {
         Box(Modifier.fillMaxWidth().height(5.dp).background(Color(0x1FFFFFFF), RoundedCornerShape(50))) {
             Box(
                 Modifier.fillMaxHeight().fillMaxWidth(anim.coerceAtLeast(0.03f))
-                    .background(Brush.horizontalGradient(listOf(Skin.Sapphire, Skin.Amethyst)), RoundedCornerShape(50))
+                    .background(Brush.horizontalGradient(listOf(Color(0xFFFF3DB4), Color(0xFFB45CFF))), RoundedCornerShape(50))
             )
         }
     }
@@ -361,8 +366,8 @@ fun XpBar(level: Int, progress: Float, modifier: Modifier = Modifier) {
 fun CoinCapsule(coins: Long, modifier: Modifier = Modifier, onPlus: (() -> Unit)? = null) {
     Row(
         modifier.height(38.dp)
-            .background(Brush.verticalGradient(listOf(Color(0x1FFFFFFF), Color(0x0DFFFFFF))), RoundedCornerShape(50))
-            .border(1.dp, Skin.Hairline, RoundedCornerShape(50))
+            .background(Brush.verticalGradient(listOf(Color(0xFF4A1580), Color(0xFF240848))), RoundedCornerShape(50))
+            .border(1.5.dp, Skin.goldBorder, RoundedCornerShape(50))
             .padding(start = 6.dp, end = if (onPlus != null) 4.dp else 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -446,15 +451,20 @@ fun Ribbon(text: String, modifier: Modifier = Modifier, tone: SkinTone = SkinTon
 /** Midnight backdrop with pink and cyan neon glows. */
 @Composable
 fun VelvetBackdrop(modifier: Modifier = Modifier) {
+    // royal purple casino floor with magenta and violet spotlights
     Canvas(modifier) {
-        drawRect(Skin.VelvetDeep)
+        drawRect(Brush.verticalGradient(listOf(Color(0xFF3C0A62), Color(0xFF240640), Color(0xFF16052C))))
         drawCircle(
-            Brush.radialGradient(listOf(Color(0x47FF3D8B), Color.Transparent), Offset(size.width * 0.85f, -size.height * 0.05f), size.width * 1.1f),
-            size.width * 1.1f, Offset(size.width * 0.85f, -size.height * 0.05f),
+            Brush.radialGradient(listOf(Color(0x66FF3DB4), Color.Transparent), Offset(size.width * 0.9f, -size.height * 0.02f), size.width * 1.1f),
+            size.width * 1.1f, Offset(size.width * 0.9f, -size.height * 0.02f),
         )
         drawCircle(
-            Brush.radialGradient(listOf(Color(0x2E38D6FF), Color.Transparent), Offset(0f, size.height * 0.12f), size.width * 0.9f),
-            size.width * 0.9f, Offset(0f, size.height * 0.12f),
+            Brush.radialGradient(listOf(Color(0x4D9B5CFF), Color.Transparent), Offset(0f, size.height * 0.2f), size.width * 0.9f),
+            size.width * 0.9f, Offset(0f, size.height * 0.2f),
+        )
+        drawCircle(
+            Brush.radialGradient(listOf(Color(0x26F5C451), Color.Transparent), Offset(size.width * 0.5f, size.height * 0.62f), size.width * 0.8f),
+            size.width * 0.8f, Offset(size.width * 0.5f, size.height * 0.62f),
         )
     }
 }
@@ -493,7 +503,7 @@ fun SpinButton(
         Canvas(Modifier.fillMaxSize()) {
             val r = size.minDimension / 2
             drawCircle(Brush.radialGradient(listOf(Color(0x66F5C451), Color.Transparent), center, r * 1.05f), r)
-            drawCircle(Color(0xFF070B16), r * 0.96f)
+            drawCircle(Color(0xFF16052C), r * 0.96f)
             drawCircle(Brush.sweepGradient(listOf(Skin.GoldLight, Skin.Gold, Skin.GoldDark, Skin.Gold, Skin.GoldLight)), r * 0.88f)
             drawCircle(Brush.radialGradient(listOf(Color(0xFF3BE07A), Color(0xFF15803D)), center.copy(y = center.y - r * 0.3f), r), r * 0.8f)
             // refresh arrow

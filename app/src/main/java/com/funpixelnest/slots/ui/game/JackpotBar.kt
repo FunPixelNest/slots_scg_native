@@ -136,7 +136,7 @@ private fun SmallPlate(tier: JackpotTier, value: Long, modifier: Modifier) {
     Box(
         modifier
             .shadow(8.dp, shape)
-            .background(Brush.verticalGradient(listOf(Color(0xFF1C2340), Color(0xFF0A0E1C))), shape)
+            .background(Brush.verticalGradient(listOf(Color(0xFF3E1468), Color(0xFF1C0738))), shape)
             .border(1.5.dp, c.copy(alpha = 0.85f), shape),
         contentAlignment = Alignment.Center,
     ) {
