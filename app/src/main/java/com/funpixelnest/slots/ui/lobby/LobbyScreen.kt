@@ -343,7 +343,6 @@ private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, 
                 colorFilter = if (open) null else grey, alpha = if (open) 1f else 0.55f,
             )
         }
-        Box(Modifier.fillMaxSize().background(Brush.verticalGradient(0.45f to Color.Transparent, 1f to Color(0xF2070B16))))
         Row(
             Modifier.padding(10.dp).background(Color(0xB3070B16), RoundedCornerShape(50)).border(1.dp, Color(0x73F5C451), RoundedCornerShape(50))
                 .padding(horizontal = 8.dp, vertical = 3.dp),
@@ -364,9 +363,14 @@ private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, 
                 }
             }
         }
-        Column(Modifier.align(Alignment.BottomStart).padding(12.dp)) {
-            Text(entry.name, style = plain(15).copy(textAlign = TextAlign.Start))
-            Features.forTheme(entry.id)?.let { Text(it.title, style = plain(10, Skin.Sapphire).copy(textAlign = TextAlign.Start)) }
+        // the icon art carries the machine name; the feature sits in a small chip
+        Features.forTheme(entry.id)?.let {
+            Text(
+                it.title.uppercase(), style = plain(8, Color.White).copy(letterSpacing = 0.6.sp),
+                modifier = Modifier.align(Alignment.TopEnd).padding(10.dp)
+                    .background(Color(0x99070B16), RoundedCornerShape(50)).border(1.dp, Color(0x5938D6FF), RoundedCornerShape(50))
+                    .padding(horizontal = 7.dp, vertical = 3.dp),
+            )
         }
     }
 }
