@@ -23,6 +23,7 @@ import com.funpixelnest.slots.engine.PickBonus
 import com.funpixelnest.slots.engine.Unlocks
 import com.funpixelnest.slots.engine.WinTier
 import com.funpixelnest.slots.engine.QuestStat
+import com.funpixelnest.slots.ui.common.formatCompact
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -88,7 +89,8 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
     var showerTrigger by mutableIntStateOf(0); private set
     var showerCoins by mutableIntStateOf(0); private set
 
-    val totalBet: Long get() = session.totalBet
+    /** Reads [betIndex] (state) so the deck redraws the moment -/+ is pressed. */
+    val totalBet: Long get() = Economy.TOTAL_BETS[betIndex].toLong()
     val isMaxBet: Boolean get() = betIndex == session.unlockedSteps - 1
     val nextBetUnlockLevel: Int? get() = session.nextBetUnlockLevel
     val initialStops: List<Int> = assets.config.reelStrips.map { 0 }
@@ -102,6 +104,22 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
             assets.preload { loadProgress = it }
             phase = Phase.Idle
         }
+    }
+
+    /**
+     * After every spin: if the balance can no longer cover the bet, drop to the highest bet it
+     * can cover (with a short notice) instead of stopping at "not enough coins".
+     */
+    private suspend fun fitBetToBalance() {
+        if (session.freeSpins > 0 || session.coins >= session.totalBet) return
+        val affordable = Economy.TOTAL_BETS.indices.lastOrNull { it < session.betIndex && Economy.TOTAL_BETS[it] <= session.coins } ?: return
+        session.setBetIndex(affordable)
+        betIndex = session.betIndex
+        jackpots = readJackpots()
+        while (popup != null) delay(200)
+        featureBanner = "BET ${formatCompact(session.totalBet)}"
+        delay(1100)
+        featureBanner = null
     }
 
     private fun readJackpots(): Map<JackpotTier, Long> = JackpotTier.entries.associateWith { session.jackpotValue(it) }
@@ -220,6 +238,7 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
                 shower(40)
             }
             shownCoins = session.coins
+            fitBetToBalance()
             // keep going for free games and auto spins
             if (session.freeSpins > 0 || autoSpinsLeft > 0) {
                 delay(if (r.outcome.isWin) 1600 else 500)

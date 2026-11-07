@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +19,9 @@ import androidx.compose.ui.unit.sp
 /** Height reserved for the bottom banner ad (standard phone banner: 320x50 dp). */
 val BANNER_HEIGHT: Dp = 50.dp
 
+/** Empty strip between the game and the banner. */
+val BANNER_GAP: Dp = 6.dp
+
 /**
  * Safe area at the bottom of every screen (lobby and machines) for a banner ad.
  * The game never draws under it, and it sits above the system navigation bar.
@@ -31,7 +34,8 @@ fun AdBannerSlot(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = { BannerPlaceholder() },
 ) {
-    Column(modifier.fillMaxWidth().background(Color.Black).navigationBarsPadding()) {
+    // the screen above keeps BANNER_GAP clear so the footer never touches the ad
+    Column(modifier.fillMaxWidth().background(Color.Black).padding(top = BANNER_GAP)) {
         Box(
             Modifier.fillMaxWidth().height(BANNER_HEIGHT).testTag("ad-banner"),
             contentAlignment = Alignment.Center,

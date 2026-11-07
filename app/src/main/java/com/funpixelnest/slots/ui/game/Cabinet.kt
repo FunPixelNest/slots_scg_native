@@ -120,8 +120,7 @@ fun CabinetTopBar(
         Modifier.fillMaxWidth()
             .shadow(10.dp)
             .background(Brush.verticalGradient(listOf(Color(0xFF4A1388), Color(0xFF2A0A55))))
-            .drawBehind { drawRect(GoldEdge, Offset(0f, size.height - 3.dp.toPx()), androidx.compose.ui.geometry.Size(size.width, 3.dp.toPx())) }
-            .statusBarsPadding(),
+            .drawBehind { drawRect(GoldEdge, Offset(0f, size.height - 3.dp.toPx()), androidx.compose.ui.geometry.Size(size.width, 3.dp.toPx())) },
     ) {
         Row(
             Modifier.fillMaxWidth().height(58.dp).padding(horizontal = 8.dp).padding(bottom = 3.dp),

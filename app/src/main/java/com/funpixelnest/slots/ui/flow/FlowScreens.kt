@@ -110,7 +110,7 @@ fun DisclaimerScreen(onAccept: () -> Unit) {
     Box(Modifier.fillMaxSize().testTag("disclaimer"), contentAlignment = Alignment.Center) {
         VelvetBackdrop(Modifier.fillMaxSize())
         Column(
-            Modifier.fillMaxWidth(0.88f).statusBarsPadding(),
+            Modifier.fillMaxWidth(0.88f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {

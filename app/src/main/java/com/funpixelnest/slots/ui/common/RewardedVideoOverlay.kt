@@ -1,5 +1,6 @@
 package com.funpixelnest.slots.ui.common
 
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -67,7 +68,7 @@ fun RewardedVideoOverlay(ads: PlaceholderRewardedAds) {
             }
         }
         IconRoundButton(
-            SkinIcon.Close, Modifier.align(Alignment.TopEnd).statusBarsPadding().padding(14.dp),
+            SkinIcon.Close, Modifier.align(Alignment.TopEnd).windowInsetsPadding(SafeArea).padding(14.dp),
             size = 36.dp, tone = SkinTone.Red,
         ) { ads.finish(rewarded = false) }
     }

@@ -25,6 +25,10 @@ import androidx.compose.foundation.layout.Column
 import com.funpixelnest.slots.ui.common.AdBannerSlot
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.ui.graphics.Color
+import com.funpixelnest.slots.ui.common.SafeArea
 import com.funpixelnest.slots.ui.lobby.LobbyScreen
 
 class MainActivity : ComponentActivity() {
@@ -39,8 +43,9 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            Box(Modifier.fillMaxSize()) {
-            Column(Modifier.fillMaxSize()) {
+            Box(Modifier.fillMaxSize().background(Color(0xFF16052C))) {
+            // everything stays inside the safe area (notch, status and navigation bars)
+            Column(Modifier.fillMaxSize().windowInsetsPadding(SafeArea)) {
             val nav = rememberNavController()
             // screens use everything above the banner safe area
             Box(Modifier.weight(1f)) {
