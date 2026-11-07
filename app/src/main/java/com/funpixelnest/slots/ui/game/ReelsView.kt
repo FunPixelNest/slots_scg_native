@@ -136,13 +136,12 @@ fun ReelsView(
 
             for (reel in 0 until cfg.reels) {
                 val left = reel * cellW
-                // glass reel column with a thin gap between reels
-                val gap = cellW * 0.025f
-                drawRoundRect(
+                // reel drum: lighter in the middle, darker at the edges
+                drawRect(
                     Brush.verticalGradient(
-                        0f to Color.White.copy(alpha = 0.03f), 0.5f to Color.White.copy(alpha = 0.085f), 1f to Color.White.copy(alpha = 0.03f),
+                        0f to Color.White.copy(alpha = 0.02f), 0.5f to Color.White.copy(alpha = 0.10f), 1f to Color.White.copy(alpha = 0.02f),
                     ),
-                    Offset(left + gap, 0f), Size(cellW - 2 * gap, size.height), CornerRadius(cellW * 0.1f),
+                    Offset(left, 0f), Size(cellW, size.height),
                 )
                 // feature glow: expanded reel / extra wild cells
                 if (showWins && effects != null) {
@@ -199,6 +198,12 @@ fun ReelsView(
                 }
             }
 
+            // gold dividers between the reels, like a cabinet's reel windows
+            for (reel in 1 until cfg.reels) {
+                val x = reel * cellW
+                drawLine(Color(0x66000000), Offset(x + 2f, 0f), Offset(x + 2f, size.height), 3f)
+                drawLine(Color(0xAAF5C451), Offset(x, 0f), Offset(x, size.height), 2.5f)
+            }
             // drum shading: symbols roll in and out of the dark at the top and bottom edges
             val fade = size.height * 0.09f
             drawRect(Brush.verticalGradient(listOf(Color(0xCC0E0220), Color.Transparent), 0f, fade), Offset.Zero, Size(size.width, fade))

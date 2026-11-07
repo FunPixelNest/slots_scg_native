@@ -69,18 +69,18 @@ fun GoldText(text: String, size: TextUnit, modifier: Modifier = Modifier, family
     }
 }
 
-/** Progressive jackpots: a solid GRAND plate over MAJOR · MINOR · MINI, all opaque so they read on any art. */
+/** Progressive jackpots: GRAND marquee with chasing bulbs over MAJOR · MINOR · MINI badges. */
 @Composable
 fun JackpotBar(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets) {
     Column(
         Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(7.dp),
     ) {
-        GrandPlate(vm.jackpots[JackpotTier.GRAND] ?: 0L, Modifier.fillMaxWidth(0.88f).height(66.dp).align(Alignment.CenterHorizontally))
-        Row(Modifier.fillMaxWidth().height(44.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf(JackpotTier.MAJOR, JackpotTier.MINOR, JackpotTier.MINI).forEach { t ->
-                SmallPlate(t, vm.jackpots[t] ?: 0L, Modifier.weight(1f).fillMaxHeight())
-            }
+        JackpotMarquee(creeping(JackpotTier.GRAND, vm.jackpots[JackpotTier.GRAND] ?: 0L), Modifier.fillMaxWidth(0.9f).height(72.dp).align(Alignment.CenterHorizontally))
+        Row(Modifier.fillMaxWidth().height(44.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            JackpotBadge("MAJOR", creeping(JackpotTier.MAJOR, vm.jackpots[JackpotTier.MAJOR] ?: 0L), Color(0xFFE3D2FF), Color(0xFF5B2BB0), Color(0xFF2E0F66), Modifier.weight(1f).fillMaxHeight())
+            JackpotBadge("MINOR", creeping(JackpotTier.MINOR, vm.jackpots[JackpotTier.MINOR] ?: 0L), Color(0xFFC8FFD6), Color(0xFF1F8A44), Color(0xFF0B4A22), Modifier.weight(1f).fillMaxHeight())
+            JackpotBadge("MINI", creeping(JackpotTier.MINI, vm.jackpots[JackpotTier.MINI] ?: 0L), Color(0xFFC8F4FF), Color(0xFF1F6FB0), Color(0xFF0B3A66), Modifier.weight(1f).fillMaxHeight())
         }
     }
 }
@@ -98,51 +98,4 @@ private fun creeping(tier: JackpotTier, value: Long): Long {
         }
     }
     return shown
-}
-
-@Composable
-private fun GrandPlate(value: Long, modifier: Modifier) {
-    val shown = creeping(JackpotTier.GRAND, value)
-    val glow by rememberInfiniteTransition(label = "grand").animateFloat(
-        0.5f, 1f, infiniteRepeatable(tween(1100), RepeatMode.Reverse), label = "g",
-    )
-    val shape = RoundedCornerShape(18.dp)
-    Box(
-        modifier
-            .shadow(16.dp, shape, ambientColor = Skin.Gold, spotColor = Skin.Gold)
-            .background(Brush.linearGradient(listOf(Color(0xFFFFF0B0), Skin.Gold, Color(0xFFB8740F), Skin.Gold)), shape)
-            .padding(2.dp)
-            .background(Brush.verticalGradient(listOf(Color(0xFF3D0C26), Color(0xFF1A0620), Color(0xFF0E0414))), RoundedCornerShape(16.dp))
-            .border(1.dp, Color(0xFFFF3D6E).copy(alpha = 0.35f + 0.4f * glow), RoundedCornerShape(16.dp)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                "GRAND JACKPOT",
-                style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.ExtraBold, fontSize = 10.sp, letterSpacing = 2.sp, color = Color.White),
-                modifier = Modifier.background(Brush.horizontalGradient(listOf(Color(0xFFFF3D6E), Color(0xFFC2185B))), RoundedCornerShape(50))
-                    .padding(horizontal = 10.dp, vertical = 1.dp),
-            )
-            GoldText(formatCoins(shown), 28.sp)
-        }
-    }
-}
-
-@Composable
-private fun SmallPlate(tier: JackpotTier, value: Long, modifier: Modifier) {
-    val shown = creeping(tier, value)
-    val c = TIER_COLORS.getValue(tier)
-    val shape = RoundedCornerShape(14.dp)
-    Box(
-        modifier
-            .shadow(8.dp, shape)
-            .background(Brush.verticalGradient(listOf(Color(0xFF3E1468), Color(0xFF1C0738))), shape)
-            .border(1.5.dp, c.copy(alpha = 0.85f), shape),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(tier.label, style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.ExtraBold, fontSize = 10.sp, letterSpacing = 1.5.sp, color = c))
-            Text(formatCoins(shown), maxLines = 1, style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.Black, fontSize = 15.sp, color = Color.White))
-        }
-    }
 }

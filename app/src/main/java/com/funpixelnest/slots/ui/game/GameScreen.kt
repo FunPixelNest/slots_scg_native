@@ -106,28 +106,31 @@ fun GameScreen(
         // portrait art when the theme has it, otherwise the centre of the landscape background
         AssetImage(assets, cfg.backgroundPortrait ?: cfg.background, Modifier.fillMaxSize(), ContentScale.Crop)
 
-        // dark scrim behind the HUD, title and jackpots so they read on bright machine art
+        // soft shade behind the jackpots so they read on bright machine art
         Box(
-            Modifier.fillMaxWidth().height(330.dp).background(
-                Brush.verticalGradient(0f to Color(0xE616052C), 0.7f to Color(0xA616052C), 1f to Color.Transparent),
+            Modifier.fillMaxWidth().height(260.dp).background(
+                Brush.verticalGradient(0f to Color(0xB316052C), 0.75f to Color(0x6616052C), 1f to Color.Transparent),
             ),
         )
-        Column(Modifier.fillMaxSize().statusBarsPadding()) {
-            TopBar(vm, graph, onExit)
-            TitleBanner(assets)
-            featureChip(vm.feature)?.let { chip ->
-                Box(Modifier.fillMaxWidth().padding(bottom = 6.dp), contentAlignment = Alignment.Center) { FeatureChip(chip) }
-            }
+        val busy = vm.phase == Phase.Spinning || vm.phase == Phase.Loading
+        Column(Modifier.fillMaxSize()) {
+            CabinetTopBar(
+                vm.level, vm.levelProgress, vm.shownCoins,
+                onBack = onExit, onCoins = { graph.openStore() }, onMenu = { vm.showPopup(Popup.Info) },
+            ) { XpFloat(vm.xpTick, vm.xpGained, Modifier.align(Alignment.TopEnd)) }
+            Spacer(Modifier.height(10.dp))
             JackpotBar(vm, assets)
 
-            // ---------------- reels: full width, cells a little taller than wide
+            // ---------------- reels inside the gold cabinet
             BoxWithConstraints(
                 Modifier.fillMaxWidth().weight(1f).padding(horizontal = 6.dp, vertical = 6.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                // use the free height: cells grow from slightly tall up to REEL_CELL_MAX_TALL
-                val tall = ((maxHeight / maxWidth) * cfg.reels / cfg.rows).coerceIn(REEL_CELL_TALL, REEL_CELL_MAX_TALL)
-                ReelBoard(boardAccent(cfg.id), Modifier.fillMaxWidth().aspectRatio(cfg.reels / (cfg.rows * tall))) {
+                // cells grow from slightly tall up to REEL_CELL_MAX_TALL with the free height (frame takes ~60dp)
+                val tall = (((maxHeight - 60.dp) / (maxWidth - 30.dp)) * cfg.reels / cfg.rows).coerceIn(REEL_CELL_TALL, REEL_CELL_MAX_TALL)
+                val plaque = featureChip(vm.feature)?.let { "$it · 243 WAYS" } ?: "243 WAYS"
+                val frameH = (maxWidth - 30.dp) * (cfg.rows * tall / cfg.reels) + 60.dp
+                CabinetFrame(plaque, Modifier.fillMaxWidth().height(minOf(frameH, maxHeight))) {
                     ReelsView(
                         graph = graph,
                         assets = assets,
@@ -137,15 +140,21 @@ fun GameScreen(
                         showWins = vm.phase == Phase.ShowingWin,
                         effects = vm.result?.effects,
                         onStopped = vm::onReelsStopped,
-                        accent = boardAccent(cfg.id),
+                        accent = Skin.Gold,
                         modifier = Modifier.fillMaxSize(),
                     )
                     FeatureBanner(vm.featureBanner, Modifier.align(Alignment.Center))
                 }
             }
 
-            WinBanner(vm, assets)
-            BottomPanel(vm, assets)
+            WinMeter(vm.shownWin, Modifier.align(Alignment.CenterHorizontally).width(260.dp).height(42.dp))
+            Spacer(Modifier.height(32.dp)) // room for the raised SPIN button
+            ControlDeck(
+                totalBet = vm.totalBet, betLocked = busy || vm.freeSpins > 0, spinEnabled = !busy,
+                freeSpins = vm.freeSpins, autoLeft = vm.autoSpinsLeft,
+                onMinus = { vm.changeBet(-1) }, onPlus = { vm.changeBet(1) }, onSpin = vm::onSpinClick,
+                onAuto = vm::toggleAuto, onMaxBet = vm::maxBet,
+            )
         }
 
         if (vm.phase == Phase.Loading) LoadingOverlay(graph, assets, vm.loadProgress)
@@ -160,25 +169,6 @@ fun GameScreen(
 private const val REEL_CELL_TALL = 1.22f
 private const val REEL_CELL_MAX_TALL = 1.55f
 
-@Composable
-private fun TopBar(vm: GameViewModel, graph: AppGraph, onExit: () -> Unit) {
-    Row(
-        Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        IconRoundButton(SkinIcon.Back, size = 40.dp) { onExit() }
-        LevelMedallion(vm.level, vm.levelProgress, size = 42.dp)
-        Box(Modifier.weight(1f)) {
-            XpBar(vm.level, vm.levelProgress, Modifier.fillMaxWidth())
-            XpFloat(vm.xpTick, vm.xpGained, Modifier.align(Alignment.TopEnd))
-        }
-        // balance only (no + button); tapping it still opens the store
-        CoinCapsule(vm.shownCoins, Modifier.clickable(remember { MutableInteractionSource() }, null) { graph.openStore() })
-        IconRoundButton(SkinIcon.Info, size = 38.dp) { vm.showPopup(Popup.Info) }
-    }
-}
-
 /** "+N XP" that rises and fades each time [tick] changes. */
 @Composable
 private fun XpFloat(tick: Int, xp: Int, modifier: Modifier) {
@@ -192,79 +182,6 @@ private fun XpFloat(tick: Int, xp: Int, modifier: Modifier) {
         style = outlinedText(15.sp, Color(0xFF7CF29A)),
         modifier = modifier.offset(y = (12 - 26 * t).dp).alpha(1f - t * t).padding(end = 18.dp),
     )
-}
-
-@Composable
-private fun TitleBanner(assets: ThemeAssets) {
-    // same gold title on every machine (the old logo images were hard to read on bright art)
-    Box(Modifier.fillMaxWidth().height(50.dp).padding(horizontal = 16.dp), contentAlignment = Alignment.Center) {
-        GoldText(assets.config.name.uppercase(), 30.sp, italic = true)
-    }
-}
-
-/** Machine feature ("HOLD & SPIN") on a solid plum pill with a gold rim. */
-@Composable
-private fun FeatureChip(text: String) {
-    Text(
-        "★  $text  ★",
-        style = androidx.compose.ui.text.TextStyle(
-            fontFamily = com.funpixelnest.slots.ui.common.Montserrat, fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
-            fontSize = 11.sp, letterSpacing = 1.5.sp, color = Color(0xFFFFE08A),
-        ),
-        modifier = Modifier
-            .shadow(6.dp, RoundedCornerShape(50))
-            .background(Brush.verticalGradient(listOf(Color(0xFF3A1D6E), Color(0xFF1B0C38))), RoundedCornerShape(50))
-            .border(1.2.dp, Skin.Gold.copy(alpha = 0.8f), RoundedCornerShape(50))
-            .padding(horizontal = 14.dp, vertical = 4.dp),
-    )
-}
-
-@Composable
-private fun WinBanner(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets) {
-    val win = vm.shownWin
-    Box(Modifier.fillMaxWidth().padding(vertical = 2.dp), contentAlignment = Alignment.Center) {
-        ValueWell("Win", formatCoins(win), highlight = win > 0)
-    }
-}
-
-/** Velvet console: bet row on top, then AUTO · round SPIN · MAX BET. */
-@Composable
-private fun BottomPanel(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets) {
-    val busy = vm.phase == Phase.Spinning || vm.phase == Phase.Loading
-    val betLocked = busy || vm.freeSpins > 0
-    val shape = RoundedCornerShape(28.dp)
-    Box(
-        Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp).height(178.dp)
-            .shadow(24.dp, shape).background(Color(0xE62A0B4A), shape).border(1.dp, Skin.Hairline, shape),
-    ) {
-        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconRoundButton(SkinIcon.Minus, size = 40.dp, enabled = !betLocked) { vm.changeBet(-1) }
-            ValueWell(
-                "Total bet", formatCoins(vm.totalBet), Modifier.weight(1f),
-                footnote = vm.nextBetUnlockLevel?.takeIf { vm.isMaxBet }?.let { "Level $it unlocks higher bets" }
-                    ?: "Bet level ${vm.betIndex + 1} of ${vm.session.unlockedSteps}",
-            )
-            IconRoundButton(SkinIcon.Plus, size = 40.dp, enabled = !betLocked) { vm.changeBet(1) }
-        }
-        Row(
-            Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            SkinButton(
-                if (vm.autoSpinsLeft > 0) "Stop ${vm.autoSpinsLeft}" else "Auto",
-                Modifier.width(86.dp).height(46.dp),
-                tone = if (vm.autoSpinsLeft > 0) SkinTone.Red else SkinTone.Glass, textSize = 13.sp,
-            ) { vm.toggleAuto() }
-            Spacer(Modifier.weight(1f))
-            SkinButton("Max bet", Modifier.width(86.dp).height(46.dp), tone = SkinTone.Glass, enabled = !betLocked, textSize = 13.sp) { vm.maxBet() }
-        }
-        SpinButton(
-            if (vm.freeSpins > 0) "FREE" else "SPIN",
-            Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp).size(96.dp),
-            sub = if (vm.freeSpins > 0) "${vm.freeSpins} left" else null,
-            enabled = !busy,
-        ) { vm.onSpinClick() }
-    }
 }
 
 @Composable
