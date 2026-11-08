@@ -11,20 +11,27 @@ enum class Feature(val title: String, val blurb: String) {
     HOLD_AND_SPIN("Hold & Spin", "4+ scatters start Hold & Spin: coins lock, 3 respins, each new coin resets them. Fill all 15 spots for the GRAND."),
     BONUS_WHEEL("Bonus Wheel", "4+ scatters spin the Bonus Wheel for coins, multipliers or a jackpot."),
     PICK_BONUS("Pick Bonus", "4+ scatters open the Pick Bonus: pick 3 of 9 treasures to win what is inside."),
+    FREE_SPINS_MULTIPLIER("Free Spins Multiplier", "During free spins every winning spin raises the multiplier: x1, x2, x3, x5, x10."),
+    CASCADE("Cascading Reels", "Winning symbols burst and new ones fall in. Every cascade raises the multiplier: x1, x2, x3, x5."),
+    COLLECT_METER("Diamond Collection", "Diamonds land on the reels and fill the meter. A full meter starts 8 Super Free Spins at x2."),
+    COIN_COLLECTOR("Coin Collector", "Coins with prizes land on reels 1-4. When the COLLECTOR lands on reel 5 it grabs every coin."),
     ;
 
     val isBonusGame: Boolean get() = this == HOLD_AND_SPIN || this == BONUS_WHEEL || this == PICK_BONUS
+
+    /** Machines with Grand/Major/Minor/Mini progressive jackpots. */
+    val hasJackpots: Boolean get() = this == HOLD_AND_SPIN || this == BONUS_WHEEL
 }
 
 object Features {
     private val byTheme: Map<String, Feature> = buildMap {
-        listOf("china", "pirates", "most_wanted", "gold_mine").forEach { put(it, Feature.HOLD_AND_SPIN) }
-        listOf("wolf", "viking", "witch").forEach { put(it, Feature.EXPANDING_WILD) }
-        listOf("egypt", "egypt_2").forEach { put(it, Feature.STICKY_WILDS) }
-        listOf("neon", "modern", "gems").forEach { put(it, Feature.MULTIPLIER) }
-        listOf("christmas_eve", "valentines_day", "candy").forEach { put(it, Feature.RANDOM_WILDS) }
-        listOf("greek", "india", "arabian").forEach { put(it, Feature.BONUS_WHEEL) }
-        listOf("underwater", "tropical", "forest", "farm", "wild_west").forEach { put(it, Feature.PICK_BONUS) }
+        listOf("china", "pirates", "egypt", "gold_mine").forEach { put(it, Feature.HOLD_AND_SPIN) }
+        listOf("viking", "wolf", "christmas_eve", "valentines_day").forEach { put(it, Feature.FREE_SPINS_MULTIPLIER) }
+        listOf("candy", "neon", "tropical").forEach { put(it, Feature.CASCADE) }
+        listOf("gems", "arabian", "india").forEach { put(it, Feature.COLLECT_METER) }
+        listOf("most_wanted", "wild_west", "farm").forEach { put(it, Feature.COIN_COLLECTOR) }
+        listOf("greek", "egypt_2", "modern").forEach { put(it, Feature.BONUS_WHEEL) }
+        listOf("underwater", "witch", "forest").forEach { put(it, Feature.PICK_BONUS) }
     }
 
     fun forTheme(id: String): Feature? = byTheme[id]
@@ -38,7 +45,46 @@ object Features {
     const val EXPANDING_CHANCE = 0.03
     const val MULTIPLIER_CHANCE = 0.12
     val MULTIPLIERS = listOf(2 to 50, 3 to 30, 5 to 15, 10 to 5) // value to weight
+
+    /** Free Spins Multiplier: steps up after every winning free spin. */
+    val FREE_MULTIPLIERS = listOf(1, 2, 3, 5, 10)
+
+    /** Cascading Reels: multiplier for the 1st, 2nd, 3rd... win in one spin. */
+    val CASCADE_MULTIPLIERS = listOf(1, 2, 3, 5)
+    const val MAX_CASCADES = 8
+
+    /** Diamond Collection. */
+    const val METER_TARGET = 50
+    const val DIAMOND_CHANCE = 0.30
+    const val DOUBLE_DIAMOND_CHANCE = 0.05
+    const val SUPER_SPINS = 8
+    const val SUPER_MULTIPLIER = 2
+
+    /** Coin Collector: coin chance per cell on reels 1-4, collector chance per spin. */
+    const val COIN_CHANCE = 0.04
+    const val COLLECTOR_CHANCE = 0.10
+    /** Coin prizes in tenths of the total bet, with weights. */
+    val COIN_VALUES = listOf(5 to 40, 10 to 30, 20 to 15, 50 to 10, 100 to 4, 250 to 1)
+
+    /** Scales regular pays per feature so every machine lands near the same payback (RTP test). */
+    fun payScale(f: Feature?): Double = when (f) {
+        Feature.CASCADE -> 0.62
+        Feature.COLLECT_METER -> 0.92
+        Feature.COIN_COLLECTOR -> 0.92
+        Feature.FREE_SPINS_MULTIPLIER -> 1.0
+        else -> 1.0
+    }
 }
+
+/** One step of a cascading spin: the grid shown, its winning cells and what they paid. */
+data class CascadeStep(
+    val grid: Grid,
+    val wins: Set<Cell>,
+    val coins: Long,
+    val multiplier: Int,
+    /** Cells that dropped in to make this grid (empty for the first step). */
+    val dropped: Set<Cell> = emptySet(),
+)
 
 /** What the features changed on a spin, so the UI can show it. */
 data class FeatureEffects(
@@ -52,6 +98,20 @@ data class FeatureEffects(
     val multiplier: Int = 1,
     /** Bonus game started by this spin, if any. */
     val bonus: Feature? = null,
+    /** Cascading Reels: every step of the spin, last one is the settled grid. */
+    val cascades: List<CascadeStep> = emptyList(),
+    /** Coin Collector: coins on the reels and their prizes. */
+    val coins: Map<Cell, Long> = emptyMap(),
+    /** Coin Collector: where the collector landed (null = no collector). */
+    val collector: Cell? = null,
+    /** Coin Collector: coins grabbed by the collector on this spin. */
+    val collected: Long = 0,
+    /** Diamond Collection: diamonds that landed on this spin. */
+    val diamonds: Set<Cell> = emptySet(),
+    /** Diamond Collection: the meter filled and Super Free Spins started. */
+    val meterFilled: Boolean = false,
+    /** Free-spin multiplier applied to this spin's win (1 = none). */
+    val freeMultiplier: Int = 1,
 )
 
 /** A prize inside a bonus game: coins, or a jackpot tier worth its current value. */

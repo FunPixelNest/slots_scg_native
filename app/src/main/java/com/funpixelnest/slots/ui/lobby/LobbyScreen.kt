@@ -153,9 +153,11 @@ fun LobbyScreen(
     }
 
     val filters = listOf<Pair<String, (ThemeIndexEntry) -> Boolean>>(
-        "Hold & Spin" to { e -> Features.forTheme(e.id) == Feature.HOLD_AND_SPIN },
-        "Bonus Games" to { e -> Features.forTheme(e.id).let { it == Feature.BONUS_WHEEL || it == Feature.PICK_BONUS } },
-        "Wilds" to { e -> Features.forTheme(e.id).let { it == Feature.EXPANDING_WILD || it == Feature.STICKY_WILDS || it == Feature.RANDOM_WILDS } },
+        "Jackpots" to { e -> Features.forTheme(e.id)?.hasJackpots == true },
+        "Free Spins" to { e -> Features.forTheme(e.id) == Feature.FREE_SPINS_MULTIPLIER },
+        "Cascade" to { e -> Features.forTheme(e.id) == Feature.CASCADE },
+        "Collect" to { e -> Features.forTheme(e.id).let { it == Feature.COLLECT_METER || it == Feature.COIN_COLLECTOR } },
+        "Bonus Games" to { e -> Features.forTheme(e.id)?.isBonusGame == true },
         "Unlocked" to { e -> player.isOpen(e) },
     )
     val shown = remember(filter, refresh, level) {
@@ -264,7 +266,7 @@ fun ProfileBar(level: Int, progress: Float, coins: Long, onPlus: () -> Unit, onS
 }
 
 /** Machines shown in the auto-scrolling banner at the top of the lobby. */
-private val FEATURED = listOf("china", "pirates", "egypt", "greek", "wild_west")
+private val FEATURED = listOf("china", "pirates", "egypt", "greek", "gold_mine") // all jackpot machines (the banner shows the GRAND)
 private const val FEATURED_INTERVAL_MS = 4_000L
 
 /** Five featured machines that slide by themselves every [FEATURED_INTERVAL_MS] (and can be swiped). */

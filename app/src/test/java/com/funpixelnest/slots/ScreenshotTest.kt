@@ -126,7 +126,7 @@ class MachineScreenshotTest(private val order: Int, private val themeId: String)
     fun machine() {
         val stops = winningStops(graph.theme(themeId)!!.config)
         setScreen {
-            GameScreen(graph, themeId, onExit = {}, onReady = { vm -> vm.preview(stops) })
+            GameScreen(graph, themeId, onExit = {}, onReady = { vm -> vm.previewShowcase(stops) })
         }
         waitForTag("game-ready")
         settle(2500)

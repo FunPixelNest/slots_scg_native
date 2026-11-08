@@ -33,6 +33,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.unit.IntOffset
+import com.funpixelnest.slots.engine.Grid
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.unit.IntSize
 import com.funpixelnest.slots.audio.Sfx
 import com.funpixelnest.slots.data.AppGraph
@@ -67,8 +74,20 @@ fun ReelsView(
     onStopped: () -> Unit,
     /** Theme colour of the board, used for the reel columns and win highlights. */
     accent: Color = Color(0xFFF5C451),
+    /** Cascading Reels: grid of the current cascade step, its winning cells and the cells that dropped in. */
+    cascadeGrid: Grid? = null,
+    cascadeWins: Set<Cell> = emptySet(),
+    cascadeDropped: Set<Cell> = emptySet(),
+    cascadeTick: Int = 0,
+    /** Coins, collector and diamonds drawn on top of symbols once the reels rest. */
+    marks: Map<Cell, CellMark> = emptyMap(),
     modifier: Modifier = Modifier,
 ) {
+    val drop = remember { Animatable(1f) }
+    LaunchedEffect(cascadeTick) {
+        if (cascadeTick > 0 && cascadeDropped.isNotEmpty()) { drop.snapTo(0f); drop.animateTo(1f, tween(380, easing = LinearOutSlowInEasing)) }
+    }
+    val measurer = rememberTextMeasurer()
     val cfg = assets.config
     val strips = cfg.reelStrips
     val positions = remember { initialStops.map { Animatable(it.toFloat()) } }
@@ -131,7 +150,12 @@ fun ReelsView(
         Canvas(Modifier.fillMaxSize()) {
             val cellW = size.width / cfg.reels
             val cellH = size.height / cfg.rows
-            val wins = if (showWins) outcome?.winningCells.orEmpty() else emptySet()
+            val cascading = cascadeGrid != null
+            val wins = when {
+                cascading -> cascadeWins
+                showWins -> outcome?.winningCells.orEmpty()
+                else -> emptySet()
+            }
             val pulse = 1f + 0.08f * sin(clock / 140f)
 
             for (reel in 0 until cfg.reels) {
@@ -163,10 +187,16 @@ fun ReelsView(
                 clipRect(left, 0f, left + cellW, size.height) {
                     for (r in -1..cfg.rows) {
                         // at rest, show the final grid (features may have turned symbols wild)
-                        val idx = if (showWins && frac == 0f && outcome != null && r in 0 until cfg.rows) outcome.grid[reel][r]
-                        else strip[(((base + r) % n) + n) % n]
+                        val idx = when {
+                            cascading && frac == 0f && r in 0 until cfg.rows -> cascadeGrid!![reel][r]
+                            showWins && frac == 0f && outcome != null && r in 0 until cfg.rows -> outcome.grid[reel][r]
+                            else -> strip[(((base + r) % n) + n) % n]
+                        }
+                        if (cascading && frac == 0f && r !in 0 until cfg.rows) continue
                         val sym = cfg.symbols[idx]
-                        val top = (r - frac) * cellH
+                        // cascade: symbols in a reel that lost cells fall down into place
+                        val fallRows = if (cascading && drop.value < 1f) cascadeDropped.count { it.reel == reel } else 0
+                        val top = (r - frac) * cellH - if (fallRows > 0 && (Cell(reel, r) in cascadeDropped || r <= cascadeDropped.filter { it.reel == reel }.maxOf { it.row } + fallRows)) fallRows * cellH * (1f - drop.value) else 0f
                         val cell = Cell(reel, r)
                         val isWin = frac == 0f && cell in wins
                         val dim = wins.isNotEmpty() && !isWin && frac == 0f
@@ -209,9 +239,14 @@ fun ReelsView(
             drawRect(Brush.verticalGradient(listOf(Color(0xCC0E0220), Color.Transparent), 0f, fade), Offset.Zero, Size(size.width, fade))
             drawRect(Brush.verticalGradient(listOf(Color.Transparent, Color(0xCC0E0220)), size.height - fade, size.height), Offset(0f, size.height - fade), Size(size.width, fade))
 
-            if (showWins && outcome != null && outcome.lineWins.isNotEmpty()) {
+            if (cascading) {
+                val t = 0.75f + 0.25f * sin(clock / 120f)
+                cascadeWins.forEach { c -> drawCellRim(c, cellW, cellH, Color(0xFFFFD66B), accent, t) }
+            } else if (showWins && outcome != null && outcome.lineWins.isNotEmpty()) {
                 drawWinLines(outcome, clock, cellW, cellH, accent)
             }
+            // feature marks (coins, collector, diamonds) over the resting symbols
+            if (positions.all { abs(it.velocity) < 0.01f }) marks.forEach { (c, m) -> drawMark(c, m, cellW, cellH, measurer) }
         }
     }
 }
@@ -275,4 +310,54 @@ private fun DrawScope.drawFrame(img: ImageBitmap, f: Frame, topLeft: Offset, box
         IntOffset((topLeft.x + (box.width - w) / 2).toInt(), (topLeft.y + (box.height - h) / 2).toInt()),
         IntSize(w.toInt().coerceAtLeast(1), h.toInt().coerceAtLeast(1)),
     )
+}
+
+/** Something a feature puts on a reel cell. */
+sealed interface CellMark {
+    data class Coin(val coins: Long) : CellMark
+    data object Collector : CellMark
+    data object Diamond : CellMark
+}
+
+private fun DrawScope.drawMark(c: Cell, m: CellMark, cellW: Float, cellH: Float, measurer: TextMeasurer) {
+    val left = c.reel * cellW
+    val top = c.row * cellH
+    when (m) {
+        is CellMark.Coin -> {
+            val r = cellW * 0.25f
+            val center = Offset(left + cellW - r * 0.95f, top + cellH - r * 0.95f)
+            drawCircle(Color(0x88000000), r * 1.08f, center + Offset(0f, r * 0.12f))
+            drawCircle(Brush.verticalGradient(listOf(Color(0xFFFFF6C8), Color(0xFFFFD44A), Color(0xFFC8801A)), center.y - r, center.y + r), r, center)
+            drawCircle(Color(0xFF8A5208), r * 0.8f, center, style = Stroke(r * 0.1f))
+            val text = measurer.measure(
+                com.funpixelnest.slots.ui.common.formatCompact(m.coins),
+                TextStyle(fontFamily = com.funpixelnest.slots.ui.common.Montserrat, fontWeight = FontWeight.Black, fontSize = (r * 0.62f / density).sp, color = Color(0xFF4A2200)),
+            )
+            drawText(text, topLeft = Offset(center.x - text.size.width / 2f, center.y - text.size.height / 2f))
+        }
+        CellMark.Collector -> {
+            val h = cellH * 0.26f
+            val tl = Offset(left + cellW * 0.04f, top + cellH - h - cellH * 0.04f)
+            val sz = Size(cellW * 0.92f, h)
+            drawRoundRect(Brush.verticalGradient(listOf(Color(0xFFB45CFF), Color(0xFF5A1FC2)), tl.y, tl.y + h), tl, sz, CornerRadius(h / 2))
+            drawRoundRect(Color(0xFFFFE08A), tl, sz, CornerRadius(h / 2), style = Stroke(h * 0.1f))
+            val text = measurer.measure(
+                "COLLECT",
+                TextStyle(fontFamily = com.funpixelnest.slots.ui.common.Montserrat, fontWeight = FontWeight.Black, fontSize = (h * 0.5f / density).sp, color = Color.White),
+            )
+            drawText(text, topLeft = Offset(tl.x + (sz.width - text.size.width) / 2f, tl.y + (h - text.size.height) / 2f))
+        }
+        CellMark.Diamond -> {
+            val s = cellW * 0.3f
+            val cx = left + cellW - s * 0.75f
+            val cy = top + s * 0.7f
+            val p = Path().apply {
+                moveTo(cx - s * 0.5f, cy - s * 0.18f); lineTo(cx - s * 0.25f, cy - s * 0.45f); lineTo(cx + s * 0.25f, cy - s * 0.45f)
+                lineTo(cx + s * 0.5f, cy - s * 0.18f); lineTo(cx, cy + s * 0.5f); close()
+            }
+            drawCircle(Color(0x6638D6FF), s * 0.7f, Offset(cx, cy))
+            drawPath(p, Brush.verticalGradient(listOf(Color(0xFFE6FBFF), Color(0xFF38D6FF), Color(0xFF1F6FD0)), cy - s * 0.45f, cy + s * 0.5f))
+            drawPath(p, Color.White, style = Stroke(s * 0.05f))
+        }
+    }
 }

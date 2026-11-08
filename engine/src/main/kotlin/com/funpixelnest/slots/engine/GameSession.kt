@@ -12,6 +12,9 @@ interface PlayerStore {
     fun setLineBet(themeId: String, bet: Int)
     fun jackpotPool(themeId: String, tier: JackpotTier): Long
     fun setJackpotPool(themeId: String, tier: JackpotTier, value: Long)
+    /** Saved per-machine counters (e.g. the diamond meter). */
+    fun counter(key: String): Long = 0L
+    fun setCounter(key: String, value: Long) {}
 }
 
 class InMemoryPlayerStore(
@@ -25,6 +28,9 @@ class InMemoryPlayerStore(
     override fun setLineBet(themeId: String, bet: Int) { bets[themeId] = bet }
     override fun jackpotPool(themeId: String, tier: JackpotTier) = pools["$themeId/$tier"] ?: 0L
     override fun setJackpotPool(themeId: String, tier: JackpotTier, value: Long) { pools["$themeId/$tier"] = value }
+    private val counters = HashMap<String, Long>()
+    override fun counter(key: String) = counters[key] ?: 0L
+    override fun setCounter(key: String, value: Long) { counters[key] = value }
 }
 
 /** Kept for callers of the original Unity defaults. */
@@ -112,11 +118,58 @@ class GameSession(
         val (grid, fx) = applyFeatures(baseGrid, free)
         val outcome = machine.evaluateGrid(stops, grid)
         var effects = fx
-        var winCoins = coinsFor(outcome.payUnits)
+        val scale = Features.payScale(feature)
+        var winCoins = (coinsFor(outcome.payUnits) * scale).toLong()
+        var extraSpins = 0
         if (feature == Feature.MULTIPLIER && winCoins > 0 && random.nextDouble() < Features.MULTIPLIER_CHANCE) {
             val m = random.weighted(Features.MULTIPLIERS)
             winCoins *= m
             effects = effects.copy(multiplier = m)
+        }
+        when (feature) {
+            Feature.CASCADE -> if (outcome.lineWins.isNotEmpty()) {
+                val steps = cascade(stops, grid, outcome, scale)
+                winCoins = steps.sumOf { it.coins }
+                effects = effects.copy(cascades = steps)
+            }
+            Feature.FREE_SPINS_MULTIPLIER -> if (free) {
+                val m = Features.FREE_MULTIPLIERS[freeMultStep]
+                winCoins *= m
+                effects = effects.copy(freeMultiplier = m)
+                if (winCoins > 0) freeMultStep = (freeMultStep + 1).coerceAtMost(Features.FREE_MULTIPLIERS.lastIndex)
+            }
+            Feature.COLLECT_METER -> {
+                if (free && superFree) {
+                    winCoins *= Features.SUPER_MULTIPLIER
+                    effects = effects.copy(freeMultiplier = Features.SUPER_MULTIPLIER)
+                }
+                val n = when {
+                    random.nextDouble() < Features.DOUBLE_DIAMOND_CHANCE -> 2
+                    random.nextDouble() < Features.DIAMOND_CHANCE -> 1
+                    else -> 0
+                }
+                val cells = allCells().filter { grid[it.reel][it.row] != cfg.scatterId }.shuffled(random).take(n).toSet()
+                var fill = meter + cells.size
+                var filled = false
+                if (fill >= Features.METER_TARGET) {
+                    fill -= Features.METER_TARGET
+                    filled = true
+                    extraSpins = Features.SUPER_SPINS
+                    superFree = true
+                }
+                store.setCounter(meterKey, fill.toLong())
+                effects = effects.copy(diamonds = cells, meterFilled = filled)
+            }
+            Feature.COIN_COLLECTOR -> {
+                val coins = (0 until machine.reelCount - 1).flatMap { r -> (0 until machine.rowCount).map { Cell(r, it) } }
+                    .filter { grid[it.reel][it.row] != cfg.scatterId && random.nextDouble() < Features.COIN_CHANCE }
+                    .associateWith { totalBet * random.weighted(Features.COIN_VALUES) / 10 }
+                val collector = if (random.nextDouble() < Features.COLLECTOR_CHANCE) Cell(machine.reelCount - 1, random.nextInt(machine.rowCount)) else null
+                val collected = if (collector != null) coins.values.sum() else 0L
+                winCoins += collected
+                effects = effects.copy(coins = coins, collector = collector, collected = collected)
+            }
+            else -> Unit
         }
         val scatters = baseGrid.sumOf { col -> col.count { it == cfg.scatterId } }
         if (feature?.isBonusGame == true && cfg.scatterId >= 0 && scatters >= Features.BONUS_SCATTERS) {
@@ -124,15 +177,21 @@ class GameSession(
         }
         var spinsWon = outcome.freeSpins * outcome.freeSpinsMultiplier
         if (cfg.bet.freeSpinsScaleWithBet) spinsWon *= betIndex + 1
+        spinsWon += extraSpins
         freeSpins += spinsWon
 
-        val jackpot = if (free) null else rollJackpot()
+        // only jackpot machines have the progressive Grand/Major/Minor/Mini
+        val jackpot = if (free || feature?.hasJackpots != true) null else rollJackpot()
         store.coins += winCoins + (jackpot?.coins ?: 0L)
 
         val xp = xpForSpin(outcome.isWin)
         val (levelUp, reward) = addXp(xp.toFloat())
 
-        if (free && freeSpins == 0) stickyCells.clear() // free games over
+        if (free && freeSpins == 0) { // free games over
+            stickyCells.clear()
+            freeMultStep = 0
+            superFree = false
+        }
 
         val tier = Economy.winTier(winCoins, totalBet)
         return Result.success(
@@ -178,6 +237,62 @@ class GameSession(
 
     /** Wilds held by Sticky Wilds during the current free games. */
     val stickyCells: MutableSet<Cell> = LinkedHashSet()
+
+    /** Free Spins Multiplier: index into [Features.FREE_MULTIPLIERS] for the next free spin. */
+    var freeMultStep: Int = 0
+        private set
+
+    /** Multiplier the next free spin will use (1 outside free spins). */
+    val nextFreeMultiplier: Int get() = when {
+        feature == Feature.FREE_SPINS_MULTIPLIER && freeSpins > 0 -> Features.FREE_MULTIPLIERS[freeMultStep]
+        feature == Feature.COLLECT_METER && superFree && freeSpins > 0 -> Features.SUPER_MULTIPLIER
+        else -> 1
+    }
+
+    /** Diamond Collection: the current free spins are Super Free Spins. */
+    var superFree: Boolean = false
+        private set
+
+    private val meterKey get() = "meter_${cfg.id}"
+
+    /** Diamonds collected towards [Features.METER_TARGET]. */
+    val meter: Int get() = store.counter(meterKey).toInt()
+
+    private fun allCells(): List<Cell> = (0 until machine.reelCount).flatMap { r -> (0 until machine.rowCount).map { Cell(r, it) } }
+
+    /** Random symbol for a cell refilled by a cascade (never a scatter, so cascades cannot start bonuses). */
+    private fun refill(reel: Int): Int {
+        val strip = cfg.reelStrips[reel]
+        repeat(20) { val s = strip[random.nextInt(strip.size)]; if (s != cfg.scatterId) return s }
+        return strip.first { it != cfg.scatterId }
+    }
+
+    /** Cascading Reels: pay, burst the winning symbols, drop new ones in, repeat while there are line wins. */
+    private fun cascade(stops: List<Int>, start: Grid, first: SpinOutcome, scale: Double): List<CascadeStep> {
+        val steps = ArrayList<CascadeStep>()
+        var g = start
+        var out = first
+        var dropped = emptySet<Cell>()
+        var i = 0
+        while (out.lineWins.isNotEmpty() && i < Features.MAX_CASCADES) {
+            val m = Features.CASCADE_MULTIPLIERS[minOf(i, Features.CASCADE_MULTIPLIERS.lastIndex)]
+            val units = if (i == 0) out.payUnits else out.linePay.toLong() * out.payMultiplier
+            val cells = out.lineWins.flatMap { it.cells }.toSet()
+            steps += CascadeStep(g, cells, (coinsFor(units) * scale).toLong() * m, m, dropped)
+            val newDropped = HashSet<Cell>()
+            g = g.mapIndexed { r, col ->
+                val keep = col.filterIndexed { row, _ -> Cell(r, row) !in cells }
+                val add = col.size - keep.size
+                repeat(add) { newDropped += Cell(r, it) }
+                List(add) { refill(r) } + keep
+            }
+            dropped = newDropped
+            out = machine.evaluateGrid(stops, g)
+            i++
+        }
+        steps += CascadeStep(g, emptySet(), 0L, 1, dropped) // settled grid
+        return steps
+    }
 
     private fun applyFeatures(base: Grid, free: Boolean): Pair<Grid, FeatureEffects> {
         val wild = cfg.wildId

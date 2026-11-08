@@ -159,6 +159,12 @@ fun CabinetTopBar(
 /** GRAND jackpot marquee: gold frame, chasing light bulbs, big gold number. */
 @Composable
 fun JackpotMarquee(value: Long, modifier: Modifier) {
+    Marquee("GRAND JACKPOT", modifier) { GoldText(formatCoins(value), 30.sp) }
+}
+
+/** Gold-framed sign with chasing light bulbs; [title] on top, [content] below it. */
+@Composable
+fun Marquee(title: String, modifier: Modifier, content: @Composable () -> Unit) {
     val chase by rememberInfiniteTransition(label = "bulbs").animateFloat(
         0f, 1f, infiniteRepeatable(tween(700), RepeatMode.Restart), label = "c",
     )
@@ -182,8 +188,25 @@ fun JackpotMarquee(value: Long, modifier: Modifier) {
             }
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("GRAND JACKPOT", style = style(10.sp, Color(0xFFFFD0E4), FontWeight.ExtraBold, 3.sp))
-            GoldText(formatCoins(value), 30.sp)
+            Text(title, style = style(10.sp, Color(0xFFFFD0E4), FontWeight.ExtraBold, 3.sp))
+            content()
+        }
+    }
+}
+
+/** Pill badge with a caption and a text value (feature panels). */
+@Composable
+fun TextBadge(label: String, value: String, rim: Color, top: Color, bottom: Color, modifier: Modifier, lit: Boolean = false) {
+    val shape = RoundedCornerShape(50)
+    Box(
+        modifier.shadow(if (lit) 12.dp else 6.dp, shape, ambientColor = rim, spotColor = rim)
+            .background(Brush.verticalGradient(listOf(if (lit) Color(0xFFFFF6C8) else rim, top)), shape).padding(if (lit) 3.dp else 2.dp)
+            .background(Brush.verticalGradient(listOf(top, bottom)), shape),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            if (label.isNotEmpty()) Text(label, style = style(8.sp, rim, FontWeight.ExtraBold, 1.sp), maxLines = 1)
+            Text(value, maxLines = 1, style = style(if (label.isEmpty()) 16.sp else 12.sp, Color.White))
         }
     }
 }

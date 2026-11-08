@@ -119,7 +119,7 @@ fun GameScreen(
                 onBack = onExit, onCoins = { graph.openStore() }, onMenu = { vm.showPopup(Popup.Info) },
             ) { XpFloat(vm.xpTick, vm.xpGained, Modifier.align(Alignment.TopEnd)) }
             Spacer(Modifier.height(10.dp))
-            JackpotBar(vm, assets)
+            FeatureHeader(vm, assets)
 
             // ---------------- reels inside the gold cabinet
             BoxWithConstraints(
@@ -141,6 +141,11 @@ fun GameScreen(
                         effects = vm.result?.effects,
                         onStopped = vm::onReelsStopped,
                         accent = Skin.Gold,
+                        cascadeGrid = vm.cascadeGrid,
+                        cascadeWins = vm.cascadeWins,
+                        cascadeDropped = vm.cascadeDropped,
+                        cascadeTick = vm.cascadeTick,
+                        marks = if (vm.phase == Phase.ShowingWin) marksOf(vm.result?.effects) else emptyMap(),
                         modifier = Modifier.fillMaxSize(),
                     )
                     FeatureBanner(vm.featureBanner, Modifier.align(Alignment.Center))
@@ -212,3 +217,13 @@ private fun FeatureBanner(text: String?, modifier: Modifier) {
 
 /** Short feature name for the HUD chip and lobby cards. */
 fun featureChip(f: Feature?): String? = f?.title?.uppercase()
+
+/** Coins, collector and diamonds a spin put on the reels. */
+private fun marksOf(fx: com.funpixelnest.slots.engine.FeatureEffects?): Map<com.funpixelnest.slots.engine.Cell, CellMark> {
+    if (fx == null) return emptyMap()
+    val m = HashMap<com.funpixelnest.slots.engine.Cell, CellMark>()
+    fx.coins.forEach { (c, v) -> m[c] = CellMark.Coin(v) }
+    fx.diamonds.forEach { m[it] = CellMark.Diamond }
+    fx.collector?.let { m[it] = CellMark.Collector }
+    return m
+}

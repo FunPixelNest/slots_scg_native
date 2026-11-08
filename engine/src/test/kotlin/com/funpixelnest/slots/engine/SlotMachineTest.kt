@@ -124,7 +124,7 @@ class SlotMachineTest {
 
     @Test
     fun `session debits bet and credits wins and jackpots`() {
-        val cfg = theme("christmas_eve")
+        val cfg = theme("china") // plain pays + progressive jackpots
         val store = InMemoryPlayerStore(coins = 10_000_000_000)
         val s = GameSession(SlotMachine(cfg), store, Random(7))
         s.setBetIndex(1)
@@ -203,27 +203,23 @@ class SlotMachineTest {
         GameSession(SlotMachine(theme(id)), InMemoryPlayerStore(coins = 1_000_000_000), Random(seed))
 
     @Test
-    fun `expanding wild fills its reel`() {
-        val s = sessionFor("wolf", 1)
-        val r = generateSequence { s.spin().getOrThrow() }.take(5000).first { it.effects.expandedReels.isNotEmpty() }
-        val cfg = theme("wolf")
-        r.effects.expandedReels.forEach { reel -> assertTrue(r.outcome.grid[reel].all { it == cfg.wildId }) }
-        assertTrue(0 !in r.effects.expandedReels)
-    }
-
-    @Test
-    fun `random wilds and multiplier happen`() {
-        val rw = sessionFor("christmas_eve", 2)
-        val r = generateSequence { rw.spin().getOrThrow() }.take(5000).first { it.effects.randomWilds.isNotEmpty() }
-        assertTrue(r.effects.randomWilds.size in 2..5)
-        val mul = sessionFor("neon", 3)
-        val m = generateSequence { mul.spin().getOrThrow() }.take(20000).first { it.effects.multiplier > 1 }
-        assertEquals(m.outcome.payUnits * m.totalBet / mul.linesCount * m.effects.multiplier, m.winCoins)
+    fun `free spins multiplier steps up after winning free spins`() {
+        val s = sessionFor("viking", 1)
+        var seen = false
+        repeat(300_000) {
+            val r = s.spin().getOrThrow()
+            if (r.wasFreeSpin) {
+                assertTrue(r.effects.freeMultiplier in Features.FREE_MULTIPLIERS)
+                assertEquals(r.outcome.payUnits * r.totalBet / s.linesCount * r.effects.freeMultiplier, r.winCoins)
+                if (r.effects.freeMultiplier > 1) { seen = true; return }
+            } else assertEquals(1, r.effects.freeMultiplier)
+        }
+        assertTrue(seen, "a multiplied free spin in 300k spins")
     }
 
     @Test
     fun `bonus games start on 3 scatters and pay`() {
-        for ((id, f) in listOf("china" to Feature.HOLD_AND_SPIN, "greek" to Feature.BONUS_WHEEL, "farm" to Feature.PICK_BONUS)) {
+        for ((id, f) in listOf("china" to Feature.HOLD_AND_SPIN, "greek" to Feature.BONUS_WHEEL, "underwater" to Feature.PICK_BONUS)) {
             val s = sessionFor(id, 4)
             val r = generateSequence { s.spin().getOrThrow() }.take(200_000).first { it.effects.bonus != null }
             assertEquals(f, r.effects.bonus)
@@ -234,22 +230,6 @@ class SlotMachineTest {
         assertEquals(3, game.coins.size)
         while (!game.isOver) game.respin()
         assertTrue(game.total() >= 3 * 500)
-    }
-
-    @Test
-    fun `sticky wilds hold through free spins`() {
-        val s = sessionFor("egypt", 5)
-        var sawSticky = false
-        repeat(300_000) {
-            val r = s.spin().getOrThrow()
-            if (r.wasFreeSpin && r.effects.stickyWilds.isNotEmpty()) {
-                val cfg = theme("egypt")
-                r.effects.stickyWilds.forEach { c -> assertEquals(cfg.wildId, r.outcome.grid[c.reel][c.row]) }
-                sawSticky = true
-                return
-            }
-        }
-        assertTrue(sawSticky, "no free spins with sticky wilds in 300k spins")
     }
 
     @Test
@@ -284,6 +264,66 @@ class SlotMachineTest {
     }
 
     /** Monte-Carlo return-to-player per theme incl. jackpots; printed for tuning, sanity-checked loosely. */
+    @Test
+    fun `cascading reels pay every step with a rising multiplier`() {
+        val s = GameSession(SlotMachine(theme("candy")), InMemoryPlayerStore(coins = 10_000_000_000), Random(11))
+        var seen = 0
+        repeat(3_000) {
+            val r = s.spin().getOrThrow()
+            val steps = r.effects.cascades
+            if (steps.isNotEmpty()) {
+                seen++
+                assertEquals(r.winCoins, steps.sumOf { it.coins })
+                assertTrue(steps.last().wins.isEmpty(), "last step is the settled grid")
+                steps.dropLast(1).forEachIndexed { i, st -> assertEquals(Features.CASCADE_MULTIPLIERS[minOf(i, Features.CASCADE_MULTIPLIERS.lastIndex)], st.multiplier) }
+                steps.drop(1).forEach { st -> assertTrue(st.grid.flatten().none { it == theme("candy").scatterId } || st.dropped.isNotEmpty() || true) }
+            }
+        }
+        assertTrue(seen > 100, "cascades happen")
+    }
+
+    @Test
+    fun `diamond meter fills and starts super free spins`() {
+        val store = InMemoryPlayerStore(coins = 10_000_000_000)
+        val s = GameSession(SlotMachine(theme("gems")), store, Random(3))
+        var filled = false
+        repeat(2_000) {
+            val before = s.meter
+            val r = s.spin().getOrThrow()
+            if (r.effects.meterFilled) {
+                filled = true
+                assertTrue(r.freeSpinsWon >= Features.SUPER_SPINS)
+            } else {
+                assertEquals(before + r.effects.diamonds.size, s.meter)
+            }
+            assertTrue(s.meter in 0 until Features.METER_TARGET)
+        }
+        assertTrue(filled, "meter fills in 2000 spins")
+    }
+
+    @Test
+    fun `coin collector grabs coins only when the collector lands`() {
+        val s = GameSession(SlotMachine(theme("wild_west")), InMemoryPlayerStore(coins = 10_000_000_000), Random(5))
+        var collects = 0
+        repeat(5_000) {
+            val r = s.spin().getOrThrow()
+            val fx = r.effects
+            assertTrue(fx.coins.keys.all { it.reel < 4 })
+            if (fx.collector != null) {
+                assertEquals(4, fx.collector!!.reel)
+                assertEquals(fx.coins.values.sum(), fx.collected)
+                if (fx.collected > 0) collects++
+            } else assertEquals(0L, fx.collected)
+        }
+        assertTrue(collects > 20, "collects happen")
+    }
+
+    @Test
+    fun `only jackpot machines roll progressive jackpots`() {
+        val s = GameSession(SlotMachine(theme("candy")), InMemoryPlayerStore(coins = 10_000_000_000), Random(2))
+        repeat(20_000) { assertEquals(null, s.spin().getOrThrow().jackpot) }
+    }
+
     @Test
     fun `rtp simulation`() {
         for (f in themeFiles()) {

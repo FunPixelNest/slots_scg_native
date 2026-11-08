@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.data.ThemeAssets
 import com.funpixelnest.slots.engine.JackpotTier
+import com.funpixelnest.slots.engine.Features
+import com.funpixelnest.slots.engine.Feature
 import com.funpixelnest.slots.ui.skin.Skin
 import com.funpixelnest.slots.ui.common.formatCoins
 import kotlinx.coroutines.delay
@@ -66,6 +68,89 @@ fun GoldText(text: String, size: TextUnit, modifier: Modifier = Modifier, family
             text, maxLines = 1,
             style = base.copy(brush = Brush.verticalGradient(listOf(Color(0xFFFFFBE0), Color(0xFFFFE27A), Color(0xFFF5B728), Color(0xFFD9850E)))),
         )
+    }
+}
+
+/**
+ * Panel above the reels: progressive jackpots on jackpot machines, otherwise the machine's
+ * feature (multiplier ladder, diamond meter, coin collector, pick bonus).
+ */
+@Composable
+fun FeatureHeader(vm: GameViewModel, assets: ThemeAssets) {
+    val f = vm.feature
+    if (f == null || f.hasJackpots) { JackpotBar(vm, assets); return }
+    val purple = Triple(Color(0xFFE3D2FF), Color(0xFF5B2BB0), Color(0xFF2E0F66))
+    val green = Triple(Color(0xFFC8FFD6), Color(0xFF1F8A44), Color(0xFF0B4A22))
+    val blue = Triple(Color(0xFFC8F4FF), Color(0xFF1F6FB0), Color(0xFF0B3A66))
+    val orange = Triple(Color(0xFFFFE0B8), Color(0xFFE0700E), Color(0xFF7A3206))
+    Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
+        val signMod = Modifier.fillMaxWidth(0.9f).height(72.dp).align(Alignment.CenterHorizontally)
+        when (f) {
+            Feature.FREE_SPINS_MULTIPLIER -> {
+                val active = vm.freeSpins > 0
+                Marquee(if (active) "FREE SPINS · ${vm.freeSpins} LEFT" else "FREE SPINS MULTIPLIER", signMod) {
+                    GoldText(if (active) "x${vm.freeMultiplier}" else "UP TO x10", 30.sp)
+                }
+                val ladder = Features.FREE_MULTIPLIERS
+                Badges(ladder.map { "" to "x$it" }, listOf(purple, blue, green, orange, purple), lit = if (active) ladder.indexOf(vm.freeMultiplier) else -1)
+            }
+            Feature.CASCADE -> {
+                Marquee("CASCADE MULTIPLIER", signMod) { GoldText("x${vm.cascadeMultiplier}", 30.sp) }
+                val ladder = Features.CASCADE_MULTIPLIERS
+                Badges(ladder.mapIndexed { i, m -> (if (i == 0) "WIN" else "CASCADE $i") to "x$m" }, listOf(purple, blue, green, orange),
+                    lit = ladder.indexOf(vm.cascadeMultiplier).takeIf { vm.cascadeMultiplier > 1 } ?: -1)
+            }
+            Feature.COLLECT_METER -> {
+                Marquee("DIAMOND COLLECTION", signMod) { DiamondMeter(vm.meter, Features.METER_TARGET) }
+                Badges(
+                    listOf("FULL METER" to "${Features.SUPER_SPINS} SPINS", "SUPER SPINS" to "x${Features.SUPER_MULTIPLIER} WINS", "COLLECTED" to "${vm.meter} / ${Features.METER_TARGET}"),
+                    listOf(blue, purple, green),
+                )
+            }
+            Feature.COIN_COLLECTOR -> {
+                Marquee("COIN COLLECTOR", signMod) {
+                    GoldText(if (vm.lastCollected > 0) formatCoins(vm.lastCollected) else "COLLECT ALL COINS", if (vm.lastCollected > 0) 30.sp else 22.sp)
+                }
+                Badges(
+                    listOf("COINS" to "REELS 1-4", "COLLECTOR" to "REEL 5", "TOP COIN" to "x25 BET"),
+                    listOf(orange, purple, green),
+                )
+            }
+            else -> { // pick bonus
+                Marquee("PICK BONUS", signMod) { GoldText("OPEN THE CHESTS", 22.sp) }
+                Badges(
+                    listOf("TRIGGER" to "4+ SCATTERS", "PICK" to "3 OF 9", "PRIZES" to "COINS + MINI"),
+                    listOf(purple, orange, blue),
+                )
+            }
+        }
+    }
+}
+
+/** Row of feature badges under the sign; [lit] highlights the current step. */
+@Composable
+private fun Badges(items: List<Pair<String, String>>, colors: List<Triple<Color, Color, Color>>, lit: Int = -1) {
+    Row(Modifier.fillMaxWidth().height(44.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        items.forEachIndexed { i, (label, value) ->
+            val c = colors[i % colors.size]
+            TextBadge(label, value, c.first, c.second, c.third, Modifier.weight(1f).fillMaxHeight(), lit = i == lit)
+        }
+    }
+}
+
+/** Diamond meter bar for the Diamond Collection sign. */
+@Composable
+private fun DiamondMeter(value: Int, target: Int) {
+    Box(
+        Modifier.padding(top = 4.dp).fillMaxWidth(0.82f).height(20.dp)
+            .background(Color(0xFF14052A), RoundedCornerShape(50)).border(1.5.dp, Skin.Gold, RoundedCornerShape(50)).padding(2.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            Modifier.align(Alignment.CenterStart).fillMaxHeight().fillMaxWidth((value.toFloat() / target).coerceIn(0.04f, 1f))
+                .background(Brush.horizontalGradient(listOf(Color(0xFF1F6FD0), Color(0xFF38D6FF), Color(0xFFE6FBFF))), RoundedCornerShape(50)),
+        )
+        Text("◆ $value / $target", style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.Black, fontSize = 11.sp, color = Color.White))
     }
 }
 
