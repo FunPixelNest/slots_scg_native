@@ -1,7 +1,7 @@
 {
  "id": "gold_mine",
  "name": "Gold Mine",
- "order": 11,
+ "order": 7,
  "unityFolder": "13_GoldMine",
  "source": "generated",
  "reels": 5,

@@ -1,7 +1,7 @@
 {
  "id": "candy",
  "name": "Candy Land",
- "order": 8,
+ "order": 9,
  "unityFolder": "10_CandyTheme",
  "source": "generated",
  "reels": 5,

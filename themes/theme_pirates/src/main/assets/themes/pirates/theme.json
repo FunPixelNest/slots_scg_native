@@ -1,7 +1,7 @@
 {
  "id": "pirates",
  "name": "Pirates",
- "order": 9,
+ "order": 0,
  "unityFolder": "11_Pirates",
  "source": "generated",
  "reels": 5,

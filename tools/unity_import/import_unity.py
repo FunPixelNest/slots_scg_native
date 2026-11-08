@@ -71,6 +71,16 @@ THEME_NAMES = {
 # --------------------------------------------------------------------------- utils
 
 
+
+# Lobby order: one machine of each feature in turn (Hold & Spin, Free Spins Multiplier,
+# Cascade, Diamond Collection, Coin Collector, Bonus Wheel, Pick Bonus), then repeat.
+LOBBY_ORDER = [
+    "pirates", "christmas_eve", "neon", "gems", "farm", "modern", "witch",
+    "gold_mine", "valentines_day", "candy", "india", "most_wanted", "egypt_2", "forest",
+    "egypt", "wolf", "tropical", "arabian", "wild_west", "greek", "underwater",
+    "china", "viking",
+]
+
 def sanitize(seg: str) -> str:
     s = re.sub(r"[^0-9a-zA-Z]+", "_", seg).strip("_").lower()
     return s or "x"
@@ -442,6 +452,7 @@ def main():
     index = []
     for order, f in enumerate(folders):
         tid, tname = THEME_NAMES[f]
+        order = LOBBY_ORDER.index(tid) if tid in LOBBY_ORDER else order
         ov = overrides.get(tid, {})
         root = theme_out[f]
         srcs = [p for p in owners if owners[p][0] == root and p in sizes_by_src]

@@ -1,7 +1,7 @@
 {
  "id": "modern",
  "name": "Modern Suits",
- "order": 3,
+ "order": 5,
  "unityFolder": "5_Modern",
  "source": "generated",
  "reels": 5,
