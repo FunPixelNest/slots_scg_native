@@ -68,10 +68,11 @@ object Features {
 
     /** Scales regular pays per feature so every machine lands near the same payback (RTP test). */
     fun payScale(f: Feature?): Double = when (f) {
-        Feature.CASCADE -> 0.62
-        Feature.COLLECT_METER -> 0.92
-        Feature.COIN_COLLECTOR -> 0.92
-        Feature.FREE_SPINS_MULTIPLIER -> 1.0
+        Feature.CASCADE -> 0.50               // cascades add many extra wins
+        Feature.COLLECT_METER -> 1.17         // no progressive jackpots on these machines,
+        Feature.COIN_COLLECTOR -> 1.21        // so regular pays make up the difference
+        Feature.FREE_SPINS_MULTIPLIER -> 1.32
+        Feature.PICK_BONUS -> 1.10
         else -> 1.0
     }
 }

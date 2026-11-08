@@ -210,7 +210,7 @@ class SlotMachineTest {
             val r = s.spin().getOrThrow()
             if (r.wasFreeSpin) {
                 assertTrue(r.effects.freeMultiplier in Features.FREE_MULTIPLIERS)
-                assertEquals(r.outcome.payUnits * r.totalBet / s.linesCount * r.effects.freeMultiplier, r.winCoins)
+                assertEquals((r.outcome.payUnits * r.totalBet / s.linesCount * Features.payScale(Feature.FREE_SPINS_MULTIPLIER)).toLong() * r.effects.freeMultiplier, r.winCoins)
                 if (r.effects.freeMultiplier > 1) { seen = true; return }
             } else assertEquals(1, r.effects.freeMultiplier)
         }
