@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.ui.common.CoinIcon
 import com.funpixelnest.slots.ui.common.formatCompact
+import com.funpixelnest.slots.ui.common.formatCoins
 import com.funpixelnest.slots.ui.common.outlinedText
 
 /**
@@ -373,7 +374,7 @@ fun CoinCapsule(coins: Long, modifier: Modifier = Modifier, onPlus: (() -> Unit)
     ) {
         CoinIcon(Modifier.size(24.dp))
         Spacer(Modifier.width(8.dp))
-        Text(formatCompact(coins), style = outlinedText(16.sp, Color.White).copy(shadow = null))
+        Text(formatCoins(coins), style = outlinedText(15.sp, Color.White).copy(shadow = null), maxLines = 1) // full number
         if (onPlus != null) {
             Spacer(Modifier.width(8.dp))
             Box(

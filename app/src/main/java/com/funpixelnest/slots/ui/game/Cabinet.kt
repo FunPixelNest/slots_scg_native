@@ -149,7 +149,7 @@ fun CabinetTopBar(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 CoinIcon(Modifier.size(28.dp)); Spacer(Modifier.width(6.dp))
-                Text(formatCompact(coins), style = style(16.sp, Color.White))
+                Text(formatCoins(coins), style = style(15.sp, Color.White), maxLines = 1) // full number, no 12.5M
             }
             GoldKey(SkinIcon.Menu, 38.dp, onMenu)
         }
