@@ -166,19 +166,20 @@ class SlotMachineTest {
     @Test
     fun `machine unlocks by level and video`() {
         assertEquals(Unlock.Free, Unlocks.rule(0))
-        assertEquals(Unlock.Free, Unlocks.rule(3))
-        assertEquals(Unlock.AtLevel(2), Unlocks.rule(4))
-        assertTrue(Unlocks.rule(6) is Unlock.WatchVideo)
-        assertTrue(!Unlocks.isOpen(4, playerLevel = 1, videosWatched = 0))
-        assertTrue(Unlocks.isOpen(4, playerLevel = 2, videosWatched = 0))
-        assertTrue(!Unlocks.isOpen(6, playerLevel = 1, videosWatched = 0))
-        assertTrue(Unlocks.isOpen(6, playerLevel = 1, videosWatched = 1))
-        assertEquals(listOf(4), Unlocks.openedAtLevel(2, 23))
-        // every machine eventually opens by level
-        assertTrue((0 until 23).all { Unlocks.isOpen(it, playerLevel = 40, videosWatched = 0) })
-        val kinds = (0 until 23).map { Unlocks.rule(it)::class.simpleName }
+        assertEquals(Unlock.Free, Unlocks.rule(1))
+        assertTrue(Unlocks.rule(2) is Unlock.WatchVideo)
+        assertEquals(Unlock.AtLevel(5), Unlocks.rule(3))
+        assertEquals(Unlock.AtLevel(10), Unlocks.rule(4))
+        assertTrue(!Unlocks.isOpen(3, playerLevel = 4, videosWatched = 0))
+        assertTrue(Unlocks.isOpen(3, playerLevel = 5, videosWatched = 0))
+        assertTrue(!Unlocks.isOpen(2, playerLevel = 1, videosWatched = 0))
+        assertTrue(Unlocks.isOpen(2, playerLevel = 1, videosWatched = 1))
+        // the level machines open at exactly 5, 10, 15, 20, 30 ... 100
+        val levels = (0 until 23).mapNotNull { (Unlocks.rule(it) as? Unlock.AtLevel)?.level }
+        assertEquals(Unlocks.UNLOCK_LEVELS, levels)
+        assertEquals(9, (0 until 23).count { Unlocks.rule(it) is Unlock.WatchVideo })
+        assertTrue((0 until 23).all { Unlocks.isOpen(it, playerLevel = 100, videosWatched = 0) })
         println("unlocks: " + (0 until 23).joinToString { "$it=${Unlocks.rule(it)}" })
-        assertTrue(kinds.count { it == "WatchVideo" } >= 5)
     }
 
     @Test

@@ -95,17 +95,30 @@ sealed interface Unlock {
 
 object Unlocks {
     /** The first machines in lobby order are always open. */
-    const val FREE_MACHINES = 4
+    const val FREE_MACHINES = 2
+
+    /** Player levels that open the level-locked machines, in lobby order. */
+    val UNLOCK_LEVELS = listOf(5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100)
 
     /**
-     * Lobby order -> unlock rule. After the free machines, every third machine is a
-     * watch-video machine; the others open at rising player levels (2, 3, 5, 6, 8, ...).
+     * After the free machines, each block of 7 has 3 watch-video machines (1st, 4th, 6th) and 4
+     * level machines that open at [UNLOCK_LEVELS] in turn. A video machine also opens by itself
+     * at the next level milestone.
      */
+    private val SCHEDULE: List<Unlock> = buildList {
+        val levels = ArrayDeque(UNLOCK_LEVELS)
+        var i = 0
+        while (levels.isNotEmpty()) {
+            if (i % 7 in setOf(0, 3, 5)) add(Unlock.WatchVideo(videos = 1, level = levels.first()))
+            else add(Unlock.AtLevel(levels.removeFirst()))
+            i++
+        }
+    }
+
+    /** Lobby order -> unlock rule. */
     fun rule(order: Int): Unlock {
         if (order < FREE_MACHINES) return Unlock.Free
-        val i = order - FREE_MACHINES
-        val level = 2 + i
-        return if (i % 3 == 2) Unlock.WatchVideo(videos = 1, level = level + 4) else Unlock.AtLevel(level)
+        return SCHEDULE.getOrElse(order - FREE_MACHINES) { Unlock.WatchVideo(videos = 1, level = UNLOCK_LEVELS.last()) }
     }
 
     fun isOpen(order: Int, playerLevel: Int, videosWatched: Int): Boolean = when (val r = rule(order)) {
