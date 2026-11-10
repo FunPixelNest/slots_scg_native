@@ -400,7 +400,7 @@ private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, 
     Box(
         // painted icon (600x504) inside a glowing gold frame
         Modifier.fillMaxWidth().aspectRatio(600f / 504f)
-            .goldGlowFrame(22.dp, 3.5.dp).clip(RoundedCornerShape(19.dp))
+            .goldGlowFrame(22.dp, 3.5.dp).clip(RoundedCornerShape(19.dp)).background(Color(0xFF1A0533))
             .clickable(onClick = onClick),
     ) {
         val img = rememberImage(graph.commonImages, entry.tile)

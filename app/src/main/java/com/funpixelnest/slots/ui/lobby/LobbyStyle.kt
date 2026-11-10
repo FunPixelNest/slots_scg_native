@@ -96,8 +96,8 @@ internal fun LobbyTopStrip(
                 Modifier.weight(1f).clickable(remember { MutableInteractionSource() }, null, onClick = onProfile).testTag("open-profile"),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(Modifier.size(58.dp), contentAlignment = Alignment.Center) {
-                    Avatar(images, avatarId, 50.dp, Modifier.align(Alignment.BottomCenter))
+                Box(Modifier.size(52.dp), contentAlignment = Alignment.Center) {
+                    Avatar(images, avatarId, 46.dp, Modifier.align(Alignment.BottomCenter))
                     Canvas(Modifier.align(Alignment.TopCenter).offset(y = (-4).dp).size(24.dp, 15.dp)) { drawCrown() }
                     Text(
                         "Lv.$level", style = ts(9.sp, Color(0xFF3A1800), FontWeight.Black),
@@ -106,10 +106,10 @@ internal fun LobbyTopStrip(
                             .padding(horizontal = 6.dp),
                     )
                 }
-                Spacer(Modifier.width(10.dp))
+                Spacer(Modifier.width(8.dp))
                 Column(Modifier.weight(1f)) {
-                    Text(name, style = ts(17.sp, Color.White, FontWeight.Black), maxLines = 1)
-                    Text("LEVEL $level - ${progress.toInt()}%", style = ts(11.sp, Color(0xFFCDB8EC)), maxLines = 1)
+                    Text(name, style = ts(15.sp, Color.White, FontWeight.Black), maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    Text("LEVEL $level - ${progress.toInt()}%", style = ts(10.sp, Color(0xFFCDB8EC)), maxLines = 1, softWrap = false)
                     Box(
                         Modifier.padding(top = 4.dp).fillMaxWidth(0.95f).height(9.dp)
                             .background(Color(0xFF1A0533), RoundedCornerShape(50)).border(1.dp, Color(0xFF7B3FC0), RoundedCornerShape(50)).padding(1.5.dp),
@@ -121,7 +121,7 @@ internal fun LobbyTopStrip(
                     }
                 }
             }
-            Box(Modifier.padding(horizontal = 8.dp).width(1.dp).height(44.dp).background(Color(0x55CDB8EC)))
+            Box(Modifier.padding(horizontal = 6.dp).width(1.dp).height(44.dp).background(Color(0x55CDB8EC)))
             // coins
             Row(
                 Modifier.height(42.dp).shadow(8.dp, RoundedCornerShape(50), spotColor = GlowOrange)
@@ -130,12 +130,12 @@ internal fun LobbyTopStrip(
                     .padding(start = 3.dp, end = 3.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                CoinIcon(Modifier.size(30.dp))
-                Spacer(Modifier.width(6.dp))
-                Text(formatCoins(coins), style = ts(14.sp, Color.White, FontWeight.Black), maxLines = 1)
-                Spacer(Modifier.width(6.dp))
+                CoinIcon(Modifier.size(26.dp))
+                Spacer(Modifier.width(4.dp))
+                Text(formatCoins(coins), style = ts(13.sp, Color.White, FontWeight.Black), maxLines = 1, softWrap = false)
+                Spacer(Modifier.width(4.dp))
                 Box(
-                    Modifier.size(32.dp).shadow(6.dp, CircleShape, spotColor = Color(0xFF22C55E))
+                    Modifier.size(28.dp).shadow(6.dp, CircleShape, spotColor = Color(0xFF22C55E))
                         .background(Brush.radialGradient(listOf(Color(0xFF7CF29A), Color(0xFF16A34A), Color(0xFF0B6E2E))), CircleShape)
                         .border(1.5.dp, Color(0xFFC8FFD6), CircleShape)
                         .clickable(remember { MutableInteractionSource() }, null) { Haptics.tap(); onPlus() },
@@ -145,7 +145,7 @@ internal fun LobbyTopStrip(
             Spacer(Modifier.width(8.dp))
             // gear
             Box(
-                Modifier.size(42.dp).shadow(8.dp, CircleShape, spotColor = Color(0xFF9B5CFF))
+                Modifier.size(38.dp).shadow(8.dp, CircleShape, spotColor = Color(0xFF9B5CFF))
                     .background(RimGold, CircleShape).padding(2.5.dp)
                     .background(Brush.radialGradient(listOf(Color(0xFF8A4FE0), Color(0xFF4A1580))), CircleShape)
                     .clickable(remember { MutableInteractionSource() }, null) { Haptics.tap(); onSettings() },
