@@ -169,23 +169,22 @@ fun LobbyScreen(
     Box(Modifier.fillMaxSize().background(Skin.VelvetDeep).testTag("lobby")) {
         VelvetBackdrop(Modifier.fillMaxSize())
 
+        val profileTick by player.profileFlow.collectAsState()
+        Column(Modifier.fillMaxSize()) {
+        LobbyTopStrip(
+            graph.commonImages, remember(profileTick) { player.avatarId }, remember(profileTick) { player.playerName },
+            level, progress, coins,
+            onProfile = { graph.sound.play(Sfx.Button); graph.openProfile() },
+            onPlus = { graph.sound.play(Sfx.Button); graph.openStore() },
+            onSettings = { graph.sound.play(Sfx.Button); showSettings = true },
+        )
         LazyVerticalGrid(
             GridCells.Fixed(2),
-            Modifier.fillMaxSize(),
+            Modifier.fillMaxWidth().weight(1f),
             contentPadding = PaddingValues(start = 14.dp, end = 14.dp, top = 8.dp, bottom = 96.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                val profileTick by player.profileFlow.collectAsState()
-                ProfileBar(
-                    level, progress, coins, onPlus = { graph.sound.play(Sfx.Button); graph.openStore() },
-                    onSettings = { graph.sound.play(Sfx.Button); showSettings = true },
-                    name = remember(profileTick) { player.playerName }, avatarId = remember(profileTick) { player.avatarId },
-                    onProfile = { graph.sound.play(Sfx.Button); graph.openProfile() },
-                    images = graph.commonImages,
-                )
-            }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 val featured = remember { FEATURED.mapNotNull { id -> graph.themes.firstOrNull { it.id == id } } }
                 FeaturedCarousel(graph, featured, isOpen = { player.isOpen(it) }) { hero ->
@@ -197,15 +196,15 @@ fun LobbyScreen(
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Row(Modifier.fillMaxWidth().padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("All Games", style = plain(18))
+                    Text("All Games", style = ts(24.sp, Color.White, androidx.compose.ui.text.font.FontWeight.Black))
                     Spacer(Modifier.weight(1f))
-                    Text("$unlocked / ${graph.themes.size} UNLOCKED", style = plain(10, Skin.TextSoft).copy(letterSpacing = 1.5.sp))
+                    Text("$unlocked / ${graph.themes.size} UNLOCKED", style = ts(12.sp, Color(0xFFB9A3DA), spacing = 1.sp))
                 }
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    item { FilterChip("All", filter == null) { filter = null } }
-                    items(filters.map { it.first }) { name -> FilterChip(name, filter == name) { filter = if (filter == name) null else name } }
+                    item { RefChip("All", filter == null) { filter = null } }
+                    items(filters.map { it.first }) { name -> RefChip(name, filter == name) { filter = if (filter == name) null else name } }
                 }
             }
             items(shown, key = { it.id }) { entry ->
@@ -215,11 +214,12 @@ fun LobbyScreen(
                 }
             }
         }
+        }
         // fade + floating tab bar
         Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(110.dp).background(Brush.verticalGradient(listOf(Color.Transparent, Skin.VelvetDeep))))
         val taskAlert = remember(questTick, now / 60_000) { player.claimableTasks() > 0 }
         val missionAlert = remember(questTick, now / 60_000, level) { player.claimableMissions() > 0 }
-        TabBar(
+        RefTabBar(
             Modifier.align(Alignment.BottomCenter), taskAlert, missionAlert,
             onStore = { graph.sound.play(Sfx.Button); graph.openStore() },
             onTasks = { graph.sound.play(Sfx.Button); quests = "tasks" },
@@ -304,8 +304,8 @@ private fun FeaturedCarousel(graph: AppGraph, featured: List<ThemeIndexEntry>, i
             val cur = pager.currentPage % featured.size
             featured.indices.forEach { i ->
                 Box(
-                    Modifier.height(6.dp).width(if (i == cur) 18.dp else 6.dp)
-                        .background(if (i == cur) Skin.Gold else Color(0x40FFFFFF), RoundedCornerShape(50)),
+                    Modifier.size(10.dp)
+                        .background(if (i == cur) Brush.radialGradient(listOf(Color(0xFFFFF3B0), Color(0xFFFFC93C))) else Brush.radialGradient(listOf(Color(0xFFB45CFF), Color(0xFF7B2FD0))), CircleShape),
                 )
             }
         }
@@ -318,23 +318,29 @@ private fun HeroBanner(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, o
     val assets = remember(entry.id) { graph.theme(entry.id) }
     val bgKey = assets?.config?.let { it.backgroundPortrait ?: it.background }
     Box(
-        Modifier.fillMaxWidth().height(196.dp).shadow(20.dp, RoundedCornerShape(24.dp)).clip(RoundedCornerShape(24.dp))
+        Modifier.fillMaxWidth().height(206.dp).goldGlowFrame(28.dp, 3.5.dp).clip(RoundedCornerShape(25.dp))
             .clickable(onClick = onPlay),
     ) {
         if (assets != null) AssetImage(assets, bgKey, Modifier.fillMaxSize(), ContentScale.Crop)
-        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xEB16052C), Color(0x8C16052C), Color.Transparent))))
-        Column(Modifier.fillMaxHeight().padding(18.dp), verticalArrangement = Arrangement.SpaceBetween) {
+        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xE61A0533), Color(0x991A0533), Color.Transparent))))
+        Column(Modifier.fillMaxHeight().padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Features.forTheme(entry.id)?.let { f ->
-                Text("● ${f.title.uppercase()}", style = plain(11, Color(0xFFFF8DB8)), modifier = Modifier
-                    .background(Color(0x2EFF3D8B), RoundedCornerShape(50)).border(1.dp, Color(0x66FF3D8B), RoundedCornerShape(50))
-                    .padding(horizontal = 10.dp, vertical = 4.dp))
+                Row(
+                    Modifier.background(Brush.verticalGradient(listOf(Color(0xFFE53950), Color(0xFF9A0E2E))), RoundedCornerShape(50))
+                        .border(1.5.dp, Color(0xFFFF8A9A), RoundedCornerShape(50)).padding(start = 8.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Canvas(Modifier.size(12.dp, 15.dp)) { drawFlame() }
+                    Spacer(Modifier.width(6.dp))
+                    Text(f.title.uppercase(), style = ts(12.sp, Color.White, androidx.compose.ui.text.font.FontWeight.Black))
+                }
             }
             Column {
-                Text(entry.name, style = plain(30).copy(textAlign = TextAlign.Start))
-                Text("GRAND JACKPOT", style = plain(10, Skin.TextSoft).copy(letterSpacing = 2.sp, textAlign = TextAlign.Start))
-                Text(formatCoins(grand), style = plain(26, Skin.Gold).copy(textAlign = TextAlign.Start))
+                Text(entry.name, style = ts(34.sp, Color.White, androidx.compose.ui.text.font.FontWeight.Black))
+                Text("GRAND JACKPOT", style = ts(12.sp, Color(0xFFEDE3FF), spacing = 2.sp))
+                com.funpixelnest.slots.ui.game.GoldText(formatCoins(grand), 30.sp)
             }
-            SkinButton(if (open) "Play now" else "Unlock", Modifier.width(122.dp).height(40.dp), tone = SkinTone.Gold, onClick = onPlay)
+            SkinButton(if (open) "Play now" else "Unlock", Modifier.width(150.dp).height(46.dp), tone = SkinTone.Gold, textSize = 18.sp, shape = RoundedCornerShape(50), onClick = onPlay)
         }
     }
 }
@@ -345,21 +351,14 @@ private fun QuickRow(graph: AppGraph, now: Long, onDaily: () -> Unit, onHourly: 
     val hourlyLeft = p.hourlyReadyIn(now)
     val piggy by p.piggyFlow.collectAsState()
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        QuickTile(SkinIcon.Gift, Skin.Ruby, "Daily", p.nextDailyDay(now) != null, Modifier.weight(1f), onDaily)
-        QuickTile(SkinIcon.Clock, Skin.Sapphire, if (hourlyLeft == 0L) "Collect" else countdown(hourlyLeft), hourlyLeft == 0L, Modifier.weight(1f)) {
-            if (hourlyLeft == 0L) onHourly()
+        RefQuickTile("Daily", p.nextDailyDay(now) != null, Modifier.weight(1f), onDaily) { QuickIconArt(QuickIcon.Gift) }
+        RefQuickTile(if (hourlyLeft == 0L) "Collect" else countdown(hourlyLeft), hourlyLeft == 0L, Modifier.weight(1f), { if (hourlyLeft == 0L) onHourly() }) {
+            QuickIconArt(QuickIcon.Clock)
         }
-        QuickTile(SkinIcon.Video, Skin.Gold, "+${formatCompact(p.videoCoinsAmount())}", p.videoCoinsReadyIn(now) == 0L, Modifier.weight(1f)) {
+        RefQuickTile("+${formatCompact(p.videoCoinsAmount())}", p.videoCoinsReadyIn(now) == 0L, Modifier.weight(1f), {
             graph.ads.show("free_coins") { if (p.claimVideoCoins(System.currentTimeMillis()) > 0) graph.sound.play(Sfx.WinCoins) }
-        }
-        Column(
-            Modifier.weight(1f).height(80.dp).background(Color(0x0FFFFFFF), RoundedCornerShape(18.dp)).border(1.dp, Skin.Hairline, RoundedCornerShape(18.dp))
-                .clickable(remember { MutableInteractionSource() }, null, onClick = onPiggy),
-            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
-        ) {
-            PiggyIcon(Modifier.size(36.dp))
-            Text(formatCompact(piggy), style = plain(10))
-        }
+        }) { QuickIconArt(QuickIcon.Video) }
+        RefQuickTile(formatCompact(piggy), false, Modifier.weight(1f), onPiggy) { PiggyIcon(Modifier.size(40.dp)) }
     }
 }
 
@@ -401,9 +400,7 @@ private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, 
     Box(
         // painted icon (600x504) inside a glowing gold frame
         Modifier.fillMaxWidth().aspectRatio(600f / 504f)
-            .shadow(14.dp, RoundedCornerShape(20.dp), ambientColor = Skin.Gold, spotColor = Skin.Gold)
-            .border(3.dp, Brush.verticalGradient(listOf(Color(0xFFFFF3B0), Skin.Gold, Color(0xFFB8740F), Skin.Gold)), RoundedCornerShape(20.dp))
-            .padding(3.dp).clip(RoundedCornerShape(17.dp))
+            .goldGlowFrame(22.dp, 3.5.dp).clip(RoundedCornerShape(19.dp))
             .clickable(onClick = onClick),
     ) {
         val img = rememberImage(graph.commonImages, entry.tile)
@@ -589,4 +586,14 @@ private fun UnlocksPopup(graph: AppGraph, level: Int, onDismiss: () -> Unit) {
         }
         SkinButton("CLOSE", Modifier.fillMaxWidth().height(46.dp), tone = SkinTone.Glass, onClick = onDismiss)
     }
+}
+
+/** Small flame for the feature chip on the hero banner. */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFlame() {
+    val w = size.width; val h = size.height
+    val outer = androidx.compose.ui.graphics.Path().apply {
+        moveTo(0.5f * w, 0f); cubicTo(0.9f * w, 0.35f * h, 1.1f * w, 0.75f * h, 0.5f * w, h); cubicTo(-0.1f * w, 0.75f * h, 0.1f * w, 0.4f * h, 0.5f * w, 0f); close()
+    }
+    drawPath(outer, Brush.verticalGradient(listOf(Color(0xFFFFE45A), Color(0xFFFF7A1A))))
+    drawCircle(Color(0xFFFFF6C8), 0.2f * w, androidx.compose.ui.geometry.Offset(0.5f * w, 0.72f * h))
 }
