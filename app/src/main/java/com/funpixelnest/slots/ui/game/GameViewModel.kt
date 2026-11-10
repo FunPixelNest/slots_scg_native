@@ -193,6 +193,7 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
     private fun trackQuests(r: SpinResult) {
         val p = graph.player
         p.track(QuestStat.SPINS)
+        p.recordSpin(assets.config.id, r.totalWin, r.jackpot != null)
         if (!r.wasFreeSpin && isMaxBet) p.track(QuestStat.MAX_BET_SPINS)
         if (r.totalWin > 0) { p.track(QuestStat.WINS); p.track(QuestStat.COINS_WON, r.totalWin) }
         if (r.tier >= WinTier.BIG) p.track(QuestStat.BIG_WINS)

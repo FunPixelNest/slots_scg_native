@@ -177,9 +177,13 @@ fun LobbyScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                ProfileBar(level, progress, coins, onPlus = { graph.sound.play(Sfx.Button); graph.openStore() }) {
-                    graph.sound.play(Sfx.Button); showSettings = true
-                }
+                val profileTick by player.profileFlow.collectAsState()
+                ProfileBar(
+                    level, progress, coins, onPlus = { graph.sound.play(Sfx.Button); graph.openStore() },
+                    onSettings = { graph.sound.play(Sfx.Button); showSettings = true },
+                    name = remember(profileTick) { player.playerName }, avatarId = remember(profileTick) { player.avatarId },
+                    onProfile = { graph.sound.play(Sfx.Button); graph.openProfile() },
+                )
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 val featured = remember { FEATURED.mapNotNull { id -> graph.themes.firstOrNull { it.id == id } } }
@@ -249,15 +253,24 @@ fun LobbyScreen(
 }
 
 @Composable
-fun ProfileBar(level: Int, progress: Float, coins: Long, onPlus: () -> Unit, onSettings: () -> Unit) {
+fun ProfileBar(
+    level: Int, progress: Float, coins: Long, onPlus: () -> Unit, onSettings: () -> Unit,
+    name: String = com.funpixelnest.slots.data.DEFAULT_NAME, avatarId: Int = 0, onProfile: () -> Unit = {},
+) {
     Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-        LevelMedallion(level, progress, size = 48.dp)
-        Column(Modifier.weight(1f).padding(start = 10.dp)) {
-            Text("Lucky Player", style = plain(14).copy(textAlign = TextAlign.Start))
+        // avatar + name open the profile
+        Row(
+            Modifier.weight(1f).clickable(remember { MutableInteractionSource() }, null, onClick = onProfile).testTag("open-profile"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+        com.funpixelnest.slots.ui.profile.AvatarBadge(avatarId, level, 46.dp)
+        Column(Modifier.weight(1f).padding(start = 8.dp)) {
+            Text(name, style = plain(14).copy(textAlign = TextAlign.Start), maxLines = 1)
             Text("LEVEL $level · ${progress.toInt()}%", style = plain(10, Skin.TextSoft).copy(letterSpacing = 1.sp, textAlign = TextAlign.Start))
             Box(Modifier.padding(top = 4.dp).width(110.dp).height(5.dp).background(Color(0x1FFFFFFF), RoundedCornerShape(50))) {
                 Box(Modifier.fillMaxHeight().fillMaxWidth((progress / 100f).coerceIn(0.03f, 1f)).background(Brush.horizontalGradient(listOf(Color(0xFFFF3DB4), Color(0xFFB45CFF))), RoundedCornerShape(50)))
             }
+        }
         }
         CoinCapsule(coins, onPlus = onPlus)
         Spacer(Modifier.width(8.dp))

@@ -21,6 +21,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.builtins.ListSerializer
 
 /** Coins, level, bets, bonuses and settings saved in SharedPreferences (Unity used PlayerPrefs). */
+const val DEFAULT_NAME = "Lucky Player"
+const val MAX_NAME = 16
+
 class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
     init {
         // brand-new players start at 0 and get the welcome bonus; players of earlier builds
@@ -135,6 +138,39 @@ class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
     /** Hand out coins (any source); returns the amount for chaining. */
     fun grant(amount: Long): Long { coins += amount; return amount }
 
+    // ------------------------------------------------------------------ profile
+    /** Bumped when the name, avatar or stats change, so screens recompose. */
+    val profileFlow = MutableStateFlow(0)
+
+    var playerName: String
+        get() = prefs.getString("player_name", null) ?: DEFAULT_NAME
+        set(v) { prefs.edit().putString("player_name", v.trim().take(MAX_NAME).ifEmpty { DEFAULT_NAME }).apply(); profileFlow.value++ }
+
+    var avatarId: Int
+        get() = prefs.getInt("avatar_id", 0)
+        set(v) { prefs.edit().putInt("avatar_id", v).apply(); profileFlow.value++ }
+
+    /** When the player first opened the game (set on first read). */
+    val memberSince: Long
+        get() = prefs.getLong("member_since", 0L).takeIf { it > 0 }
+            ?: System.currentTimeMillis().also { prefs.edit().putLong("member_since", it).apply() }
+
+    /** Lifetime counter used for tasks/missions (spins, wins, coins won, big wins, bonus games). */
+    fun lifetime(stat: QuestStat): Long = prefs.getLong("ql_${stat.name}", 0)
+    val biggestWin: Long get() = prefs.getLong("stat_biggest_win", 0)
+    val jackpotsWon: Long get() = prefs.getLong("stat_jackpots", 0)
+    fun machineSpins(themeId: String): Long = prefs.getLong("stat_spins_$themeId", 0)
+    val machinesPlayed: Int get() = prefs.getStringSet("played_machines", emptySet()).orEmpty().size
+
+    /** Per-spin profile stats: biggest win, jackpots, spins per machine (for the favourite). */
+    fun recordSpin(themeId: String, win: Long, jackpot: Boolean) {
+        val e = prefs.edit().putLong("stat_spins_$themeId", machineSpins(themeId) + 1)
+        if (win > biggestWin) e.putLong("stat_biggest_win", win)
+        if (jackpot) e.putLong("stat_jackpots", jackpotsWon + 1)
+        e.apply()
+        profileFlow.value++
+    }
+
     // ------------------------------------------------------------------ tasks & missions
     /** Bumped whenever quest progress changes, so lobby badges recompose. */
     val questsFlow = MutableStateFlow(0)
@@ -243,6 +279,7 @@ class AppGraph(context: Context) {
     var overlay by androidx.compose.runtime.mutableStateOf<Overlay?>(null)
     fun openStore() { overlay = Overlay.Store }
     fun openPiggy() { overlay = Overlay.Piggy }
+    fun openProfile() { overlay = Overlay.Profile }
 
     val themes: List<ThemeIndexEntry> by lazy {
         ThemeConfig.json.decodeFromString(ListSerializer(ThemeIndexEntry.serializer()), common.readText("themes.json"))

@@ -70,6 +70,7 @@ class MainActivity : ComponentActivity() {
             when (graph.overlay) {
                 Overlay.Store -> StoreSheet(graph) { graph.overlay = null }
                 Overlay.Piggy -> PiggyBankDialog(graph) { graph.overlay = null }
+                Overlay.Profile -> com.funpixelnest.slots.ui.profile.ProfileSheet(graph) { graph.overlay = null }
                 null -> Unit
             }
             }

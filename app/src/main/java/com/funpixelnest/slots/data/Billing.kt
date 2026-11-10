@@ -14,4 +14,4 @@ class PlaceholderBilling : Billing {
 }
 
 /** Full-screen sheets that any screen can open. */
-enum class Overlay { Store, Piggy }
+enum class Overlay { Store, Piggy, Profile }

@@ -240,6 +240,31 @@ class LobbyScreenshotTest : ScreenshotBase() {
     }
 
     @Test
+    fun profile() {
+        val p = graph.player
+        p.level = 12
+        p.playerName = "SpinKing"
+        p.avatarId = 4
+        p.track(com.funpixelnest.slots.engine.QuestStat.SPINS, 1_248)
+        p.track(com.funpixelnest.slots.engine.QuestStat.WINS, 512)
+        p.track(com.funpixelnest.slots.engine.QuestStat.COINS_WON, 38_450_000)
+        p.track(com.funpixelnest.slots.engine.QuestStat.BIG_WINS, 17)
+        p.track(com.funpixelnest.slots.engine.QuestStat.BONUS_GAMES, 9)
+        listOf("pirates", "christmas_eve", "neon", "gems").forEach { p.trackMachinePlayed(it) }
+        repeat(30) { p.recordSpin("pirates", if (it == 3) 2_480_000 else 0, jackpot = it == 7) }
+        setScreen { com.funpixelnest.slots.ui.profile.ProfileSheet(graph) {} }
+        waitForTag("profile"); settle(1500)
+        shot("profile_01")
+    }
+
+    @Test
+    fun profileRename() {
+        setScreen { com.funpixelnest.slots.ui.profile.ProfileSheet(graph, startEditingName = true) {} }
+        waitForTag("name-dialog"); settle(1200)
+        shot("profile_02_rename")
+    }
+
+    @Test
     fun piggyBank() {
         graph.player.piggy = 1_350_000
         setScreen { com.funpixelnest.slots.ui.flow.PiggyBankDialog(graph) {} }
