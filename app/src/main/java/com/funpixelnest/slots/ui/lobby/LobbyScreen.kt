@@ -183,6 +183,7 @@ fun LobbyScreen(
                     onSettings = { graph.sound.play(Sfx.Button); showSettings = true },
                     name = remember(profileTick) { player.playerName }, avatarId = remember(profileTick) { player.avatarId },
                     onProfile = { graph.sound.play(Sfx.Button); graph.openProfile() },
+                    images = graph.commonImages,
                 )
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -256,6 +257,7 @@ fun LobbyScreen(
 fun ProfileBar(
     level: Int, progress: Float, coins: Long, onPlus: () -> Unit, onSettings: () -> Unit,
     name: String = com.funpixelnest.slots.data.DEFAULT_NAME, avatarId: Int = 0, onProfile: () -> Unit = {},
+    images: com.funpixelnest.slots.data.ThemeAssets? = null,
 ) {
     Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         // avatar + name open the profile
@@ -263,7 +265,8 @@ fun ProfileBar(
             Modifier.weight(1f).clickable(remember { MutableInteractionSource() }, null, onClick = onProfile).testTag("open-profile"),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-        com.funpixelnest.slots.ui.profile.AvatarBadge(avatarId, level, 46.dp)
+        if (images != null) com.funpixelnest.slots.ui.profile.AvatarBadge(images, avatarId, level, 46.dp)
+        else LevelMedallion(level, progress, size = 48.dp)
         Column(Modifier.weight(1f).padding(start = 8.dp)) {
             Text(name, style = plain(14).copy(textAlign = TextAlign.Start), maxLines = 1)
             Text("LEVEL $level · ${progress.toInt()}%", style = plain(10, Skin.TextSoft).copy(letterSpacing = 1.sp, textAlign = TextAlign.Start))

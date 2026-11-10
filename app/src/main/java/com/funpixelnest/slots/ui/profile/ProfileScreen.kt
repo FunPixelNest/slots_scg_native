@@ -35,6 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import com.funpixelnest.slots.ui.common.AssetImage
+import com.funpixelnest.slots.data.ThemeAssets
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -68,135 +72,41 @@ import com.funpixelnest.slots.ui.skin.SkinTone
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.math.cos
-import kotlin.math.sin
 
 private fun txt(size: Int, color: Color = Color.White, weight: FontWeight = FontWeight.ExtraBold, spacing: Float = 0f) =
     TextStyle(fontFamily = Montserrat, fontWeight = weight, fontSize = size.sp, color = color, letterSpacing = spacing.sp)
 
 // =========================================================================== avatars
 
-private enum class Glyph { Crown, Star, Diamond, Heart, Clover, Seven, Spade, Moon, Bolt, Coin, Horseshoe, Cherry }
+/** Character avatars (assets/common/avatars/aNN.webp, drawn by tools/covers/avatars.py). */
+val AVATAR_NAMES = listOf("King", "Queen", "Pirate", "Cowboy", "Viking", "Witch", "Pharaoh", "Santa", "Wizard", "Leprechaun", "Mermaid", "Showgirl")
+val AVATAR_COUNT = AVATAR_NAMES.size
 
-/** 12 avatars: a coloured medallion with a lucky symbol. */
-private val AVATARS: List<Triple<Color, Color, Glyph>> = listOf(
-    Triple(Color(0xFFFFC94A), Color(0xFFC2700E), Glyph.Crown),
-    Triple(Color(0xFFFF5FA2), Color(0xFF9D1747), Glyph.Heart),
-    Triple(Color(0xFF38D6FF), Color(0xFF1F4FB0), Glyph.Diamond),
-    Triple(Color(0xFF7CF29A), Color(0xFF15803D), Glyph.Clover),
-    Triple(Color(0xFFB45CFF), Color(0xFF4A1580), Glyph.Star),
-    Triple(Color(0xFFFF6B3D), Color(0xFFB3261E), Glyph.Seven),
-    Triple(Color(0xFF9AA8C8), Color(0xFF2A3350), Glyph.Spade),
-    Triple(Color(0xFF6A5CFF), Color(0xFF1A1060), Glyph.Moon),
-    Triple(Color(0xFFFFE45A), Color(0xFFE08A00), Glyph.Bolt),
-    Triple(Color(0xFFFFE9A8), Color(0xFFB8740F), Glyph.Coin),
-    Triple(Color(0xFF3FD3A0), Color(0xFF0B6E5A), Glyph.Horseshoe),
-    Triple(Color(0xFFFF8AA8), Color(0xFFC2185B), Glyph.Cherry),
-)
-const val AVATAR_COUNT = 12
-
-/** Player avatar: coloured medallion with a lucky symbol inside a gold ring. */
+/** Player avatar: a character portrait in a gold ring. */
 @Composable
-fun Avatar(id: Int, size: Dp, modifier: Modifier = Modifier, ring: Boolean = true) {
-    val (top, bottom, glyph) = AVATARS[id.mod(AVATARS.size)]
+fun Avatar(images: ThemeAssets, id: Int, size: Dp, modifier: Modifier = Modifier, ring: Boolean = true) {
     Box(
         modifier.size(size).shadow(if (ring) 8.dp else 0.dp, CircleShape)
             .background(if (ring) Brush.verticalGradient(listOf(Color(0xFFFFF6C8), Skin.Gold, Color(0xFFB8740F))) else SolidColor(Color.Transparent), CircleShape)
             .padding(if (ring) size * 0.05f else 0.dp)
-            .background(Brush.radialGradient(listOf(top, bottom)), CircleShape),
+            .clip(CircleShape).background(Color(0xFF2A0B4A)),
         contentAlignment = Alignment.Center,
     ) {
-        if (glyph == Glyph.Seven) {
-            Text("7", style = txt((size.value * 0.5f).toInt(), Color.White, FontWeight.Black))
-        } else {
-            Canvas(Modifier.size(size * 0.52f)) { drawGlyph(glyph) }
-        }
-        // glossy highlight
-        Canvas(Modifier.fillMaxSize()) {
-            drawOval(Color(0x33FFFFFF), Offset(this.size.width * 0.18f, this.size.height * 0.08f), Size(this.size.width * 0.64f, this.size.height * 0.36f))
-        }
+        AssetImage(images, "avatars/a%02d".format(id.mod(AVATAR_COUNT)), Modifier.fillMaxSize(), ContentScale.Crop)
     }
 }
 
 /** Avatar with the player's level on a small gold tag (lobby top bar). */
 @Composable
-fun AvatarBadge(id: Int, level: Int, size: Dp, modifier: Modifier = Modifier) {
+fun AvatarBadge(images: ThemeAssets, id: Int, level: Int, size: Dp, modifier: Modifier = Modifier) {
     Box(modifier.size(size + 6.dp), contentAlignment = Alignment.TopCenter) {
-        Avatar(id, size)
+        Avatar(images, id, size)
         Text(
             "$level", style = txt(9, Color(0xFF3A1800), FontWeight.Black),
             modifier = Modifier.align(Alignment.BottomCenter)
                 .background(Brush.verticalGradient(listOf(Color(0xFFFFF6C8), Skin.Gold)), RoundedCornerShape(50))
                 .border(1.dp, Color(0xFF8A5208), RoundedCornerShape(50)).padding(horizontal = 6.dp, vertical = 0.dp),
         )
-    }
-}
-
-private fun DrawScope.drawGlyph(g: Glyph) {
-    val w = size.width
-    val white = Color.White
-    val shade = Color(0x55000000)
-    fun p(vararg pts: Float) = Path().apply { moveTo(pts[0] * w, pts[1] * w); for (i in 2 until pts.size step 2) lineTo(pts[i] * w, pts[i + 1] * w); close() }
-    when (g) {
-        Glyph.Crown -> {
-            drawPath(p(0.05f, 0.75f, 0.05f, 0.3f, 0.3f, 0.5f, 0.5f, 0.15f, 0.7f, 0.5f, 0.95f, 0.3f, 0.95f, 0.75f), white)
-            drawRect(white, Offset(0.05f * w, 0.8f * w), Size(0.9f * w, 0.12f * w))
-            listOf(0.05f, 0.5f, 0.95f).forEachIndexed { i, x -> drawCircle(white, 0.07f * w, Offset(x * w, if (i == 1) 0.12f * w else 0.27f * w)) }
-        }
-        Glyph.Star -> {
-            val path = Path()
-            for (i in 0 until 10) {
-                val a = -Math.PI / 2 + i * Math.PI / 5
-                val r = if (i % 2 == 0) 0.5f else 0.22f
-                val x = (0.5f + r * cos(a).toFloat()) * w; val y = (0.53f + r * sin(a).toFloat()) * w
-                if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
-            }
-            path.close(); drawPath(path, white)
-        }
-        Glyph.Diamond -> {
-            drawPath(p(0.0f, 0.35f, 0.22f, 0.08f, 0.78f, 0.08f, 1.0f, 0.35f, 0.5f, 0.95f), white)
-            drawPath(p(0.0f, 0.35f, 1.0f, 0.35f, 0.5f, 0.95f), shade)
-        }
-        Glyph.Heart -> drawPath(Path().apply {
-            moveTo(0.5f * w, 0.92f * w)
-            cubicTo(-0.2f * w, 0.45f * w, 0.15f * w, -0.05f * w, 0.5f * w, 0.28f * w)
-            cubicTo(0.85f * w, -0.05f * w, 1.2f * w, 0.45f * w, 0.5f * w, 0.92f * w); close()
-        }, white)
-        Glyph.Clover -> {
-            listOf(Offset(0.5f, 0.27f), Offset(0.27f, 0.5f), Offset(0.73f, 0.5f), Offset(0.5f, 0.73f)).forEach { drawCircle(white, 0.22f * w, Offset(it.x * w, it.y * w)) }
-            drawLine(white, Offset(0.5f * w, 0.6f * w), Offset(0.62f * w, 1.0f * w), 0.08f * w)
-        }
-        Glyph.Spade -> {
-            drawPath(Path().apply {
-                moveTo(0.5f * w, 0.02f * w)
-                cubicTo(1.15f * w, 0.5f * w, 0.75f * w, 0.95f * w, 0.5f * w, 0.62f * w)
-                cubicTo(0.25f * w, 0.95f * w, -0.15f * w, 0.5f * w, 0.5f * w, 0.02f * w); close()
-            }, white)
-            drawPath(p(0.5f, 0.6f, 0.68f, 0.98f, 0.32f, 0.98f), white)
-        }
-        Glyph.Moon -> {
-            drawCircle(white, 0.45f * w, Offset(0.5f * w, 0.5f * w))
-            drawCircle(Color(0xFF3A2F9A), 0.38f * w, Offset(0.68f * w, 0.4f * w))
-            drawCircle(white, 0.05f * w, Offset(0.82f * w, 0.78f * w))
-        }
-        Glyph.Bolt -> drawPath(p(0.6f, 0.0f, 0.15f, 0.58f, 0.45f, 0.58f, 0.35f, 1.0f, 0.85f, 0.38f, 0.55f, 0.38f), white)
-        Glyph.Coin -> {
-            drawCircle(white, 0.48f * w, Offset(0.5f * w, 0.5f * w))
-            drawCircle(Color(0xFFC8801A), 0.36f * w, Offset(0.5f * w, 0.5f * w), style = Stroke(0.07f * w))
-            drawRect(Color(0xFFC8801A), Offset(0.44f * w, 0.28f * w), Size(0.12f * w, 0.44f * w))
-        }
-        Glyph.Horseshoe -> {
-            drawArc(white, 160f, 220f, false, Offset(0.1f * w, 0.08f * w), Size(0.8f * w, 0.8f * w), style = Stroke(0.18f * w))
-            drawRect(white, Offset(0.06f * w, 0.62f * w), Size(0.16f * w, 0.3f * w))
-            drawRect(white, Offset(0.78f * w, 0.62f * w), Size(0.16f * w, 0.3f * w))
-        }
-        Glyph.Cherry -> {
-            drawLine(white, Offset(0.3f * w, 0.62f * w), Offset(0.65f * w, 0.05f * w), 0.06f * w)
-            drawLine(white, Offset(0.72f * w, 0.62f * w), Offset(0.65f * w, 0.05f * w), 0.06f * w)
-            drawCircle(white, 0.22f * w, Offset(0.28f * w, 0.74f * w))
-            drawCircle(white, 0.22f * w, Offset(0.74f * w, 0.74f * w))
-        }
-        Glyph.Seven -> Unit
     }
 }
 
@@ -236,7 +146,7 @@ fun ProfileSheet(graph: AppGraph, startEditingName: Boolean = false, onClose: ()
                     Modifier.fillMaxWidth().background(Color(0x1AFFFFFF), RoundedCornerShape(20.dp)).border(1.dp, Skin.Hairline, RoundedCornerShape(20.dp)).padding(14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Avatar(avatar, 84.dp)
+                    Avatar(graph.commonImages, avatar, 84.dp)
                     Spacer(Modifier.width(14.dp))
                     Column(Modifier.weight(1f)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -248,7 +158,7 @@ fun ProfileSheet(graph: AppGraph, startEditingName: Boolean = false, onClose: ()
                                 contentAlignment = Alignment.Center,
                             ) { Canvas(Modifier.size(14.dp)) { drawPencil() } }
                         }
-                        Text("LEVEL $level", style = txt(11, Skin.GoldLight, spacing = 1.5f), modifier = Modifier.padding(top = 4.dp))
+                        Text("LEVEL $level · ${AVATAR_NAMES[avatar.mod(AVATAR_COUNT)].uppercase()}", style = txt(11, Skin.GoldLight, spacing = 1.5f), modifier = Modifier.padding(top = 4.dp))
                         Box(Modifier.padding(top = 4.dp).fillMaxWidth().height(8.dp).background(Color(0xFF1A0533), RoundedCornerShape(50)).border(1.dp, Skin.Gold, RoundedCornerShape(50))) {
                             Box(Modifier.fillMaxHeight().fillMaxWidth((progress / 100f).coerceIn(0.03f, 1f)).background(Brush.horizontalGradient(listOf(Color(0xFFFF3DB4), Color(0xFFFFB13D))), RoundedCornerShape(50)))
                         }
@@ -270,7 +180,7 @@ fun ProfileSheet(graph: AppGraph, startEditingName: Boolean = false, onClose: ()
                                     .clickable(remember { MutableInteractionSource() }, null) { graph.sound.play(Sfx.Choose); p.avatarId = id },
                                 contentAlignment = Alignment.Center,
                             ) {
-                                Avatar(id, 48.dp, ring = false)
+                                Avatar(graph.commonImages, id, 48.dp, ring = false)
                                 if (on) Box(
                                     Modifier.align(Alignment.BottomEnd).offset(x = 2.dp, y = 2.dp).size(16.dp).background(Skin.Emerald, CircleShape).border(1.5.dp, Color.White, CircleShape),
                                     contentAlignment = Alignment.Center,
