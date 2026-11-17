@@ -74,6 +74,7 @@ import com.funpixelnest.slots.ui.skin.SkinIcon
 import com.funpixelnest.slots.ui.skin.SkinTone
 import com.funpixelnest.slots.ui.skin.SpinButton
 import com.funpixelnest.slots.ui.skin.ValueWell
+import com.funpixelnest.slots.ui.skin.glossy
 
 @Composable
 fun GameScreen(
@@ -106,31 +107,41 @@ fun GameScreen(
         // portrait art when the theme has it, otherwise the centre of the landscape background
         AssetImage(assets, cfg.backgroundPortrait ?: cfg.background, Modifier.fillMaxSize(), ContentScale.Crop)
 
-        // soft shade behind the jackpots so they read on bright machine art
+        // navy shade at the top and bottom so the HUD and deck read on bright machine art
         Box(
-            Modifier.fillMaxWidth().height(260.dp).background(
-                Brush.verticalGradient(0f to Color(0xB316052C), 0.75f to Color(0x6616052C), 1f to Color.Transparent),
+            Modifier.fillMaxSize().background(
+                Brush.verticalGradient(
+                    0f to Color(0xD914107A), 0.22f to Color(0x4014107A), 0.55f to Color(0x330A0A50), 0.8f to Color(0xF208083C), 1f to Color(0xFF070838),
+                ),
             ),
         )
         val busy = vm.phase == Phase.Spinning || vm.phase == Phase.Loading
         Column(Modifier.fillMaxSize()) {
             CabinetTopBar(
                 vm.level, vm.levelProgress, vm.shownCoins,
-                onBack = onExit, onCoins = { graph.openStore() }, onMenu = { vm.showPopup(Popup.Info) },
+                onBack = onExit, onCoins = { graph.openStore() }, onMenu = { vm.showPopup(Popup.Settings) },
             ) { XpFloat(vm.xpTick, vm.xpGained, Modifier.align(Alignment.TopEnd)) }
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(6.dp))
             FeatureHeader(vm, assets)
 
-            // ---------------- reels inside the gold cabinet
+            // ---------------- machine name, feature tag, paytable key
+            Box(Modifier.fillMaxWidth().padding(top = 4.dp)) {
+                Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                    GoldText(cfg.name.uppercase(), if (cfg.name.length > 14) 26.sp else 31.sp)
+                    featureChip(vm.feature)?.let { FeatureTag(it, Modifier.padding(top = 2.dp)) }
+                }
+                InfoKey(Modifier.align(Alignment.BottomEnd).padding(end = 16.dp)) { vm.showPopup(Popup.Info) }
+            }
+
+            // ---------------- reels on a glowing navy panel
             BoxWithConstraints(
-                Modifier.fillMaxWidth().weight(1f).padding(horizontal = 6.dp, vertical = 6.dp),
+                Modifier.fillMaxWidth().weight(1f).padding(horizontal = 10.dp, vertical = 6.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                // cells grow from slightly tall up to REEL_CELL_MAX_TALL with the free height (frame takes ~60dp)
-                val tall = (((maxHeight - 60.dp) / (maxWidth - 30.dp)) * cfg.reels / cfg.rows).coerceIn(REEL_CELL_TALL, REEL_CELL_MAX_TALL)
-                val plaque = featureChip(vm.feature)?.let { "$it · 243 WAYS" } ?: "243 WAYS"
-                val frameH = (maxWidth - 30.dp) * (cfg.rows * tall / cfg.reels) + 60.dp
-                CabinetFrame(plaque, Modifier.fillMaxWidth().height(minOf(frameH, maxHeight))) {
+                // cells grow from slightly tall up to REEL_CELL_MAX_TALL with the free height (panel padding ~20dp)
+                val tall = (((maxHeight - 20.dp) / (maxWidth - 20.dp)) * cfg.reels / cfg.rows).coerceIn(REEL_CELL_TALL, REEL_CELL_MAX_TALL)
+                val frameH = (maxWidth - 20.dp) * (cfg.rows * tall / cfg.reels) + 20.dp
+                CabinetFrame("", Modifier.fillMaxWidth().height(minOf(frameH, maxHeight))) {
                     ReelsView(
                         graph = graph,
                         assets = assets,
@@ -152,14 +163,15 @@ fun GameScreen(
                 }
             }
 
-            WinMeter(vm.shownWin, Modifier.align(Alignment.CenterHorizontally).width(260.dp).height(42.dp))
-            Spacer(Modifier.height(32.dp)) // room for the raised SPIN button
+            WinMeter(vm.shownWin, Modifier.align(Alignment.CenterHorizontally).width(250.dp).height(44.dp))
+            Spacer(Modifier.height(10.dp))
             ControlDeck(
                 totalBet = vm.totalBet, betLocked = busy || vm.freeSpins > 0, spinEnabled = !busy,
                 freeSpins = vm.freeSpins, autoLeft = vm.autoSpinsLeft,
                 onMinus = { vm.changeBet(-1) }, onPlus = { vm.changeBet(1) }, onSpin = vm::onSpinClick,
                 onAuto = vm::toggleAuto, onMaxBet = vm::maxBet,
             )
+            Spacer(Modifier.height(8.dp))
         }
 
         if (vm.phase == Phase.Loading) LoadingOverlay(graph, assets, vm.loadProgress)
@@ -208,11 +220,9 @@ private fun FeatureBanner(text: String?, modifier: Modifier) {
     val pop = remember(text) { Animatable(0.4f) }
     LaunchedEffect(text) { pop.animateTo(1f, spring(dampingRatio = 0.45f)) }
     Box(
-        modifier.scale(pop.value)
-            .background(Skin.goldBorder, RoundedCornerShape(16.dp)).padding(3.dp)
-            .background(Brush.verticalGradient(listOf(Color(0xFFE53935), Color(0xFF6A0D0D))), RoundedCornerShape(13.dp))
+        modifier.scale(pop.value).glossy(com.funpixelnest.slots.ui.skin.SkinTone.Gold, RoundedCornerShape(18.dp))
             .padding(horizontal = 22.dp, vertical = 10.dp),
-    ) { Text(text, style = outlinedText(26.sp, Skin.GoldLight)) }
+    ) { GoldText(text, 26.sp) }
 }
 
 /** Short feature name for the HUD chip and lobby cards. */

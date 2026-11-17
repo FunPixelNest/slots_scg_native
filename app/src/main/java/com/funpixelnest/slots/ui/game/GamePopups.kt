@@ -46,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -76,8 +77,8 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
             }
             AutoDismiss(3500, vm::dismissPopup)
             PopupFrame(title, vm::dismissPopup, tone = SkinTone.Gold, sunburst = true) {
-                CoinIcon(Modifier.size(56.dp))
-                CountingText(p.coins, outlinedText(44.sp, Skin.GoldLight, font))
+                com.funpixelnest.slots.ui.skin.BigCoin(Modifier.size(64.dp))
+                CountingGold(p.coins, 46.sp)
                 Text("COINS", style = outlinedText(14.sp, Skin.TextSoft).copy(letterSpacing = 3.sp))
             }
         }
@@ -90,7 +91,7 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
         is Popup.FreeSpins -> {
             AutoDismiss(3000, vm::dismissPopup)
             PopupFrame("Free Spins", vm::dismissPopup, tone = SkinTone.Green, sunburst = true) {
-                Text("${p.count}", style = outlinedText(64.sp, Color.White, font).copy(shadow = null))
+                com.funpixelnest.slots.ui.skin.GoldDisplay("${p.count}", 84.sp)
                 Text("FREE GAMES WON", style = outlinedText(14.sp, Skin.Gold).copy(shadow = null, letterSpacing = 2.sp))
             }
         }
@@ -98,8 +99,8 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
             AutoDismiss(4000, vm::dismissPopup)
             PopupFrame("Free Spins Over", vm::dismissPopup, tone = SkinTone.Green, sunburst = true) {
                 Text("You won", style = outlinedText(14.sp, Skin.TextSoft).copy(shadow = null))
-                CoinIcon(Modifier.size(56.dp))
-                CountingText(p.coins, outlinedText(38.sp, Skin.Gold, font).copy(shadow = null))
+                com.funpixelnest.slots.ui.skin.BigCoin(Modifier.size(56.dp))
+                CountingGold(p.coins, 40.sp)
                 SkinButton("CONTINUE", Modifier.fillMaxWidth().height(48.dp), tone = SkinTone.Gold) { vm.dismissPopup() }
             }
         }
@@ -139,6 +140,16 @@ private fun CountingText(target: Long, style: androidx.compose.ui.text.TextStyle
     Text(formatCoins(shown), style = style)
 }
 
+@Composable
+private fun CountingGold(target: Long, size: androidx.compose.ui.unit.TextUnit) {
+    var shown by remember { mutableLongStateOf(0L) }
+    LaunchedEffect(target) {
+        val steps = 40
+        for (i in 1..steps) { shown = target * i / steps; delay(30) }
+    }
+    com.funpixelnest.slots.ui.skin.GoldDisplay(formatCoins(shown), size)
+}
+
 /** Dimmed backdrop + skin dialog that pops in with a spring. */
 @Composable
 fun PopupFrame(
@@ -155,7 +166,7 @@ fun PopupFrame(
     Box(
         Modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.7f))
+            .background(Brush.radialGradient(listOf(Color(0x8C3C28A0), Color(0xE604041E))))
             .clickable(remember { MutableInteractionSource() }, null, onClick = onDismiss),
         contentAlignment = Alignment.Center,
     ) {
@@ -165,7 +176,7 @@ fun PopupFrame(
                 .let { if (heightFraction != null) it.fillMaxHeight(heightFraction) else it }
                 .scale(scale.value)
                 .clickable(remember { MutableInteractionSource() }, null) { /* swallow */ },
-            tone = tone, sunburst = sunburst,
+            tone = tone, sunburst = sunburst, onClose = onDismiss,
         ) {
             Column(
                 Modifier.then(if (heightFraction != null) Modifier.fillMaxHeight() else Modifier),

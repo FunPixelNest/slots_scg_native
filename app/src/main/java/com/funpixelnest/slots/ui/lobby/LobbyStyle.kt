@@ -51,10 +51,13 @@ import com.funpixelnest.slots.ui.profile.Avatar
 import com.funpixelnest.slots.ui.skin.Skin
 import com.funpixelnest.slots.ui.skin.SkinIcon
 import com.funpixelnest.slots.ui.skin.drawSkinIcon
+import com.funpixelnest.slots.ui.skin.ball
+import com.funpixelnest.slots.ui.skin.glossy
+import com.funpixelnest.slots.ui.skin.glowPanel
 
 /*
- * Lobby pieces in the "casino app" reference style: purple glass, thick glowing gold rims,
- * glossy pills and colourful icons.
+ * Lobby pieces in the arcade-night style: navy panels with glowing blue rims, glossy pills,
+ * round icon balls and colourful icons.
  */
 
 internal val RimGold = Brush.verticalGradient(listOf(Color(0xFFFFF3B0), Color(0xFFFFC93C), Color(0xFFE08A00), Color(0xFFFFD86A)))
@@ -76,82 +79,38 @@ internal fun AlertDot(modifier: Modifier, size: Dp = 16.dp) {
 
 // ------------------------------------------------------------------ top strip
 
-/** Fixed top strip: avatar with crown + level, name and XP, divider, coins with green +, gear. */
+/** Top row: avatar with level pill, name and XP bar, blue coin bar with green +, gear ball. */
 @Composable
 internal fun LobbyTopStrip(
     images: ThemeAssets, avatarId: Int, name: String, level: Int, progress: Float, coins: Long,
     onProfile: () -> Unit, onPlus: () -> Unit, onSettings: () -> Unit,
 ) {
-    Box(
-        Modifier.fillMaxWidth().shadow(12.dp)
-            .background(Brush.verticalGradient(listOf(Color(0xFF3A0A68), Color(0xFF240645))))
-            .drawBehind {
-                drawRect(Brush.horizontalGradient(listOf(Color(0x00FF3DB4), Color(0xFFFF3DB4), Color(0xFFFFC93C), Color(0xFFFF3DB4), Color(0x00FF3DB4))),
-                    Offset(0f, size.height - 2.dp.toPx()), Size(size.width, 2.dp.toPx()))
-            }
-            .padding(horizontal = 10.dp, vertical = 8.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Row(
-                Modifier.weight(1f).clickable(remember { MutableInteractionSource() }, null, onClick = onProfile).testTag("open-profile"),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(Modifier.size(52.dp), contentAlignment = Alignment.Center) {
-                    Avatar(images, avatarId, 46.dp, Modifier.align(Alignment.BottomCenter))
-                    Canvas(Modifier.align(Alignment.TopCenter).offset(y = (-4).dp).size(24.dp, 15.dp)) { drawCrown() }
-                    Text(
-                        "Lv.$level", style = ts(9.sp, Color(0xFF3A1800), FontWeight.Black),
-                        modifier = Modifier.align(Alignment.BottomCenter).offset(y = 4.dp)
-                            .background(RimGold, RoundedCornerShape(50)).border(1.dp, Color(0xFF8A5208), RoundedCornerShape(50))
-                            .padding(horizontal = 6.dp),
-                    )
-                }
-                Spacer(Modifier.width(8.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(name, style = ts(15.sp, Color.White, FontWeight.Black), maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                    Text("LEVEL $level - ${progress.toInt()}%", style = ts(10.sp, Color(0xFFCDB8EC)), maxLines = 1, softWrap = false)
-                    Box(
-                        Modifier.padding(top = 4.dp).fillMaxWidth(0.95f).height(9.dp)
-                            .background(Color(0xFF1A0533), RoundedCornerShape(50)).border(1.dp, Color(0xFF7B3FC0), RoundedCornerShape(50)).padding(1.5.dp),
-                    ) {
-                        Box(
-                            Modifier.fillMaxHeight().fillMaxWidth((progress / 100f).coerceIn(0.04f, 1f))
-                                .background(Brush.horizontalGradient(listOf(Color(0xFF9B5CFF), Color(0xFFD08BFF))), RoundedCornerShape(50)),
-                        )
-                    }
-                }
-            }
-            Box(Modifier.padding(horizontal = 6.dp).width(1.dp).height(44.dp).background(Color(0x55CDB8EC)))
-            // coins
-            Row(
-                Modifier.height(42.dp).shadow(8.dp, RoundedCornerShape(50), spotColor = GlowOrange)
-                    .background(RimGold, RoundedCornerShape(50)).padding(2.5.dp)
-                    .background(Brush.verticalGradient(listOf(Color(0xFF2A0B4A), Color(0xFF14052A))), RoundedCornerShape(50))
-                    .padding(start = 3.dp, end = 3.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                CoinIcon(Modifier.size(26.dp))
-                Spacer(Modifier.width(4.dp))
-                Text(formatCoins(coins), style = ts(13.sp, Color.White, FontWeight.Black), maxLines = 1, softWrap = false)
-                Spacer(Modifier.width(4.dp))
+    Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.weight(1f).clickable(remember { MutableInteractionSource() }, null, onClick = onProfile).testTag("open-profile"),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(Modifier.size(50.dp), contentAlignment = Alignment.TopCenter) {
                 Box(
-                    Modifier.size(28.dp).shadow(6.dp, CircleShape, spotColor = Color(0xFF22C55E))
-                        .background(Brush.radialGradient(listOf(Color(0xFF7CF29A), Color(0xFF16A34A), Color(0xFF0B6E2E))), CircleShape)
-                        .border(1.5.dp, Color(0xFFC8FFD6), CircleShape)
-                        .clickable(remember { MutableInteractionSource() }, null) { Haptics.tap(); onPlus() },
-                    contentAlignment = Alignment.Center,
-                ) { Canvas(Modifier.size(14.dp)) { drawSkinIcon(SkinIcon.Plus, Color.White) } }
+                    Modifier.size(46.dp).shadow(10.dp, CircleShape, ambientColor = Skin.Hairline, spotColor = Skin.Hairline)
+                        .border(2.5.dp, Color(0xFF8AB8FF), CircleShape),
+                ) { Avatar(images, avatarId, 46.dp, Modifier.align(Alignment.Center)) }
+                Text(
+                    "LV $level", style = com.funpixelnest.slots.ui.skin.displayText(10.sp),
+                    modifier = Modifier.align(Alignment.BottomCenter).offset(y = 4.dp)
+                        .glossy(com.funpixelnest.slots.ui.skin.SkinTone.Purple).padding(horizontal = 7.dp),
+                )
             }
             Spacer(Modifier.width(8.dp))
-            // gear
-            Box(
-                Modifier.size(38.dp).shadow(8.dp, CircleShape, spotColor = Color(0xFF9B5CFF))
-                    .background(RimGold, CircleShape).padding(2.5.dp)
-                    .background(Brush.radialGradient(listOf(Color(0xFF8A4FE0), Color(0xFF4A1580))), CircleShape)
-                    .clickable(remember { MutableInteractionSource() }, null) { Haptics.tap(); onSettings() },
-                contentAlignment = Alignment.Center,
-            ) { Canvas(Modifier.size(22.dp)) { drawSkinIcon(SkinIcon.Gear, Color.White) } }
+            Column(Modifier.weight(1f)) {
+                Text(name, style = com.funpixelnest.slots.ui.skin.displayText(15.sp).copy(textAlign = androidx.compose.ui.text.style.TextAlign.Start), maxLines = 1, softWrap = false, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                com.funpixelnest.slots.ui.skin.XpBar(level, progress, Modifier.padding(top = 4.dp).fillMaxWidth(0.9f))
+            }
         }
+        Spacer(Modifier.width(6.dp))
+        com.funpixelnest.slots.ui.skin.CoinCapsule(coins, Modifier.width(176.dp), onPlus = { Haptics.tap(); onPlus() })
+        Spacer(Modifier.width(8.dp))
+        com.funpixelnest.slots.ui.skin.IconRoundButton(SkinIcon.Gear, size = 40.dp, onClick = onSettings)
     }
 }
 
@@ -170,21 +129,19 @@ private fun DrawScope.drawCrown() {
 
 enum class QuickIcon { Gift, Clock, Video }
 
-/** Glossy purple tile with a colourful icon, a label and a red dot when something is ready. */
+/** Glowing navy tile with a colourful icon, a label and a red dot when something is ready. */
 @Composable
 internal fun RefQuickTile(label: String, alert: Boolean, modifier: Modifier, onClick: () -> Unit, icon: @Composable () -> Unit) {
     Box(modifier.height(92.dp)) {
         Column(
-            Modifier.fillMaxSize().padding(top = 4.dp, end = 4.dp)
-                .shadow(10.dp, RoundedCornerShape(18.dp), ambientColor = Color(0xFFFF3DB4), spotColor = Color(0xFFFF3DB4))
-                .background(RimGold, RoundedCornerShape(18.dp)).padding(2.dp)
-                .background(CardPurple, RoundedCornerShape(16.dp))
+            Modifier.fillMaxSize().padding(top = 5.dp, end = 4.dp)
+                .glowPanel(20.dp)
                 .clickable(remember { MutableInteractionSource() }, null) { Haptics.tap(); onClick() },
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
         ) {
             Box(Modifier.size(40.dp), contentAlignment = Alignment.Center) { icon() }
             Spacer(Modifier.height(4.dp))
-            Text(label, style = ts(14.sp, Color.White, FontWeight.Black), maxLines = 1)
+            Text(label, style = com.funpixelnest.slots.ui.skin.displayText(14.sp), maxLines = 1)
         }
         if (alert) AlertDot(Modifier.align(Alignment.TopEnd))
     }
@@ -223,62 +180,48 @@ internal fun QuickIconArt(icon: QuickIcon) {
 
 // ------------------------------------------------------------------ chips
 
-/** Filter chip: gold pill when selected, purple outline otherwise. */
+/** Filter chip: orange glossy pill when selected, blue otherwise. */
 @Composable
 internal fun RefChip(text: String, on: Boolean, onClick: () -> Unit) {
-    Text(
-        text, style = ts(13.sp, if (on) Color(0xFF3A1800) else Color.White, FontWeight.ExtraBold), maxLines = 1,
-        modifier = Modifier.height(36.dp)
-            .then(if (on) Modifier.shadow(8.dp, RoundedCornerShape(50), spotColor = GlowOrange) else Modifier)
-            .background(if (on) RimGold else Brush.verticalGradient(listOf(Color(0xFF3A0E6A), Color(0xFF240645))), RoundedCornerShape(50))
-            .border(1.5.dp, if (on) Color(0xFFFFE08A) else Color(0xFF8A4FD0), RoundedCornerShape(50))
-            .clickable { Haptics.tap(); onClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-    )
+    Box(
+        Modifier.height(32.dp).glossy(if (on) com.funpixelnest.slots.ui.skin.SkinTone.Gold else com.funpixelnest.slots.ui.skin.SkinTone.Blue)
+            .clickable { Haptics.tap(); onClick() }.padding(horizontal = 14.dp),
+        contentAlignment = Alignment.Center,
+    ) { Text(text.uppercase(), style = com.funpixelnest.slots.ui.skin.displayText(13.sp), maxLines = 1) }
 }
 
 // ------------------------------------------------------------------ footer
 
-/** Footer: purple bar with a gold-magenta rim, dividers, and a raised gold Lobby tab in the middle. */
+/** Footer: navy bar with a glowing blue top edge, blue icon balls and a raised green home ball in a gold ring. */
 @Composable
 internal fun RefTabBar(
     modifier: Modifier, taskAlert: Boolean, missionAlert: Boolean,
     onStore: () -> Unit, onTasks: () -> Unit, onMissions: () -> Unit, onPiggy: () -> Unit,
 ) {
-    val shape = RoundedCornerShape(26.dp)
-    Box(modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp), contentAlignment = Alignment.BottomCenter) {
+    Box(modifier.fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
         Row(
-            Modifier.fillMaxWidth().height(72.dp)
-                .shadow(18.dp, shape, ambientColor = Color(0xFFFF3DB4), spotColor = Color(0xFFFF3DB4))
-                .background(Brush.horizontalGradient(listOf(Color(0xFFFFC93C), Color(0xFFFF3DB4), Color(0xFFB45CFF), Color(0xFFFF3DB4), Color(0xFFFFC93C))), shape)
-                .padding(2.dp)
-                .background(Brush.verticalGradient(listOf(Color(0xFF3E0E70), Color(0xFF1E0538))), RoundedCornerShape(24.dp)),
+            Modifier.fillMaxWidth().height(78.dp)
+                .shadow(16.dp, ambientColor = Skin.Hairline, spotColor = Skin.Hairline)
+                .background(Brush.verticalGradient(listOf(Color(0xFF1A1A96), Color(0xFF0A0A52))))
+                .drawBehind { drawRect(Skin.Hairline, Offset.Zero, Size(size.width, 2.5.dp.toPx())) },
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            FootItem(SkinIcon.Cart, "Store", false, Modifier.weight(1f), onStore)
-            FootDivider()
-            FootItem(SkinIcon.Tasks, "Tasks", taskAlert, Modifier.weight(1f), onTasks)
-            Spacer(Modifier.weight(1.15f))
-            FootItem(SkinIcon.Target, "Missions", missionAlert, Modifier.weight(1f), onMissions)
-            FootDivider()
-            FootItem(SkinIcon.Piggy, "Piggy", false, Modifier.weight(1f), onPiggy)
+            FootItem(SkinIcon.Cart, "STORE", false, Modifier.weight(1f), onStore)
+            FootItem(SkinIcon.Tasks, "TASKS", taskAlert, Modifier.weight(1f), onTasks)
+            Spacer(Modifier.weight(1.1f))
+            FootItem(SkinIcon.Target, "MISSIONS", missionAlert, Modifier.weight(1f), onMissions)
+            FootItem(SkinIcon.Piggy, "PIGGY", false, Modifier.weight(1f), onPiggy)
         }
-        // raised Lobby tab (current screen)
-        Column(
-            Modifier.padding(bottom = 4.dp).width(96.dp).height(90.dp)
-                .shadow(16.dp, RoundedCornerShape(24.dp), ambientColor = GlowOrange, spotColor = GlowOrange)
-                .background(RimGold, RoundedCornerShape(24.dp)).padding(3.dp)
-                .background(Brush.verticalGradient(listOf(Color(0xFF6A1FC2), Color(0xFF3A0A68))), RoundedCornerShape(21.dp)),
-            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
-        ) {
-            Canvas(Modifier.size(38.dp)) { drawHome() }
-            Text("Lobby", style = ts(15.sp, Color(0xFFFFD54A), FontWeight.Black), modifier = Modifier.padding(top = 2.dp))
-        }
+        // raised home ball (current screen)
+        Box(
+            Modifier.padding(bottom = 26.dp).size(86.dp)
+                .shadow(18.dp, CircleShape, ambientColor = Skin.Gold, spotColor = Skin.Gold)
+                .background(Brush.sweepGradient(listOf(Color(0xFFFFE46A), Color(0xFFFF9A00), Color(0xFFFFE46A), Color(0xFFFF9A00), Color(0xFFFFE46A))), CircleShape)
+                .padding(4.dp).ball(com.funpixelnest.slots.ui.skin.SkinTone.Green),
+            contentAlignment = Alignment.Center,
+        ) { Canvas(Modifier.size(36.dp)) { drawSkinIcon(SkinIcon.Home, Color.White) } }
     }
 }
-
-@Composable
-private fun FootDivider() = Box(Modifier.width(1.dp).height(40.dp).background(Color(0x40CDB8EC)))
 
 @Composable
 private fun FootItem(icon: SkinIcon, label: String, alert: Boolean, modifier: Modifier, onClick: () -> Unit) {
@@ -287,11 +230,13 @@ private fun FootItem(icon: SkinIcon, label: String, alert: Boolean, modifier: Mo
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
     ) {
         Box {
-            Canvas(Modifier.size(26.dp)) { drawSkinIcon(icon, Color(0xFFF1E6FF)) }
-            if (alert) AlertDot(Modifier.align(Alignment.TopEnd).offset(x = 8.dp, y = (-6).dp), 13.dp)
+            Box(Modifier.size(44.dp).ball(com.funpixelnest.slots.ui.skin.SkinTone.Blue), contentAlignment = Alignment.Center) {
+                Canvas(Modifier.size(20.dp)) { drawSkinIcon(icon, Color.White) }
+            }
+            if (alert) AlertDot(Modifier.align(Alignment.TopEnd).offset(x = 4.dp, y = (-4).dp), 14.dp)
         }
-        Spacer(Modifier.height(4.dp))
-        Text(label, style = ts(12.sp, Color.White, FontWeight.ExtraBold), maxLines = 1)
+        Spacer(Modifier.height(3.dp))
+        Text(label, style = com.funpixelnest.slots.ui.skin.displayText(10.sp), maxLines = 1)
     }
 }
 
@@ -306,5 +251,5 @@ private fun DrawScope.drawHome() {
 
 /** Thick glowing gold frame used by the hero banner and machine cards. */
 internal fun Modifier.goldGlowFrame(corner: Dp, width: Dp = 3.dp): Modifier =
-    this.shadow(16.dp, RoundedCornerShape(corner), ambientColor = GlowOrange, spotColor = GlowOrange)
-        .background(RimGold, RoundedCornerShape(corner)).padding(width)
+    this.shadow(14.dp, RoundedCornerShape(corner), ambientColor = Skin.Hairline, spotColor = Skin.Hairline)
+        .background(Brush.verticalGradient(listOf(Color(0xFFBFE2FF), Skin.Hairline)), RoundedCornerShape(corner)).padding(width)

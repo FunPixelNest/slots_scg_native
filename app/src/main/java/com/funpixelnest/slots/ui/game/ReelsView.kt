@@ -204,9 +204,10 @@ fun ReelsView(
                         val anims = if (isWin) frames[idx] else null
                         if (isWin) {
                             val inset = cellW * 0.035f
-                            drawRoundRect(
-                                Brush.radialGradient(listOf(accent.copy(alpha = 0.45f), accent.copy(alpha = 0.08f)), Offset(left + cellW / 2, top + cellH / 2), cellW * 0.7f),
-                                Offset(left + inset, top + inset), Size(cellW - 2 * inset, cellH - 2 * inset), CornerRadius(cellW * 0.12f),
+                            val r = min(cellW, cellH) * 0.5f - inset
+                            drawCircle(
+                                Brush.radialGradient(listOf(Color(0xBFFFDC5A), Color(0x40FFAA00), Color.Transparent), Offset(left + cellW / 2, top + cellH / 2), r),
+                                r, Offset(left + cellW / 2, top + cellH / 2),
                             )
                         }
                         val pad = min(cellW, cellH) * 0.04f
@@ -228,16 +229,18 @@ fun ReelsView(
                 }
             }
 
-            // gold dividers between the reels, like a cabinet's reel windows
+            // thin glowing blue lines between the reels
             for (reel in 1 until cfg.reels) {
                 val x = reel * cellW
-                drawLine(Color(0x66000000), Offset(x + 2f, 0f), Offset(x + 2f, size.height), 3f)
-                drawLine(Color(0xAAF5C451), Offset(x, 0f), Offset(x, size.height), 2.5f)
+                drawLine(
+                    Brush.verticalGradient(listOf(Color(0x006AB4FF), Color(0x736AB4FF), Color(0x736AB4FF), Color(0x006AB4FF))),
+                    Offset(x, 0f), Offset(x, size.height), 2f,
+                )
             }
             // drum shading: symbols roll in and out of the dark at the top and bottom edges
             val fade = size.height * 0.09f
-            drawRect(Brush.verticalGradient(listOf(Color(0xCC0E0220), Color.Transparent), 0f, fade), Offset.Zero, Size(size.width, fade))
-            drawRect(Brush.verticalGradient(listOf(Color.Transparent, Color(0xCC0E0220)), size.height - fade, size.height), Offset(0f, size.height - fade), Size(size.width, fade))
+            drawRect(Brush.verticalGradient(listOf(Color(0xCC08083C), Color.Transparent), 0f, fade), Offset.Zero, Size(size.width, fade))
+            drawRect(Brush.verticalGradient(listOf(Color.Transparent, Color(0xCC08083C)), size.height - fade, size.height), Offset(0f, size.height - fade), Size(size.width, fade))
 
             if (cascading) {
                 val t = 0.75f + 0.25f * sin(clock / 120f)

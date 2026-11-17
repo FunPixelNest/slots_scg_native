@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
@@ -44,103 +46,139 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.ui.common.CoinIcon
+import com.funpixelnest.slots.ui.common.Lilita
+import com.funpixelnest.slots.ui.common.Montserrat
 import com.funpixelnest.slots.ui.common.formatCompact
 import com.funpixelnest.slots.ui.common.formatCoins
 import com.funpixelnest.slots.ui.common.outlinedText
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
- * "Royal casino" skin shared by every screen: purple and magenta background with spotlights,
- * glossy purple panels and buttons with gold rims, clean Montserrat type, gold only for coins,
- * jackpots and the main call to action. Each machine keeps its own Unity art for
- * background, title, reels and symbols; everything around it is drawn here.
+ * "Arcade night" skin shared by every screen (same family as BingoFlash): deep-space navy with
+ * stars and soft violet rays, navy panels with glowing blue rims, glossy pill buttons with a
+ * dark edge, round blue icon balls and gold display lettering with a purple outline. Each
+ * machine keeps its own Unity art for background, reels and symbols.
  */
 object Skin {
-    // surfaces (names kept from the first skin so every screen picks up the new look)
-    val VelvetTop = Color(0xFF3E1270)
-    val Velvet = Color(0xFF2A0B4A)
-    val VelvetDeep = Color(0xFF16052C)
-    val Glass = Color(0x0FFFFFFF)
-    val Hairline = Color(0x59F5C451)  // thin gold rim, as on casino cabinets
+    // surfaces (names kept from earlier skins so every screen picks up the look)
+    val VelvetTop = Color(0xFF2A1AA8)
+    val Velvet = Color(0xFF14107A)
+    val VelvetDeep = Color(0xFF0A0A52)
+    val Glass = Color(0x14FFFFFF)
+    val Hairline = Color(0xFF6AB4FF)   // glowing blue rim on every panel
+    val Ink = Color(0xFF3A0A8A)        // purple outline under gold lettering
     // accents
-    val GoldLight = Color(0xFFFFE9A8)
-    val Gold = Color(0xFFF5C451)
-    val GoldDark = Color(0xFFD9952B)
-    val GoldDeep = Color(0xFF6B4A0E)
-    val Ruby = Color(0xFFFF3D8B)      // neon pink
-    val Emerald = Color(0xFF22C55E)
-    val Sapphire = Color(0xFF38D6FF)  // neon cyan
-    val Amethyst = Color(0xFF7C5CFF)
-    val TextSoft = Color(0xFFCDB8EC)  // soft lavender
+    val GoldLight = Color(0xFFFFF3A0)
+    val Gold = Color(0xFFFFC21A)
+    val GoldDark = Color(0xFFE07A00)
+    val GoldDeep = Color(0xFF6A3A00)
+    val Ruby = Color(0xFFFF3040)
+    val Emerald = Color(0xFF2FC93A)
+    val Sapphire = Color(0xFF2A7BFF)
+    val Amethyst = Color(0xFF9A3AFF)
+    val Magenta = Color(0xFFFF5CF4)
+    val TextSoft = Color(0xFF9FC4FF)   // light blue captions
 
-    val goldBorder = Brush.verticalGradient(listOf(Color(0xCCFFE9A8), Color(0x99F5C451)))
-    val goldFill = Brush.verticalGradient(listOf(GoldLight, Gold, GoldDark))
-    val velvetFill = Brush.verticalGradient(listOf(Color(0xFF3A1068), Color(0xFF2A0B4A)))
+    val goldBorder = Brush.verticalGradient(listOf(Color(0xFFBFE2FF), Color(0xFF6AB4FF)))
+    val goldFill = Brush.verticalGradient(listOf(Color(0xFFFFFBD0), Color(0xFFFFE23A), Color(0xFFFFA800), Color(0xFFFF7A00)))
+    val goldRim = Brush.verticalGradient(listOf(Color(0xFFFFF7C9), Color(0xFFFFD24A), Color(0xFFB86B00), Color(0xFFFFDC6E), Color(0xFF8A4A00)))
+    val velvetFill = Brush.verticalGradient(listOf(Color(0xFF1E1EA8), Color(0xFF0C0C62), Color(0xFF090A50)))
     val hairline = Brush.verticalGradient(listOf(Hairline, Hairline))
 }
 
-enum class SkinTone(val top: Color, val bottom: Color, val text: Color) {
-    Gold(Color(0xFFFFD978), Color(0xFFF0B43C), Color(0xFF2A1800)),
-    Green(Color(0xFF3BE07A), Color(0xFF16A34A), Color(0xFF03230F)),
-    Red(Color(0xFFFF5C9A), Color(0xFFE11D63), Color.White),
-    Purple(Color(0xFF9B7BFF), Color(0xFF6D3BEF), Color.White),
-    Blue(Color(0xFF5FE0FF), Color(0xFF2563EB), Color.White),
-    Glass(Color(0xFF6A2FB8), Color(0xFF34107A), Color(0xFFFFF4D6)),  // glossy purple
+/** Glossy pill colours: light top, mid, dark bottom and the dark edge underneath. */
+enum class SkinTone(val top: Color, val bottom: Color, val text: Color, val mid: Color, val edge: Color) {
+    Gold(Color(0xFFFFE07A), Color(0xFFE35A00), Color.White, Color(0xFFFFA21A), Color(0xFF7A2A00)),
+    Green(Color(0xFF8CFF6A), Color(0xFF0F8A1A), Color.White, Color(0xFF2FC93A), Color(0xFF0A5A10)),
+    Red(Color(0xFFFF9A8A), Color(0xFFB00818), Color.White, Color(0xFFFF3040), Color(0xFF6A0008)),
+    Purple(Color(0xFFD79AFF), Color(0xFF5A12C8), Color.White, Color(0xFF9A3AFF), Color(0xFF2A0670)),
+    Blue(Color(0xFF8AD0FF), Color(0xFF1238C8), Color.White, Color(0xFF2A7BFF), Color(0xFF0A1A7A)),
+    Glass(Color(0xFF3A3ACC), Color(0xFF0C0C62), Color.White, Color(0xFF1E1EA8), Color(0xFF060640)),
+    Pink(Color(0xFFFF8AF0), Color(0xFF7A0A9A), Color.White, Color(0xFFE03AD0), Color(0xFF3A0A5A)),
 }
 
-/** Frosted-glass card. */
+/** Big display lettering: Lilita One, white (or [color]) with a soft dark drop shadow. */
+fun displayText(size: TextUnit, color: Color = Color.White) = TextStyle(
+    fontFamily = Lilita, fontWeight = FontWeight.Normal, fontSize = size, color = color, textAlign = TextAlign.Center,
+    shadow = Shadow(Color(0x99000030), Offset(0f, size.value * 0.12f), 2f),
+)
+
+/** Gold gradient lettering with a thick purple outline (titles, wins, jackpots). */
+@Composable
+fun GoldDisplay(text: String, size: TextUnit, modifier: Modifier = Modifier, maxLines: Int = 1) {
+    val base = TextStyle(fontFamily = Lilita, fontSize = size, textAlign = TextAlign.Center)
+    Box(modifier, contentAlignment = Alignment.Center) {
+        Text(
+            text, maxLines = maxLines,
+            style = base.copy(color = Skin.Ink, drawStyle = Stroke(width = size.value * 0.28f, join = StrokeJoin.Round)),
+            modifier = Modifier.offset(y = (size.value * 0.06f).dp),
+        )
+        Text(text, maxLines = maxLines, style = base.copy(color = Skin.Ink, drawStyle = Stroke(width = size.value * 0.24f, join = StrokeJoin.Round)))
+        Text(text, maxLines = maxLines, style = base.copy(brush = Skin.goldFill))
+    }
+}
+
+/** Navy panel with a glowing blue rim. [magenta] swaps the rim for the "selected" pink glow. */
 @Composable
 fun SkinPanel(
     modifier: Modifier = Modifier,
-    corner: Dp = 24.dp,
+    corner: Dp = 22.dp,
     padding: Dp = 16.dp,
+    magenta: Boolean = false,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val shape = RoundedCornerShape(corner)
-    Box(
-        modifier
-            .shadow(24.dp, shape, ambientColor = Skin.Ruby, spotColor = Color.Black)
-            .background(Skin.velvetFill, shape)
-            .border(2.dp, Skin.goldBorder, shape)
-            .padding(padding),
-        contentAlignment = Alignment.Center,
-        content = content,
-    )
+    Box(modifier.glowPanel(corner, magenta).padding(padding), contentAlignment = Alignment.Center, content = content)
 }
 
-/** Hairline gold frame around [content] (machine art, reels). */
+/** Navy fill + glowing rim, usable on any layout. */
+fun Modifier.glowPanel(corner: Dp = 22.dp, magenta: Boolean = false, fill: Brush = Skin.velvetFill): Modifier {
+    val shape = RoundedCornerShape(corner)
+    val rim = if (magenta) Skin.Magenta else Skin.Hairline
+    return this
+        .shadow(14.dp, shape, ambientColor = rim, spotColor = rim)
+        .background(fill, shape)
+        .border(2.dp, rim, shape)
+        .drawBehind {
+            // light catching the top edge
+            drawRoundRect(
+                Brush.verticalGradient(0f to Color(0x55C8E6FF), 0.06f to Color.Transparent),
+                cornerRadius = CornerRadius(corner.toPx()),
+            )
+        }
+}
+
+/** Panel around machine art and reels. */
 @Composable
 fun GoldFrame(modifier: Modifier = Modifier, corner: Dp = 18.dp, content: @Composable BoxScope.() -> Unit) {
     val shape = RoundedCornerShape(corner)
-    Box(
-        modifier
-            .shadow(16.dp, shape)
-            .clip(shape)
-            .background(Skin.VelvetDeep)
-            .border(1.2.dp, Skin.goldBorder, shape),
-        content = content,
-    )
+    Box(modifier.glowPanel(corner).clip(shape), content = content)
 }
 
-/** Flat gradient button with a soft glow; Glass tone for secondary actions. */
+/** Glossy pill button: three-stop gradient, light top band, dark edge below. */
 @Composable
 fun SkinButton(
     text: String,
     modifier: Modifier = Modifier,
     tone: SkinTone = SkinTone.Gold,
     enabled: Boolean = true,
-    textSize: TextUnit = 15.sp,
-    shape: Shape = RoundedCornerShape(14.dp),
+    textSize: TextUnit = 16.sp,
+    shape: Shape = RoundedCornerShape(50),
     onClick: () -> Unit,
 ) {
     val interaction = remember { MutableInteractionSource() }
@@ -150,66 +188,69 @@ fun SkinButton(
         modifier
             .scale(scale)
             .alpha(if (enabled) 1f else 0.45f)
-            .then(if (tone == SkinTone.Glass) Modifier else Modifier.shadow(10.dp, shape, ambientColor = tone.bottom, spotColor = tone.bottom))
-            .background(Brush.verticalGradient(listOf(tone.top, tone.bottom)), shape)
-            .border(1.5.dp, if (tone == SkinTone.Glass) Skin.goldBorder else Brush.verticalGradient(listOf(Color(0x99FFFFFF), tone.bottom)), shape)
+            .glossy(tone, shape)
             .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
         contentAlignment = Alignment.Center,
     ) {
-        // glossy top highlight, like a casino cabinet button
-        Box(
-            Modifier.matchParentSize().padding(2.dp)
-                .background(Brush.verticalGradient(0f to Color(0x55FFFFFF), 0.48f to Color(0x14FFFFFF), 0.5f to Color.Transparent), shape),
-        )
-        Text(
-            text,
-            style = outlinedText(textSize, tone.text).copy(shadow = null, fontWeight = FontWeight.ExtraBold),
-            modifier = Modifier.padding(horizontal = 8.dp),
-            maxLines = 2,
-        )
+        Text(text, style = displayText(textSize, tone.text), modifier = Modifier.padding(horizontal = 10.dp), maxLines = 2)
     }
 }
 
+/** The glossy pill look on any element. */
+fun Modifier.glossy(tone: SkinTone, shape: Shape = RoundedCornerShape(50), glow: Boolean = true): Modifier = this
+    .then(if (glow) Modifier.shadow(6.dp, shape, ambientColor = tone.mid, spotColor = tone.edge) else Modifier)
+    .background(Brush.verticalGradient(0f to tone.top, 0.55f to tone.mid, 1f to tone.bottom), shape)
+    .border(2.dp, tone.edge, shape)
+    .drawBehind {
+        // top shine band
+        val inset = size.height * 0.1f
+        drawRoundRect(
+            Brush.verticalGradient(listOf(Color(0x88FFFFFF), Color(0x00FFFFFF)), inset, size.height * 0.48f),
+            Offset(size.width * 0.08f, inset), Size(size.width * 0.84f, size.height * 0.36f), CornerRadius(size.height * 0.2f),
+        )
+    }
+
 enum class SkinIcon { Menu, Back, Info, Gear, Plus, Minus, Clock, Gift, Video, Lock, Trophy, Close, Home, Cart, Tasks, Target, Piggy }
 
-/** Rounded glass icon button; [tone] tints the icon. */
+/** Glossy round icon ball (blue unless [tone] says otherwise) with a white icon. */
 @Composable
 fun IconRoundButton(
     icon: SkinIcon,
     modifier: Modifier = Modifier,
-    size: Dp = 40.dp,
-    tone: SkinTone = SkinTone.Glass,
+    size: Dp = 42.dp,
+    tone: SkinTone = SkinTone.Blue,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(if (pressed) 0.9f else 1f, label = "press")
-    val shape = RoundedCornerShape(size * 0.34f)
-    val glass = tone == SkinTone.Glass || tone == SkinTone.Purple || tone == SkinTone.Blue
+    val t = if (tone == SkinTone.Glass) SkinTone.Blue else tone
     Box(
         modifier
             .size(size)
             .scale(scale)
             .alpha(if (enabled) 1f else 0.4f)
-            .background(
-                if (glass) Brush.verticalGradient(listOf(Color(0xFF6A2FB8), Color(0xFF34107A)))
-                else Brush.verticalGradient(listOf(tone.top, tone.bottom)),
-                shape,
-            )
-            .border(1.5.dp, Skin.goldBorder, shape)
+            .ball(t)
             .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
         contentAlignment = Alignment.Center,
     ) {
-        val tint = when (tone) {
-            SkinTone.Blue -> Skin.Sapphire
-            SkinTone.Purple -> Color(0xFFB9A6FF)
-            SkinTone.Glass -> Color(0xFFF4F6FB)
-            else -> tone.text
-        }
-        Canvas(Modifier.fillMaxSize(0.44f)) { drawSkinIcon(icon, tint) }
+        Canvas(Modifier.fillMaxSize(0.46f)) { drawSkinIcon(icon, Color.White) }
     }
 }
+
+/** Glossy ball: radial fill, light inner ring, dark edge, soft glow. */
+fun Modifier.ball(tone: SkinTone): Modifier = this
+    .shadow(8.dp, CircleShape, ambientColor = tone.mid, spotColor = tone.mid)
+    .background(Brush.radialGradient(listOf(tone.top, tone.mid, tone.bottom)), CircleShape)
+    .border(2.5.dp, tone.edge, CircleShape)
+    .drawBehind {
+        drawCircle(tone.top.copy(alpha = 0.8f), size.minDimension / 2 - 3.5.dp.toPx(), style = Stroke(1.5.dp.toPx()))
+        drawOval(
+            Brush.verticalGradient(listOf(Color(0x99FFFFFF), Color(0x00FFFFFF)), size.height * 0.08f, size.height * 0.46f),
+            Offset(size.width * 0.2f, size.height * 0.08f), Size(size.width * 0.6f, size.height * 0.36f),
+        )
+    }
 
 fun DrawScope.drawSkinIcon(icon: SkinIcon, c: Color = Color.White) {
     val w = size.width
@@ -319,230 +360,392 @@ fun DrawScope.drawPadlock(topLeft: Offset, size: Float, c: Color = Skin.Gold) {
 }
 
 
-/** Avatar ring: level number in the middle, XP progress as a cyan→violet arc around it. */
+/** Gold five-point star with the level number (HUD). */
 @Composable
-fun LevelMedallion(level: Int, progress: Float, modifier: Modifier = Modifier, size: Dp = 52.dp) {
-    val anim by animateFloatAsState((progress / 100f).coerceIn(0f, 1f), tween(600), label = "xp")
+fun LevelMedallion(level: Int, @Suppress("UNUSED_PARAMETER") progress: Float, modifier: Modifier = Modifier, size: Dp = 42.dp) {
     Box(modifier.size(size), contentAlignment = Alignment.Center) {
         Canvas(Modifier.fillMaxSize()) {
-            val ring = this.size.minDimension * 0.08f
-            val tl = Offset(ring / 2, ring / 2)
-            val sz = Size(this.size.width - ring, this.size.height - ring)
-            drawArc(Color(0x22FFFFFF), -90f, 360f, false, tl, sz, style = Stroke(ring))
-            drawArc(
-                Brush.sweepGradient(listOf(Skin.GoldLight, Skin.GoldDark, Skin.GoldLight)), -90f, 360f * anim, false, tl, sz,
-                style = Stroke(ring, cap = StrokeCap.Round),
-            )
-            drawCircle(Brush.radialGradient(listOf(Color(0xFF6A2FB8), Color(0xFF2A0B4A))), this.size.minDimension / 2 - ring * 1.8f)
+            val c = Offset(this.size.width / 2, this.size.height / 2 + this.size.height * 0.04f)
+            val r = this.size.minDimension / 2
+            val star = Path()
+            for (i in 0 until 10) {
+                val a = -Math.PI / 2 + i * Math.PI / 5
+                val rr = if (i % 2 == 0) r else r * 0.5f
+                val x = c.x + (rr * cos(a)).toFloat(); val y = c.y + (rr * sin(a)).toFloat()
+                if (i == 0) star.moveTo(x, y) else star.lineTo(x, y)
+            }
+            star.close()
+            drawPath(star, Brush.verticalGradient(listOf(Color(0xFFFFF3A0), Skin.Gold, Skin.GoldDark)))
+            drawPath(star, Color(0xFF7A3A00), style = Stroke(1.2.dp.toPx(), join = StrokeJoin.Round))
         }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("LV", style = outlinedText((size.value * 0.15f).sp, Skin.TextSoft).copy(shadow = null))
-            Text("$level", style = outlinedText((size.value * 0.3f).sp, Color.White).copy(shadow = null))
-        }
+        Text(
+            "$level",
+            style = displayText(if (level < 100) (size.value * 0.36f).sp else (size.value * 0.28f).sp).copy(shadow = Shadow(Color(0xFF7A3A00), Offset(0f, 2f), 0f)),
+            modifier = Modifier.offset(y = 2.dp),
+        )
     }
 }
 
-/** Slim XP bar: "Level n", percentage and a cyan→violet fill. */
+/** Chunky XP bar that tucks under the level star. */
 @Composable
-fun XpBar(level: Int, progress: Float, modifier: Modifier = Modifier) {
+fun XpBar(@Suppress("UNUSED_PARAMETER") level: Int, progress: Float, modifier: Modifier = Modifier) {
     val anim by animateFloatAsState((progress / 100f).coerceIn(0f, 1f), tween(600), label = "xpbar")
-    Column(modifier) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("LEVEL $level", style = outlinedText(10.sp, Color.White).copy(shadow = null, letterSpacing = 1.sp))
-            Spacer(Modifier.weight(1f))
-            Text("${(anim * 100).toInt()}%", style = outlinedText(9.sp, Skin.TextSoft).copy(shadow = null))
-        }
-        Spacer(Modifier.height(4.dp))
-        Box(Modifier.fillMaxWidth().height(5.dp).background(Color(0x1FFFFFFF), RoundedCornerShape(50))) {
-            Box(
-                Modifier.fillMaxHeight().fillMaxWidth(anim.coerceAtLeast(0.03f))
-                    .background(Brush.horizontalGradient(listOf(Color(0xFFFF3DB4), Color(0xFFB45CFF))), RoundedCornerShape(50))
-            )
-        }
+    val shape = RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp)
+    Box(
+        modifier.height(14.dp).shadow(6.dp, shape, ambientColor = Skin.Hairline, spotColor = Skin.Hairline)
+            .background(Color(0xFF070840), shape).border(1.5.dp, Skin.Hairline, shape),
+    ) {
+        Box(
+            Modifier.fillMaxHeight().fillMaxWidth(anim.coerceAtLeast(0.04f)).padding(1.5.dp)
+                .background(Brush.verticalGradient(listOf(Color(0xFFB4FF8A), Skin.Emerald)), shape),
+        )
     }
 }
 
-/** Glass balance pill: coin, compact amount, gold "+" that opens the store. */
+/** Blue glossy coin bar: big coin overlapping the left end, amount, green "+" for the store. */
 @Composable
 fun CoinCapsule(coins: Long, modifier: Modifier = Modifier, onPlus: (() -> Unit)? = null) {
-    Row(
-        modifier.height(38.dp)
-            .background(Brush.verticalGradient(listOf(Color(0xFF4A1580), Color(0xFF240848))), RoundedCornerShape(50))
-            .border(1.5.dp, Skin.goldBorder, RoundedCornerShape(50))
-            .padding(start = 6.dp, end = if (onPlus != null) 4.dp else 14.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        CoinIcon(Modifier.size(24.dp))
-        Spacer(Modifier.width(8.dp))
-        Text(formatCoins(coins), style = outlinedText(15.sp, Color.White).copy(shadow = null), maxLines = 1) // full number
-        if (onPlus != null) {
-            Spacer(Modifier.width(8.dp))
-            Box(
-                Modifier.size(30.dp).shadow(8.dp, CircleShape, spotColor = Skin.Gold)
-                    .background(Brush.verticalGradient(listOf(Color(0xFFFFD978), Color(0xFFF0B43C))), CircleShape)
-                    .clickable(remember { MutableInteractionSource() }, null, onClick = onPlus),
-                contentAlignment = Alignment.Center,
-            ) { Canvas(Modifier.size(12.dp)) { drawSkinIcon(SkinIcon.Plus, Color(0xFF2A1800)) } }
+    Box(modifier.height(40.dp), contentAlignment = Alignment.CenterStart) {
+        Row(
+            Modifier.fillMaxSize().padding(start = 8.dp)
+                .shadow(8.dp, RoundedCornerShape(50), ambientColor = Skin.Hairline, spotColor = Skin.Hairline)
+                .background(Brush.verticalGradient(listOf(Color(0xFF4A6AFF), Color(0xFF2A3AD8), Color(0xFF1A22A8))), RoundedCornerShape(50))
+                .border(2.dp, Color(0xFF8AB8FF), RoundedCornerShape(50))
+                .padding(start = 34.dp, end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(formatCoins(coins), style = displayText(17.sp), maxLines = 1, modifier = Modifier.weight(1f))
+            if (onPlus != null) {
+                Box(
+                    Modifier.size(28.dp).ball(SkinTone.Green)
+                        .clickable(remember { MutableInteractionSource() }, null, onClick = onPlus),
+                    contentAlignment = Alignment.Center,
+                ) { Canvas(Modifier.size(12.dp)) { drawSkinIcon(SkinIcon.Plus, Color.White) } }
+            }
         }
+        BigCoin(Modifier.size(44.dp))
     }
 }
 
-/** Kept for older call sites: medallion + bar. */
+/** Gold coin with a star, ringed in light gold (coin bar, rewards). */
 @Composable
-fun LevelStar(level: Int, progress: Float, modifier: Modifier = Modifier, barWidth: Dp = 70.dp) {
+fun BigCoin(modifier: Modifier = Modifier) {
+    Canvas(modifier) {
+        val r = size.minDimension / 2
+        drawCircle(Color(0xFFA04A00), r)
+        drawCircle(Color(0xFFFFEB8A), r * 0.93f)
+        drawCircle(Brush.radialGradient(listOf(Color(0xFFFFF3A0), Skin.Gold, Skin.GoldDark), center.copy(x = center.x - r * 0.25f, y = center.y - r * 0.3f), r * 1.2f), r * 0.82f)
+        val star = Path()
+        for (i in 0 until 10) {
+            val a = -Math.PI / 2 + i * Math.PI / 5
+            val rr = if (i % 2 == 0) r * 0.48f else r * 0.22f
+            val x = center.x + (rr * cos(a)).toFloat(); val y = center.y + (rr * sin(a)).toFloat()
+            if (i == 0) star.moveTo(x, y) else star.lineTo(x, y)
+        }
+        star.close()
+        drawPath(star, Color(0xFFFFE46A))
+        drawPath(star, Color(0xFFC46A00), style = Stroke(r * 0.06f, join = StrokeJoin.Round))
+    }
+}
+
+/** Level star with the XP bar tucked under its right point. */
+@Composable
+fun LevelStar(level: Int, progress: Float, modifier: Modifier = Modifier, barWidth: Dp = 64.dp) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-        LevelMedallion(level, progress, size = 40.dp)
-        XpBar(level, progress, Modifier.width(barWidth).padding(start = 6.dp))
+        LevelMedallion(level, progress, Modifier.offset(x = 0.dp), size = 40.dp)
+        XpBar(level, progress, Modifier.width(barWidth).offset(x = (-8).dp))
     }
 }
 
-/** Neon frame (pink glow) around [content]; used for the GRAND jackpot. */
+/** Light-bulb sign: ruby fill, gold rim, a ring of glowing bulbs that chase. */
 @Composable
-fun MarqueeLights(modifier: Modifier = Modifier, @Suppress("UNUSED_PARAMETER") bulbs: Int = 28, corner: Dp = 18.dp, content: @Composable BoxScope.() -> Unit) {
-    val glow by rememberInfiniteTransition(label = "neon").animateFloat(
-        0.55f, 1f, infiniteRepeatable(tween(1400), RepeatMode.Reverse), label = "g",
+fun MarqueeLights(modifier: Modifier = Modifier, bulbs: Int = 28, corner: Dp = 16.dp, content: @Composable BoxScope.() -> Unit) {
+    val chase by rememberInfiniteTransition(label = "bulbs").animateFloat(
+        0f, 1f, infiniteRepeatable(tween(900, easing = LinearEasing), RepeatMode.Restart), label = "c",
     )
     val shape = RoundedCornerShape(corner)
     Box(
         modifier
-            .shadow(18.dp, shape, ambientColor = Skin.Ruby, spotColor = Skin.Ruby)
-            .background(Brush.verticalGradient(listOf(Color(0x38FF3D8B), Color(0x10FF3D8B))), shape)
-            .border(1.2.dp, Skin.Ruby.copy(alpha = glow), shape)
+            .shadow(16.dp, shape, ambientColor = Skin.Gold, spotColor = Skin.GoldDark)
+            .background(Skin.goldRim, shape).padding(3.dp)
+            .background(Brush.radialGradient(listOf(Color(0xFFC4123A), Color(0xFF5A0420)), radius = 600f), RoundedCornerShape(corner - 3.dp))
+            .drawBehind {
+                // bulbs along the inner edge
+                val inset = 6.dp.toPx()
+                val w = size.width - 2 * inset
+                val h = size.height - 2 * inset
+                val per = (2 * (w + h)) / bulbs
+                val phase = (chase * 2).toInt() % 2
+                for (i in 0 until bulbs) {
+                    var d = i * per
+                    val p = when {
+                        d < w -> Offset(inset + d, inset)
+                        d < w + h -> { d -= w; Offset(inset + w, inset + d) }
+                        d < 2 * w + h -> { d -= w + h; Offset(inset + w - d, inset + h) }
+                        else -> { d -= 2 * w + h; Offset(inset, inset + h - d) }
+                    }
+                    val lit = i % 2 == phase
+                    if (lit) drawCircle(Color(0x66FFCC33), 5.dp.toPx(), p)
+                    drawCircle(if (lit) Color(0xFFFFF8D0) else Color(0xFFB07A2A), 2.dp.toPx(), p)
+                }
+            }
             .padding(6.dp),
         contentAlignment = Alignment.Center,
         content = content,
     )
 }
 
-/** Soft breathing glow (replaces the old sunburst). */
+/** Slowly turning violet light rays fading out from the centre (behind titles and prizes). */
 @Composable
-fun Sunburst(modifier: Modifier = Modifier, color: Color = Skin.Gold, @Suppress("UNUSED_PARAMETER") rays: Int = 18) {
-    val pulse by rememberInfiniteTransition(label = "glow").animateFloat(
-        0.7f, 1f, infiniteRepeatable(tween(2600, easing = LinearEasing), RepeatMode.Reverse), label = "p",
+fun Sunburst(modifier: Modifier = Modifier, color: Color = Color(0xFFC890FF), rays: Int = 22) {
+    val turn by rememberInfiniteTransition(label = "rays").animateFloat(
+        0f, 360f, infiniteRepeatable(tween(40_000, easing = LinearEasing)), label = "t",
     )
-    Canvas(modifier) {
-        drawCircle(
-            Brush.radialGradient(listOf(color.copy(alpha = 0.28f * pulse), Color.Transparent), center, size.minDimension * 0.6f),
-            size.minDimension * 0.6f, center,
-        )
+    Canvas(modifier.rotate(turn)) {
+        val r = size.maxDimension * 0.75f
+        val step = 360f / rays
+        for (i in 0 until rays) {
+            val a0 = Math.toRadians((i * step).toDouble())
+            val a1 = Math.toRadians((i * step + step * 0.4f).toDouble())
+            val p = Path().apply {
+                moveTo(center.x, center.y)
+                lineTo(center.x + (r * cos(a0)).toFloat(), center.y + (r * sin(a0)).toFloat())
+                lineTo(center.x + (r * cos(a1)).toFloat(), center.y + (r * sin(a1)).toFloat())
+                close()
+            }
+            drawPath(p, Brush.radialGradient(listOf(color.copy(alpha = 0.42f), color.copy(alpha = 0f)), center, r * 0.62f))
+        }
     }
 }
 
-/** Title chip (replaces the old ribbon). */
+/** Small glossy tag (feature name, badges). */
 @Composable
-fun Ribbon(text: String, modifier: Modifier = Modifier, tone: SkinTone = SkinTone.Red, textSize: TextUnit = 18.sp) {
-    val accent = when (tone) {
-        SkinTone.Red -> Skin.Ruby
-        SkinTone.Green -> Skin.Emerald
-        SkinTone.Purple -> Skin.Amethyst
-        SkinTone.Blue -> Skin.Sapphire
-        else -> Skin.Gold
-    }
-    Box(
-        modifier
-            .background(accent.copy(alpha = 0.16f), RoundedCornerShape(50))
-            .border(1.dp, accent.copy(alpha = 0.55f), RoundedCornerShape(50))
-            .padding(horizontal = 14.dp, vertical = 5.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(text, style = outlinedText(textSize, Color.White).copy(shadow = null, letterSpacing = 1.sp))
+fun Ribbon(text: String, modifier: Modifier = Modifier, tone: SkinTone = SkinTone.Gold, textSize: TextUnit = 14.sp) {
+    Box(modifier.glossy(tone).padding(horizontal = 14.dp, vertical = 3.dp), contentAlignment = Alignment.Center) {
+        Text(text, style = displayText(textSize), maxLines = 1)
     }
 }
 
-/** Midnight backdrop with pink and cyan neon glows. */
+/** Deep-space background: blue to navy, violet glow and rays at the top, a field of stars. */
 @Composable
 fun VelvetBackdrop(modifier: Modifier = Modifier) {
-    // royal purple casino floor with magenta and violet spotlights
     Canvas(modifier) {
-        drawRect(Brush.verticalGradient(listOf(Color(0xFF3C0A62), Color(0xFF240640), Color(0xFF16052C))))
-        drawCircle(
-            Brush.radialGradient(listOf(Color(0x66FF3DB4), Color.Transparent), Offset(size.width * 0.9f, -size.height * 0.02f), size.width * 1.1f),
-            size.width * 1.1f, Offset(size.width * 0.9f, -size.height * 0.02f),
-        )
-        drawCircle(
-            Brush.radialGradient(listOf(Color(0x4D9B5CFF), Color.Transparent), Offset(0f, size.height * 0.2f), size.width * 0.9f),
-            size.width * 0.9f, Offset(0f, size.height * 0.2f),
-        )
-        drawCircle(
-            Brush.radialGradient(listOf(Color(0x26F5C451), Color.Transparent), Offset(size.width * 0.5f, size.height * 0.62f), size.width * 0.8f),
-            size.width * 0.8f, Offset(size.width * 0.5f, size.height * 0.62f),
-        )
+        drawRect(Brush.verticalGradient(0f to Color(0xFF2A1AA8), 0.35f to Color(0xFF14107A), 0.7f to Color(0xFF0A0A52), 1f to Color(0xFF070838)))
+        val top = Offset(size.width / 2, size.height * 0.08f)
+        drawCircle(Brush.radialGradient(listOf(Color(0x8C8C5AFF), Color.Transparent), top, size.width * 0.9f), size.width * 0.9f, top)
+        val r = size.maxDimension
+        for (i in 0 until 28) {
+            val a0 = Math.toRadians(i * 360.0 / 28)
+            val a1 = Math.toRadians(i * 360.0 / 28 + 4.5)
+            drawPath(
+                Path().apply {
+                    moveTo(top.x, top.y)
+                    lineTo(top.x + (r * cos(a0)).toFloat(), top.y + (r * sin(a0)).toFloat())
+                    lineTo(top.x + (r * cos(a1)).toFloat(), top.y + (r * sin(a1)).toFloat()); close()
+                },
+                Brush.radialGradient(listOf(Color(0x1F9678FF), Color.Transparent), top, r * 0.8f),
+            )
+        }
+        val bottom = Offset(size.width / 2, size.height)
+        drawCircle(Brush.radialGradient(listOf(Color(0x733C78FF), Color.Transparent), bottom, size.width * 0.8f), size.width * 0.8f, bottom)
+        // stars (fixed pattern)
+        val rnd = kotlin.random.Random(7)
+        repeat(90) {
+            val p = Offset(rnd.nextFloat() * size.width, rnd.nextFloat() * size.height)
+            val gold = it % 5 == 0
+            drawCircle(if (gold) Color(0xE6FFDC78) else Color(0xB3FFFFFF), (if (gold) 1.6f else 1.1f).dp.toPx() * (0.6f + rnd.nextFloat() * 0.6f), p)
+        }
     }
 }
 
-/** Glass value read-out: small caption over a big number (bet, win). */
+/** Caption over a value in a navy glow pill (bet, win). */
 @Composable
 fun ValueWell(caption: String, value: String, modifier: Modifier = Modifier, highlight: Boolean = false, footnote: String? = null) {
-    Box(modifier.padding(horizontal = 4.dp, vertical = 2.dp), contentAlignment = Alignment.Center) {
+    Box(modifier.glowPanel(18.dp).padding(horizontal = 10.dp, vertical = 4.dp), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(caption.uppercase(), style = outlinedText(10.sp, Skin.TextSoft).copy(shadow = null, letterSpacing = 1.5.sp))
-            Text(value, style = outlinedText(if (highlight) 26.sp else 22.sp, if (highlight) Skin.Gold else Color.White).copy(shadow = null), maxLines = 1)
+            if (highlight) GoldDisplay(value, 24.sp) else Text(value, style = displayText(20.sp), maxLines = 1)
             if (footnote != null) Text(footnote, style = outlinedText(9.sp, Skin.TextSoft).copy(shadow = null))
         }
     }
 }
 
-/** Round green SPIN button inside a gold ring, with a refresh arrow. */
+/** Rectangular SPIN: gold frame, glossy green face, big label and a small caption. */
 @Composable
 fun SpinButton(
     label: String,
     modifier: Modifier = Modifier,
     sub: String? = null,
     enabled: Boolean = true,
+    tone: SkinTone = SkinTone.Green,
     onClick: () -> Unit,
 ) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
-    val scale by animateFloatAsState(if (pressed) 0.93f else 1f, label = "press")
+    val scale by animateFloatAsState(if (pressed) 0.95f else 1f, label = "press")
+    SpinFace(
+        label, sub, tone,
+        modifier.scale(scale).alpha(if (enabled) 1f else 0.55f)
+            .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
+    )
+}
+
+/** The look of the rectangular SPIN, without input handling (the game screen adds tap + hold). */
+@Composable
+fun SpinFace(label: String, sub: String?, tone: SkinTone, modifier: Modifier) {
+    val glow by rememberInfiniteTransition(label = "spinGlow").animateFloat(
+        0.55f, 1f, infiniteRepeatable(tween(1100), RepeatMode.Reverse), label = "g",
+    )
+    val outer = RoundedCornerShape(22.dp)
+    val inner = RoundedCornerShape(17.dp)
     Box(
         modifier
-            .scale(scale)
-            .alpha(if (enabled) 1f else 0.55f)
-            .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
+            .shadow(18.dp, outer, ambientColor = Skin.Gold.copy(alpha = glow), spotColor = Skin.Gold.copy(alpha = glow))
+            .background(Brush.verticalGradient(listOf(Color(0xFFFFF3A0), Skin.Gold, Skin.GoldDark, Color(0xFFFFE46A))), outer)
+            .border(2.dp, Skin.Ink, outer)
+            .padding(5.dp)
+            .glossy(tone, inner, glow = false),
         contentAlignment = Alignment.Center,
     ) {
-        Canvas(Modifier.fillMaxSize()) {
-            val r = size.minDimension / 2
-            drawCircle(Brush.radialGradient(listOf(Color(0x66F5C451), Color.Transparent), center, r * 1.05f), r)
-            drawCircle(Color(0xFF16052C), r * 0.96f)
-            drawCircle(Brush.sweepGradient(listOf(Skin.GoldLight, Skin.Gold, Skin.GoldDark, Skin.Gold, Skin.GoldLight)), r * 0.88f)
-            drawCircle(Brush.radialGradient(listOf(Color(0xFF3BE07A), Color(0xFF15803D)), center.copy(y = center.y - r * 0.3f), r), r * 0.8f)
-            // refresh arrow
-            val ar = r * 0.26f
-            val c = center.copy(y = center.y - r * 0.12f)
-            drawArc(Color.White, 300f, 290f, false, Offset(c.x - ar, c.y - ar), Size(ar * 2, ar * 2), style = Stroke(r * 0.07f, cap = StrokeCap.Round))
-            val tip = Offset(c.x + ar * 0.5f, c.y - ar * 0.87f)
-            drawPath(Path().apply {
-                moveTo(tip.x + r * 0.13f, tip.y - r * 0.02f); lineTo(tip.x - r * 0.02f, tip.y - r * 0.12f); lineTo(tip.x - r * 0.01f, tip.y + r * 0.09f); close()
-            }, Color.White)
-        }
-        Column(Modifier.padding(top = 46.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(label, style = outlinedText(13.sp, Color.White).copy(shadow = null, letterSpacing = 2.sp))
-            if (sub != null) Text(sub, style = outlinedText(9.sp, Skin.GoldLight).copy(shadow = null))
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(label, style = displayText(if (label.length <= 5) 36.sp else 26.sp).copy(shadow = Shadow(tone.edge, Offset(0f, 5f), 0f)), maxLines = 1)
+            if (sub != null) Text(sub, style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.Black, fontSize = 9.sp, color = Color.White, letterSpacing = 1.sp, shadow = Shadow(tone.edge, Offset(0f, 2f), 0f)))
         }
     }
 }
 
-/** Shared dialog card: title chip on a glass panel. */
+/** Popup frame: violet rays behind, gold title riding on the top edge of a glowing navy panel. */
 @Composable
 fun SkinDialog(
     title: String,
     modifier: Modifier = Modifier,
-    tone: SkinTone = SkinTone.Red,
+    @Suppress("UNUSED_PARAMETER") tone: SkinTone = SkinTone.Red,
     sunburst: Boolean = false,
+    onClose: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     Box(modifier, contentAlignment = Alignment.TopCenter) {
-        if (sunburst) Sunburst(Modifier.matchParentSize().scale(1.5f), color = if (tone == SkinTone.Gold) Skin.Gold else Skin.Ruby)
-        SkinPanel(Modifier.fillMaxWidth(), padding = 18.dp) {
-            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(title.uppercase(), style = outlinedText(20.sp, Color.White).copy(shadow = null, letterSpacing = 2.sp))
-                Box(Modifier.padding(top = 8.dp, bottom = 12.dp).width(36.dp).height(3.dp).background(
-                    when (tone) { SkinTone.Green -> Skin.Emerald; SkinTone.Purple -> Skin.Amethyst; SkinTone.Blue -> Skin.Sapphire; SkinTone.Gold -> Skin.Gold; else -> Skin.Ruby },
-                    RoundedCornerShape(50),
-                ))
-                content()
+        if (sunburst) Sunburst(Modifier.matchParentSize().scale(1.6f))
+        SkinPanel(Modifier.fillMaxWidth().padding(top = 22.dp), padding = 16.dp, corner = 26.dp) {
+            Column(Modifier.fillMaxWidth().padding(top = 26.dp), horizontalAlignment = Alignment.CenterHorizontally) { content() }
+        }
+        GoldDisplay(title.uppercase(), 32.sp)
+        if (onClose != null) {
+            IconRoundButton(
+                SkinIcon.Close, Modifier.align(Alignment.TopEnd).offset(x = 8.dp, y = 10.dp), size = 38.dp, tone = SkinTone.Red, onClick = onClose,
+            )
+        }
+    }
+}
+
+/**
+ * Rewarded-video button: magenta glossy bar in a gold-pink-blue frame, white play disc,
+ * "WATCH VIDEO & GET" over the doubled [amount], small AD tag and a gold x2 starburst.
+ */
+@Composable
+fun Watch2xButton(amount: Long, modifier: Modifier = Modifier, enabled: Boolean = true, onClick: () -> Unit) {
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (pressed) 0.96f else 1f, label = "press")
+    val shine by rememberInfiniteTransition(label = "shine").animateFloat(
+        -0.3f, 1.3f, infiniteRepeatable(tween(2200, easing = LinearEasing)), label = "s",
+    )
+    Box(
+        modifier.height(66.dp).scale(scale).alpha(if (enabled) 1f else 0.5f)
+            .clickable(interaction, indication = null, enabled = enabled) { com.funpixelnest.slots.audio.Haptics.tap(); onClick() },
+    ) {
+        val outer = RoundedCornerShape(20.dp)
+        Box(
+            Modifier.fillMaxSize().padding(top = 4.dp, end = 10.dp)
+                .shadow(14.dp, outer, ambientColor = Skin.Magenta, spotColor = Skin.Magenta)
+                .background(Brush.horizontalGradient(listOf(Color(0xFFFFE46A), Color(0xFFFF9AF0), Color(0xFF8AD0FF), Color(0xFFFFE46A))), outer)
+                .border(2.dp, Color(0xFF3A0A5A), outer)
+                .padding(3.dp)
+                .glossy(SkinTone.Pink, RoundedCornerShape(17.dp), glow = false)
+                .drawBehind {
+                    val x = size.width * shine
+                    drawPath(
+                        Path().apply {
+                            moveTo(x, 0f); lineTo(x + size.height * 0.35f, 0f); lineTo(x + size.height * 0.05f, size.height); lineTo(x - size.height * 0.3f, size.height); close()
+                        },
+                        Brush.horizontalGradient(listOf(Color.Transparent, Color(0x66FFFFFF), Color.Transparent), x - size.height * 0.3f, x + size.height * 0.35f),
+                    )
+                }
+                .padding(start = 8.dp, end = 66.dp),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    Modifier.size(42.dp).shadow(4.dp, CircleShape)
+                        .background(Brush.radialGradient(listOf(Color.White, Color(0xFFFFE0FA))), CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Canvas(Modifier.size(20.dp).offset(x = 2.dp)) {
+                        drawPath(Path().apply { moveTo(size.width * 0.15f, 0f); lineTo(size.width, size.height / 2); lineTo(size.width * 0.15f, size.height); close() }, Color(0xFFC41AB8))
+                    }
+                }
+                Spacer(Modifier.width(10.dp))
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            "WATCH VIDEO & GET",
+                            style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.Black, fontSize = 11.sp, letterSpacing = 1.sp, color = Color(0xFFFFF0FC), shadow = Shadow(Color(0x8C3C0050), Offset(0f, 1.5f), 3f)),
+                            maxLines = 1,
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            "AD", style = TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.Black, fontSize = 8.sp, color = Color.White),
+                            modifier = Modifier.background(Color(0xFF5A0A6A), RoundedCornerShape(4.dp)).padding(horizontal = 4.dp, vertical = 1.dp),
+                        )
+                    }
+                    Text("${formatCoins(amount)} COINS", style = displayText(22.sp).copy(textAlign = TextAlign.Start, shadow = Shadow(Color(0xFF5A0A6A), Offset(0f, 3f), 0f)), maxLines = 1)
+                }
             }
         }
+        X2Burst(Modifier.align(Alignment.TopEnd).offset(x = 6.dp, y = (-10).dp).size(74.dp).rotate(12f))
+    }
+}
+
+/** Gold starburst badge with "x2". */
+@Composable
+fun X2Burst(modifier: Modifier = Modifier) {
+    Box(modifier, contentAlignment = Alignment.Center) {
+        Canvas(Modifier.fillMaxSize()) {
+            val r = size.minDimension / 2
+            val p = Path()
+            for (i in 0 until 24) {
+                val a = -Math.PI / 2 + i * Math.PI / 12
+                val rr = if (i % 2 == 0) r else r * 0.78f
+                val x = center.x + (rr * cos(a)).toFloat(); val y = center.y + (rr * sin(a)).toFloat()
+                if (i == 0) p.moveTo(x, y) else p.lineTo(x, y)
+            }
+            p.close()
+            drawPath(p, Color(0x66FFB000), style = Stroke(r * 0.18f, join = StrokeJoin.Round))
+            drawPath(p, Color(0xFF7A3A00), style = Stroke(r * 0.07f, join = StrokeJoin.Round))
+            drawPath(p, Brush.radialGradient(listOf(Color(0xFFFFF6B0), Skin.Gold, Skin.GoldDark), center.copy(x = center.x - r * 0.1f, y = center.y - r * 0.2f), r))
+        }
+        Box(contentAlignment = Alignment.Center) {
+            Text("x2", style = TextStyle(fontFamily = Lilita, fontSize = 28.sp, color = Color(0xFFA03A00), drawStyle = Stroke(width = 9f, join = StrokeJoin.Round)))
+            Text("x2", style = TextStyle(fontFamily = Lilita, fontSize = 28.sp, color = Color.White))
+        }
+    }
+}
+
+/** Compact glowing chip for numbers inside panels ("PICKS LEFT 2"). */
+@Composable
+fun StatChip(caption: String, value: String, modifier: Modifier = Modifier) {
+    Row(modifier.glowPanel(16.dp).padding(horizontal = 12.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(caption.uppercase(), style = outlinedText(11.sp, Skin.TextSoft).copy(shadow = null, letterSpacing = 1.sp))
+        Spacer(Modifier.width(8.dp))
+        GoldDisplay(value, 20.sp)
+    }
+}
+
+/** Kept for older call sites: compact amount in a glow chip. */
+@Composable
+fun CompactCoins(coins: Long, modifier: Modifier = Modifier) {
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        CoinIcon(Modifier.size(20.dp)); Spacer(Modifier.width(4.dp))
+        Text(formatCompact(coins), style = displayText(15.sp))
     }
 }

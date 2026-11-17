@@ -1,11 +1,6 @@
 package com.funpixelnest.slots.ui.game
 
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,16 +13,13 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,13 +30,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.GenericShape
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -53,322 +45,264 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funpixelnest.slots.audio.Haptics
-import com.funpixelnest.slots.ui.common.CoinIcon
+import com.funpixelnest.slots.ui.common.Lilita
 import com.funpixelnest.slots.ui.common.Montserrat
 import com.funpixelnest.slots.ui.common.formatCoins
-import com.funpixelnest.slots.ui.common.formatCompact
+import com.funpixelnest.slots.ui.skin.CoinCapsule
+import com.funpixelnest.slots.ui.skin.GoldDisplay
+import com.funpixelnest.slots.ui.skin.IconRoundButton
+import com.funpixelnest.slots.ui.skin.LevelMedallion
+import com.funpixelnest.slots.ui.skin.MarqueeLights
 import com.funpixelnest.slots.ui.skin.Skin
 import com.funpixelnest.slots.ui.skin.SkinIcon
+import com.funpixelnest.slots.ui.skin.SkinTone
+import com.funpixelnest.slots.ui.skin.SpinFace
+import com.funpixelnest.slots.ui.skin.XpBar
+import com.funpixelnest.slots.ui.skin.ball
+import com.funpixelnest.slots.ui.skin.displayText
 import com.funpixelnest.slots.ui.skin.drawSkinIcon
-import kotlin.math.cos
-import kotlin.math.sin
+import com.funpixelnest.slots.ui.skin.glossy
+import com.funpixelnest.slots.ui.skin.glowPanel
 
 /*
- * Slot-cabinet pieces for the gameplay screen: full-width HUD strip, jackpot marquee with
- * light bulbs, gold cabinet frame around the reels, win meter and the control deck.
+ * Gameplay pieces in the arcade-night look: HUD row, GRAND light-bulb sign with counter
+ * digits, MAJOR / MINOR / MINI plaques, glowing reel panel, WIN pill and the control deck
+ * (bet + MAX BET on the left, rectangular SPIN on the right: tap to spin, hold for auto).
  */
 
-/** Polished gold, light at the top, used for rims, knobs and keys. */
-val GoldMetal = Brush.verticalGradient(listOf(Color(0xFFFFF6C8), Color(0xFFFFD44A), Color(0xFFC8801A), Color(0xFFFFE48A)))
-private val DeckPurple = Brush.verticalGradient(listOf(Color(0xFF5A1A9A), Color(0xFF2A0A55), Color(0xFF1A0533)))
-private val GoldEdge = Color(0xFFF5C451)
+/** Polished gold, light at the top (rims, SPIN frame). */
+val GoldMetal = Skin.goldRim
 
-private fun style(size: TextUnit, color: Color, weight: FontWeight = FontWeight.Black, spacing: TextUnit = 0.sp) =
-    TextStyle(fontFamily = Montserrat, fontWeight = weight, fontSize = size, color = color, letterSpacing = spacing)
+private fun caption(size: TextUnit, color: Color = Skin.TextSoft, spacing: TextUnit = 1.5.sp) =
+    TextStyle(fontFamily = Montserrat, fontWeight = FontWeight.Black, fontSize = size, color = color, letterSpacing = spacing)
 
-/** Round gold key with an icon (back, menu). */
+/** Round icon ball (back, menu). */
 @Composable
-fun GoldKey(icon: SkinIcon, size: Dp = 40.dp, onClick: () -> Unit) {
-    Box(
-        Modifier.size(size).shadow(6.dp, CircleShape).background(GoldMetal, CircleShape)
-            .border(1.5.dp, Color(0xFF8A5208), CircleShape)
-            .clickable(remember { MutableInteractionSource() }, null) { Haptics.tap(); onClick() },
-        contentAlignment = Alignment.Center,
-    ) { Canvas(Modifier.size(size * 0.42f)) { drawSkinIcon(icon, Color(0xFF4A2200)) } }
-}
+fun GoldKey(icon: SkinIcon, size: Dp = 42.dp, onClick: () -> Unit) = IconRoundButton(icon, size = size, onClick = onClick)
 
-/** Gold five-point star with the player's level in it. */
+/** Gold level star. */
 @Composable
-fun LevelStar(level: Int, size: Dp = 46.dp) {
-    Box(Modifier.size(size), contentAlignment = Alignment.Center) {
-        Canvas(Modifier.fillMaxSize()) {
-            val c = Offset(this.size.width / 2, this.size.height / 2 + this.size.height * 0.04f)
-            val r = this.size.minDimension / 2
-            val star = Path()
-            for (i in 0 until 10) {
-                val a = -Math.PI / 2 + i * Math.PI / 5
-                val rr = if (i % 2 == 0) r else r * 0.48f
-                val x = c.x + (rr * cos(a)).toFloat(); val y = c.y + (rr * sin(a)).toFloat()
-                if (i == 0) star.moveTo(x, y) else star.lineTo(x, y)
-            }
-            star.close()
-            drawPath(star, Color(0xFF6A3A00))
-            drawPath(star, GoldMetal, alpha = 1f)
-        }
-        Text("$level", style = style(if (level < 100) 15.sp else 12.sp, Color(0xFF4A2200)), modifier = Modifier.offset(y = 2.dp))
-    }
-}
+fun LevelStar(level: Int, size: Dp = 40.dp) = LevelMedallion(level, 0f, size = size)
 
-/** Full-width HUD strip: back · level star + XP · coins · menu, with a gold lower edge. */
+/** HUD row: back · level star + XP · coins (compact, on the right) · menu. */
 @Composable
 fun CabinetTopBar(
     level: Int, progress: Float, coins: Long,
     onBack: () -> Unit, onCoins: () -> Unit, onMenu: () -> Unit,
     xpOverlay: @Composable BoxScope.() -> Unit = {},
 ) {
-    Box(
-        Modifier.fillMaxWidth()
-            .shadow(10.dp)
-            .background(Brush.verticalGradient(listOf(Color(0xFF4A1388), Color(0xFF2A0A55))))
-            .drawBehind { drawRect(GoldEdge, Offset(0f, size.height - 3.dp.toPx()), androidx.compose.ui.geometry.Size(size.width, 3.dp.toPx())) },
+    Row(
+        Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Row(
-            Modifier.fillMaxWidth().height(58.dp).padding(horizontal = 8.dp).padding(bottom = 3.dp),
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            GoldKey(SkinIcon.Back, 38.dp, onBack)
-            LevelStar(level)
-            Box(Modifier.weight(1f)) {
-                Column {
-                    Text("LEVEL $level", style = style(10.sp, Color(0xFFFFE08A), FontWeight.ExtraBold, 1.sp))
-                    Box(
-                        Modifier.padding(top = 3.dp).fillMaxWidth().height(10.dp)
-                            .background(Color(0xFF1A0533), RoundedCornerShape(6.dp)).border(1.5.dp, GoldEdge, RoundedCornerShape(6.dp)).padding(1.5.dp),
-                    ) {
-                        Box(
-                            Modifier.fillMaxHeight().fillMaxWidth((progress / 100f).coerceIn(0.03f, 1f))
-                                .background(Brush.horizontalGradient(listOf(Color(0xFFFF3DB4), Color(0xFFFFB13D))), RoundedCornerShape(5.dp)),
-                        )
-                    }
+        GoldKey(SkinIcon.Back, 42.dp, onBack)
+        Box(Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                LevelMedallion(level, progress, size = 40.dp)
+                XpBar(level, progress, Modifier.width(62.dp).offset(x = (-8).dp))
+            }
+            xpOverlay()
+        }
+        CoinCapsule(coins, Modifier.width(184.dp).clickable(remember { MutableInteractionSource() }, null, onClick = onCoins), onPlus = onCoins)
+        GoldKey(SkinIcon.Menu, 42.dp, onMenu)
+    }
+}
+
+/** GRAND jackpot: light-bulb sign with counter digits and a gold "♛ GRAND ♛" tab on top. */
+@Composable
+fun JackpotMarquee(value: Long, modifier: Modifier) {
+    Box(modifier, contentAlignment = Alignment.TopCenter) {
+        MarqueeLights(Modifier.fillMaxWidth().padding(top = 11.dp).height(58.dp), bulbs = 34) { CounterDigits(formatCoins(value)) }
+        Box(
+            Modifier.height(22.dp).shadow(4.dp, TabShape)
+                .background(Brush.verticalGradient(listOf(Color(0xFFFFE46A), Color(0xFFFFB000), Color(0xFFE07A00))), TabShape)
+                .padding(horizontal = 20.dp),
+            contentAlignment = Alignment.Center,
+        ) { Text("♛ GRAND ♛", style = TextStyle(fontFamily = Lilita, fontSize = 14.sp, letterSpacing = 2.5.sp, color = Color(0xFF5A0A00))) }
+    }
+}
+
+/** Ribbon with notched ends. */
+private val TabShape = GenericShape { size, _ ->
+    val n = size.width * 0.06f
+    moveTo(0f, 0f); lineTo(size.width, 0f); lineTo(size.width - n, size.height / 2); lineTo(size.width, size.height)
+    lineTo(0f, size.height); lineTo(n, size.height / 2); close()
+}
+
+/** Odometer-style digits: each digit on its own dark tile, glowing gold. */
+@Composable
+fun CounterDigits(text: String, digitWidth: Dp = 21.dp, height: Dp = 32.dp, size: TextUnit = 22.sp) {
+    Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = Alignment.CenterVertically) {
+        text.forEach { ch ->
+            if (!ch.isDigit()) {
+                Text("$ch", style = TextStyle(fontFamily = Lilita, fontSize = size * 0.6f, color = Color(0xFFFFE46A)))
+            } else {
+                Box(
+                    Modifier.width(digitWidth).height(height)
+                        .background(Brush.verticalGradient(0f to Color(0xFF1A0430), 0.48f to Color(0xFF3A0A5A), 0.52f to Color(0xFF12021F), 1f to Color(0xFF2A0646)), RoundedCornerShape(5.dp))
+                        .border(1.dp, Color(0x73FFC850), RoundedCornerShape(5.dp)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text("$ch", style = TextStyle(fontFamily = Lilita, fontSize = size, color = Color(0xFFFFE46A), shadow = Shadow(Color(0xE6FFBE28), Offset.Zero, 12f)))
                 }
-                xpOverlay()
             }
-            Row(
-                Modifier.height(36.dp).background(Color(0xFF1A0533), RoundedCornerShape(50)).border(2.dp, GoldEdge, RoundedCornerShape(50))
-                    .clickable(remember { MutableInteractionSource() }, null, onClick = onCoins).padding(start = 3.dp, end = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                CoinIcon(Modifier.size(28.dp)); Spacer(Modifier.width(6.dp))
-                Text(formatCoins(coins), style = style(15.sp, Color.White), maxLines = 1) // full number, no 12.5M
-            }
-            GoldKey(SkinIcon.Menu, 38.dp, onMenu)
         }
     }
 }
 
-/** GRAND jackpot marquee: gold frame, chasing light bulbs, big gold number. */
-@Composable
-fun JackpotMarquee(value: Long, modifier: Modifier) {
-    Marquee("GRAND JACKPOT", modifier) { GoldText(formatCoins(value), 30.sp) }
-}
-
-/** Gold-framed sign with chasing light bulbs; [title] on top, [content] below it. */
+/** Feature sign: glowing navy panel with a caption on top and [content] below. */
 @Composable
 fun Marquee(title: String, modifier: Modifier, content: @Composable () -> Unit) {
-    val chase by rememberInfiniteTransition(label = "bulbs").animateFloat(
-        0f, 1f, infiniteRepeatable(tween(700), RepeatMode.Restart), label = "c",
-    )
-    val shape = RoundedCornerShape(16.dp)
-    Box(
-        modifier.shadow(14.dp, shape, ambientColor = Skin.Gold, spotColor = Skin.Gold).background(GoldMetal, shape).padding(4.dp)
-            .background(Brush.radialGradient(listOf(Color(0xFF7A1240), Color(0xFF2A0420)), radius = 520f), RoundedCornerShape(12.dp)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Canvas(Modifier.fillMaxSize()) {
-            val n = 17
-            val step = size.width / n
-            val on = (chase * 2).toInt() % 2
-            for (i in 0 until n) {
-                val x = step * (i + 0.5f)
-                val lit = (i % 2) == on
-                for (y in listOf(6.dp.toPx(), size.height - 6.dp.toPx())) {
-                    if (lit) drawCircle(Color(0x66FFD44A), 7.dp.toPx(), Offset(x, y))
-                    drawCircle(if (lit) Color(0xFFFFF6C8) else Color(0xFF9A6A2A), 3.5.dp.toPx(), Offset(x, y))
-                }
-            }
-        }
+    Box(modifier.glowPanel(20.dp).padding(horizontal = 10.dp, vertical = 6.dp), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(title, style = style(10.sp, Color(0xFFFFD0E4), FontWeight.ExtraBold, 3.sp))
+            Text(title, style = caption(11.sp, Color(0xFFFFD98A), 2.sp), maxLines = 1)
             content()
         }
     }
 }
 
-/** Pill badge with a caption and a text value (feature panels). */
+/** Glossy pill with a caption and a value; [lit] = the current step (orange, glowing). */
 @Composable
-fun TextBadge(label: String, value: String, rim: Color, top: Color, bottom: Color, modifier: Modifier, lit: Boolean = false) {
-    val shape = RoundedCornerShape(50)
+fun TextBadge(label: String, value: String, @Suppress("UNUSED_PARAMETER") rim: Color, @Suppress("UNUSED_PARAMETER") top: Color, @Suppress("UNUSED_PARAMETER") bottom: Color, modifier: Modifier, lit: Boolean = false) {
     Box(
-        modifier.shadow(if (lit) 12.dp else 6.dp, shape, ambientColor = rim, spotColor = rim)
-            .background(Brush.verticalGradient(listOf(if (lit) Color(0xFFFFF6C8) else rim, top)), shape).padding(if (lit) 3.dp else 2.dp)
-            .background(Brush.verticalGradient(listOf(top, bottom)), shape),
+        modifier.scale(if (lit) 1.06f else 1f).glossy(if (lit) SkinTone.Gold else SkinTone.Blue),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            if (label.isNotEmpty()) Text(label, style = style(8.sp, rim, FontWeight.ExtraBold, 1.sp), maxLines = 1)
-            Text(value, maxLines = 1, style = style(if (label.isEmpty()) 16.sp else 12.sp, Color.White))
+            if (label.isNotEmpty()) Text(label, style = caption(8.sp, Color.White, 1.sp), maxLines = 1)
+            Text(value, maxLines = 1, style = displayText(if (label.isEmpty()) 17.sp else 13.sp))
         }
     }
 }
 
-/** MAJOR / MINOR / MINI badge in its colour, with a light rim. */
+/** MAJOR / MINOR / MINI plaque: glowing border in its colour, label tab on top. */
 @Composable
 fun JackpotBadge(label: String, value: Long, rim: Color, top: Color, bottom: Color, modifier: Modifier) {
-    val shape = RoundedCornerShape(50)
-    Box(
-        modifier.shadow(6.dp, shape).background(Brush.verticalGradient(listOf(rim, top)), shape).padding(2.dp)
-            .background(Brush.verticalGradient(listOf(top, bottom)), shape),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(label, style = style(9.sp, rim, FontWeight.ExtraBold, 1.5.sp))
-            Text(formatCoins(value), maxLines = 1, style = style(14.sp, Color.White))
+    Box(modifier, contentAlignment = Alignment.TopCenter) {
+        val shape = RoundedCornerShape(12.dp)
+        Box(
+            Modifier.fillMaxSize().padding(top = 8.dp)
+                .shadow(10.dp, shape, ambientColor = rim, spotColor = rim)
+                .background(Brush.verticalGradient(listOf(top, bottom)), shape)
+                .border(2.dp, rim, shape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(formatCoins(value), maxLines = 1, style = displayText(16.sp).copy(shadow = Shadow(rim, Offset.Zero, 10f)), modifier = Modifier.padding(top = 3.dp))
         }
+        Text(
+            label, style = caption(9.sp, Color.White, 1.5.sp),
+            modifier = Modifier.background(Brush.verticalGradient(listOf(rim, top)), RoundedCornerShape(8.dp))
+                .border(1.5.dp, Color(0xB3FFFFFF), RoundedCornerShape(8.dp)).padding(horizontal = 10.dp, vertical = 1.dp),
+        )
     }
 }
 
-/**
- * Gold cabinet around the reels: thick polished rim, gold knobs at the corners and a plaque
- * on the top edge.
- */
+/** Glowing navy panel around the reels; symbols sit straight on it. */
 @Composable
-fun CabinetFrame(plaque: String, modifier: Modifier, content: @Composable BoxScope.() -> Unit) {
-    Box(modifier) {
-        val outer = RoundedCornerShape(24.dp)
-        Box(
-            Modifier.fillMaxSize().padding(top = 10.dp)
-                .shadow(18.dp, outer, ambientColor = Skin.Gold, spotColor = Color.Black)
-                .background(GoldMetal, outer).border(1.5.dp, Color(0xFF6A3A00), outer).padding(7.dp)
-                .background(Brush.verticalGradient(listOf(Color(0xFF2A0B4A), Color(0xFF14052A))), RoundedCornerShape(18.dp))
-                .border(1.dp, Color(0x88000000), RoundedCornerShape(18.dp))
-                .padding(start = 4.dp, end = 4.dp, top = 16.dp, bottom = 6.dp),
-            content = content,
-        )
-        // corner knobs
-        listOf(Alignment.TopStart, Alignment.TopEnd, Alignment.BottomStart, Alignment.BottomEnd).forEach { a ->
-            val dy = if (a == Alignment.TopStart || a == Alignment.TopEnd) 6.dp else 0.dp
-            Box(
-                Modifier.align(a).offset(y = dy).size(24.dp).shadow(4.dp, CircleShape).background(GoldMetal, CircleShape)
-                    .border(1.dp, Color(0xFF6A3A00), CircleShape),
-            )
-        }
-        Text(
-            plaque, style = style(12.sp, Color(0xFF3A1800), FontWeight.Black, 1.sp),
-            modifier = Modifier.align(Alignment.TopCenter).shadow(6.dp, RoundedCornerShape(10.dp))
-                .background(GoldMetal, RoundedCornerShape(10.dp)).border(1.dp, Color(0xFF6A3A00), RoundedCornerShape(10.dp))
-                .padding(horizontal = 14.dp, vertical = 3.dp),
-        )
-    }
+fun CabinetFrame(@Suppress("UNUSED_PARAMETER") plaque: String, modifier: Modifier, content: @Composable BoxScope.() -> Unit) {
+    Box(
+        modifier.glowPanel(24.dp, fill = Brush.verticalGradient(listOf(Color(0xEB100E6E), Color(0xF208083C)))).padding(8.dp),
+        content = content,
+    )
 }
 
 /** WIN read-out under the reels. */
 @Composable
-fun WinMeter(win: Long, modifier: Modifier) {
-    val shape = RoundedCornerShape(12.dp)
+fun WinMeter(win: Long, modifier: Modifier, label: String = "WIN") {
     Row(
-        modifier.shadow(8.dp, shape).background(GoldMetal, shape).padding(3.dp)
-            .background(Color(0xFF0E0220), RoundedCornerShape(9.dp)).padding(horizontal = 14.dp),
+        modifier.glowPanel(22.dp).padding(horizontal = 14.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center,
     ) {
-        Text("WIN", style = style(12.sp, Color(0xFFFFD0E4), FontWeight.ExtraBold, 3.sp))
-        Spacer(Modifier.width(12.dp))
-        GoldText(formatCoins(win), 24.sp)
+        Text(label, style = caption(13.sp, Skin.TextSoft, 2.sp))
+        Spacer(Modifier.width(10.dp))
+        GoldDisplay(formatCoins(win), 26.sp)
     }
 }
 
-/** Control deck: TOTAL BET with −/+ keys · raised SPIN (hold for auto) · MAX BET and AUTO. */
+/**
+ * Control deck: TOTAL BET stepper and MAX BET on the left, rectangular SPIN on the right.
+ * Tap SPIN to spin; hold it to start auto-spin; while auto runs it reads STOP.
+ */
 @Composable
 fun ControlDeck(
     totalBet: Long, betLocked: Boolean, spinEnabled: Boolean, freeSpins: Int, autoLeft: Int,
     onMinus: () -> Unit, onPlus: () -> Unit, onSpin: () -> Unit, onAuto: () -> Unit, onMaxBet: () -> Unit,
+    @Suppress("UNUSED_PARAMETER") showAuto: Boolean = false,
 ) {
-    Box(Modifier.fillMaxWidth().height(150.dp)) {
-        Box(
-            Modifier.fillMaxSize().shadow(14.dp).background(DeckPurple)
-                .drawBehind { drawRect(GoldEdge, Offset.Zero, androidx.compose.ui.geometry.Size(size.width, 4.dp.toPx())) },
-        )
-        // total bet
-        Column(
-            Modifier.align(Alignment.CenterStart).padding(start = 10.dp, top = 8.dp).width(128.dp).height(84.dp)
-                .background(Color(0xFF14052A), RoundedCornerShape(14.dp)).border(2.dp, GoldEdge, RoundedCornerShape(14.dp)).padding(top = 7.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text("TOTAL BET", style = style(9.sp, Skin.TextSoft, FontWeight.ExtraBold, 2.sp))
-            Text(formatCoins(totalBet), style = style(20.sp, Color(0xFFFFE27A)), maxLines = 1)
-            Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                DeckKey("−", !betLocked, onMinus); DeckKey("+", !betLocked, onPlus)
-            }
-        }
-        // max bet + auto
-        Column(
-            Modifier.align(Alignment.CenterEnd).padding(end = 10.dp, top = 8.dp).width(120.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            GlossyButton("MAX BET", Color(0xFFFF8A3D), Color(0xFFE0420E), Modifier.fillMaxWidth().height(50.dp), 16.sp, !betLocked, onMaxBet)
-            GlossyButton(
-                if (autoLeft > 0) "STOP $autoLeft" else "AUTO",
-                if (autoLeft > 0) Color(0xFFFF5C9A) else Color(0xFF9B5CFF), if (autoLeft > 0) Color(0xFFC2185B) else Color(0xFF5A1FC2),
-                Modifier.fillMaxWidth().height(36.dp), 13.sp, true, onAuto,
-            )
-        }
-        // spin, raised above the deck
-        CabinetSpin(
-            if (freeSpins > 0) "FREE" else "SPIN", if (freeSpins > 0) "$freeSpins LEFT" else "HOLD FOR AUTO",
-            spinEnabled, Modifier.align(Alignment.TopCenter).offset(y = (-26).dp).size(124.dp), onSpin, onAuto,
-        )
-    }
-}
-
-@Composable
-private fun DeckKey(label: String, enabled: Boolean, onClick: () -> Unit) {
-    Box(
-        Modifier.width(44.dp).height(24.dp).alpha(if (enabled) 1f else 0.45f).shadow(3.dp, RoundedCornerShape(8.dp))
-            .background(GoldMetal, RoundedCornerShape(8.dp)).border(1.dp, Color(0xFF8A5208), RoundedCornerShape(8.dp))
-            .clickable(remember { MutableInteractionSource() }, null, enabled = enabled) { Haptics.tap(); onClick() },
-        contentAlignment = Alignment.Center,
-    ) { Text(label, style = style(17.sp, Color(0xFF3A1800))) }
-}
-
-@Composable
-private fun GlossyButton(text: String, top: Color, bottom: Color, modifier: Modifier, size: TextUnit, enabled: Boolean, onClick: () -> Unit) {
-    val shape = RoundedCornerShape(14.dp)
-    Box(
-        modifier.alpha(if (enabled) 1f else 0.5f).shadow(8.dp, shape).background(Brush.verticalGradient(listOf(top, bottom)), shape)
-            .border(2.dp, Color(0xFFFFE08A), shape)
-            .clickable(remember { MutableInteractionSource() }, null, enabled = enabled) { Haptics.tap(); onClick() },
-        contentAlignment = Alignment.Center,
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = 10.dp).height(128.dp).glowPanel(26.dp).padding(horizontal = 12.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(Modifier.fillMaxSize().padding(3.dp).background(Brush.verticalGradient(0f to Color(0x66FFFFFF), 0.5f to Color(0x10FFFFFF), 0.52f to Color.Transparent), shape))
-        Text(text, style = style(size, Color.White).copy(shadow = androidx.compose.ui.graphics.Shadow(Color(0x99000000), Offset(0f, 3f), 2f)))
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(7.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("TOTAL BET", style = caption(11.sp, Skin.TextSoft, 2.sp))
+            Row(
+                Modifier.fillMaxWidth().background(Color(0xFF070840), RoundedCornerShape(50)).padding(3.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                StepKey(SkinIcon.Minus, SkinTone.Red, !betLocked, onMinus)
+                Text(formatCoins(totalBet), style = displayText(19.sp), maxLines = 1, modifier = Modifier.weight(1f))
+                StepKey(SkinIcon.Plus, SkinTone.Green, !betLocked, onPlus)
+            }
+            Box(
+                Modifier.fillMaxWidth().height(34.dp).alpha(if (betLocked) 0.5f else 1f).glossy(SkinTone.Gold)
+                    .clickable(remember { MutableInteractionSource() }, null, enabled = !betLocked) { Haptics.tap(); onMaxBet() },
+                contentAlignment = Alignment.Center,
+            ) { Text("MAX BET", style = displayText(15.sp)) }
+        }
+        Spacer(Modifier.width(12.dp))
+        val auto = autoLeft > 0
+        DeckSpin(
+            label = when { freeSpins > 0 -> "FREE"; auto -> "STOP"; else -> "SPIN" },
+            sub = when { freeSpins > 0 -> "$freeSpins LEFT"; auto -> "AUTO · $autoLeft LEFT"; else -> "HOLD FOR AUTO" },
+            tone = if (auto) SkinTone.Gold else SkinTone.Green,
+            enabled = spinEnabled || auto,
+            modifier = Modifier.width(146.dp).height(100.dp),
+            onTap = { if (auto) onAuto() else onSpin() },
+            onHold = { if (!auto && freeSpins == 0) onAuto() },
+        )
     }
 }
 
-/** Big round SPIN in a gold ring; tap to spin, hold to start auto-spin. */
 @Composable
-private fun CabinetSpin(label: String, sub: String, enabled: Boolean, modifier: Modifier, onSpin: () -> Unit, onHold: () -> Unit) {
-    var pressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(if (pressed) 0.93f else 1f, label = "spin")
-    val glow by rememberInfiniteTransition(label = "spinGlow").animateFloat(
-        0.4f, 0.9f, infiniteRepeatable(tween(1000), RepeatMode.Reverse), label = "g",
-    )
+private fun StepKey(icon: SkinIcon, tone: SkinTone, enabled: Boolean, onClick: () -> Unit) {
     Box(
+        Modifier.size(34.dp).alpha(if (enabled) 1f else 0.45f).ball(tone)
+            .clickable(remember { MutableInteractionSource() }, null, enabled = enabled) { Haptics.tap(); onClick() },
+        contentAlignment = Alignment.Center,
+    ) { Canvas(Modifier.size(13.dp)) { drawSkinIcon(icon, Color.White) } }
+}
+
+/** Rectangular SPIN with tap + long-press. */
+@Composable
+private fun DeckSpin(label: String, sub: String, tone: SkinTone, enabled: Boolean, modifier: Modifier, onTap: () -> Unit, onHold: () -> Unit) {
+    var pressed by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(if (pressed) 0.94f else 1f, label = "spin")
+    SpinFace(
+        label, sub, tone,
         modifier.scale(scale).alpha(if (enabled) 1f else 0.6f)
-            .shadow(18.dp, CircleShape, ambientColor = Color(0xFF50FF8C).copy(alpha = glow), spotColor = Color(0xFF50FF8C).copy(alpha = glow))
-            .background(GoldMetal, CircleShape).border(1.5.dp, Color(0xFF6A3A00), CircleShape).padding(7.dp)
-            .background(Brush.radialGradient(listOf(Color(0xFF8DFFB0), Color(0xFF1FBF55), Color(0xFF0B6E2E))), CircleShape)
-            .pointerInput(enabled) {
+            .pointerInput(enabled, label) {
                 detectTapGestures(
                     onPress = { pressed = true; tryAwaitRelease(); pressed = false },
-                    onTap = { if (enabled) { Haptics.tap(); onSpin() } },
-                    onLongPress = { onHold() },
+                    onTap = { if (enabled) { Haptics.tap(); onTap() } },
+                    onLongPress = { if (enabled) { Haptics.tap(); onHold() } },
                 )
             },
+    )
+}
+
+/** Small purple "i" ball (paytable). */
+@Composable
+fun InfoKey(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Box(
+        modifier.size(30.dp).ball(SkinTone.Purple).clickable(remember { MutableInteractionSource() }, null) { Haptics.tap(); onClick() },
         contentAlignment = Alignment.Center,
-    ) {
-        Box(Modifier.fillMaxSize().padding(6.dp).background(Brush.verticalGradient(0f to Color(0x77FFFFFF), 0.45f to Color(0x11FFFFFF), 0.5f to Color.Transparent), CircleShape))
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(label, style = style(28.sp, Color.White).copy(shadow = androidx.compose.ui.graphics.Shadow(Color(0xFF0B5A24), Offset(0f, 4f), 1f)))
-            Text(sub, style = style(8.sp, Color.White, FontWeight.ExtraBold, 1.sp))
-        }
+    ) { Text("i", style = displayText(18.sp)) }
+}
+
+/** Feature tag under the machine title. */
+@Composable
+fun FeatureTag(text: String, modifier: Modifier = Modifier) {
+    Box(modifier.height(26.dp).glossy(SkinTone.Gold).padding(horizontal = 14.dp), contentAlignment = Alignment.Center) {
+        Text("★ $text ★", style = displayText(13.sp), maxLines = 1)
     }
 }

@@ -89,7 +89,7 @@ fun Modal(onDismiss: (() -> Unit)?, tag: String, content: @Composable BoxScope.(
     val pop = remember { Animatable(0.85f) }
     LaunchedEffect(Unit) { pop.animateTo(1f, spring(dampingRatio = 0.6f, stiffness = Spring.StiffnessMediumLow)) }
     Box(
-        Modifier.fillMaxSize().background(Color(0xB30E0220))
+        Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Brush.radialGradient(listOf(Color(0x8C3C28A0), Color(0xE604041E))))
             .clickable(remember { MutableInteractionSource() }, null) { onDismiss?.invoke() }
             .testTag(tag),
         contentAlignment = Alignment.Center,
@@ -165,13 +165,13 @@ fun RewardClaimDialog(
         SkinDialog(title, Modifier.fillMaxWidth(), tone = SkinTone.Gold, sunburst = true) {
             if (subtitle != null) Text(subtitle, style = plain(13, Skin.TextSoft))
             Spacer(Modifier.height(10.dp))
-            CoinIcon(Modifier.size(72.dp))
-            Spacer(Modifier.height(8.dp))
-            Text(formatCoins(shown), style = plain(36, Skin.Gold))
+            com.funpixelnest.slots.ui.skin.BigCoin(Modifier.size(72.dp))
+            Spacer(Modifier.height(6.dp))
+            com.funpixelnest.slots.ui.skin.GoldDisplay(formatCoins(shown), 40.sp)
             Text("COINS", style = plain(11, Skin.TextSoft).copy(letterSpacing = 3.sp))
             extra()
             Spacer(Modifier.height(18.dp))
-            SkinButton("▶  COLLECT ×${Rewards.VIDEO_MULTIPLIER}", Modifier.fillMaxWidth().height(54.dp), tone = SkinTone.Green, textSize = 17.sp) {
+            com.funpixelnest.slots.ui.skin.Watch2xButton(amount * Rewards.VIDEO_MULTIPLIER, Modifier.fillMaxWidth()) {
                 graph.ads.show("reward_x2") {
                     val total = amount * Rewards.VIDEO_MULTIPLIER
                     graph.player.grant(if (alreadyGranted) total - amount else total)
@@ -179,8 +179,8 @@ fun RewardClaimDialog(
                     onDone(total)
                 }
             }
-            Spacer(Modifier.height(10.dp))
-            SkinButton("COLLECT ${formatCompact(amount)}", Modifier.fillMaxWidth().height(46.dp), tone = SkinTone.Glass, textSize = 14.sp) {
+            Spacer(Modifier.height(12.dp))
+            SkinButton("COLLECT ${formatCoins(amount)}", Modifier.fillMaxWidth(0.84f).height(44.dp), tone = SkinTone.Green, textSize = 17.sp) {
                 if (!alreadyGranted) graph.player.grant(amount)
                 graph.sound.play(Sfx.WinCoins)
                 onDone(amount)

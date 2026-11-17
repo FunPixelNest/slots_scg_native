@@ -45,6 +45,9 @@ val Montserrat = FontFamily(
     Font(R.font.montserrat_black, FontWeight.Black),
 )
 
+/** Chunky display face for titles, buttons and numbers. */
+val Lilita = FontFamily(Font(R.font.lilitaone_regular))
+
 /** Display fonts that shipped with individual Unity themes. */
 val ThemeFonts: Map<String, FontFamily> = mapOf(
     "christmas_eve" to FontFamily(Font(R.font.coiny_regular)),

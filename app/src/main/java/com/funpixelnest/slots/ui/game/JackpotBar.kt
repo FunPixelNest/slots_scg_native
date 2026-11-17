@@ -57,18 +57,8 @@ private val TIER_COLORS = mapOf(
 
 /** Gold text with a dark outline: readable on any machine background. */
 @Composable
-fun GoldText(text: String, size: TextUnit, modifier: Modifier = Modifier, family: FontFamily = Montserrat, italic: Boolean = false) {
-    val base = TextStyle(
-        fontFamily = family, fontWeight = FontWeight.Black, fontSize = size,
-        fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal, textAlign = TextAlign.Center,
-    )
-    Box(modifier, contentAlignment = Alignment.Center) {
-        Text(text, maxLines = 1, style = base.copy(color = Color(0xFF2A1000), drawStyle = Stroke(width = size.value * 0.42f, join = StrokeJoin.Round)))
-        Text(
-            text, maxLines = 1,
-            style = base.copy(brush = Brush.verticalGradient(listOf(Color(0xFFFFFBE0), Color(0xFFFFE27A), Color(0xFFF5B728), Color(0xFFD9850E)))),
-        )
-    }
+fun GoldText(text: String, size: TextUnit, modifier: Modifier = Modifier, @Suppress("UNUSED_PARAMETER") family: FontFamily = Montserrat, @Suppress("UNUSED_PARAMETER") italic: Boolean = false) {
+    com.funpixelnest.slots.ui.skin.GoldDisplay(text, size, modifier)
 }
 
 /**
@@ -143,7 +133,7 @@ private fun Badges(items: List<Pair<String, String>>, colors: List<Triple<Color,
 private fun DiamondMeter(value: Int, target: Int) {
     Box(
         Modifier.padding(top = 4.dp).fillMaxWidth(0.82f).height(20.dp)
-            .background(Color(0xFF14052A), RoundedCornerShape(50)).border(1.5.dp, Skin.Gold, RoundedCornerShape(50)).padding(2.dp),
+            .background(Color(0xFF070840), RoundedCornerShape(50)).border(1.5.dp, Skin.Hairline, RoundedCornerShape(50)).padding(2.dp),
         contentAlignment = Alignment.Center,
     ) {
         Box(
@@ -159,13 +149,13 @@ private fun DiamondMeter(value: Int, target: Int) {
 fun JackpotBar(vm: GameViewModel, @Suppress("UNUSED_PARAMETER") assets: ThemeAssets) {
     Column(
         Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp),
-        verticalArrangement = Arrangement.spacedBy(7.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        JackpotMarquee(creeping(JackpotTier.GRAND, vm.jackpots[JackpotTier.GRAND] ?: 0L), Modifier.fillMaxWidth(0.9f).height(72.dp).align(Alignment.CenterHorizontally))
-        Row(Modifier.fillMaxWidth().height(44.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            JackpotBadge("MAJOR", creeping(JackpotTier.MAJOR, vm.jackpots[JackpotTier.MAJOR] ?: 0L), Color(0xFFE3D2FF), Color(0xFF5B2BB0), Color(0xFF2E0F66), Modifier.weight(1f).fillMaxHeight())
-            JackpotBadge("MINOR", creeping(JackpotTier.MINOR, vm.jackpots[JackpotTier.MINOR] ?: 0L), Color(0xFFC8FFD6), Color(0xFF1F8A44), Color(0xFF0B4A22), Modifier.weight(1f).fillMaxHeight())
-            JackpotBadge("MINI", creeping(JackpotTier.MINI, vm.jackpots[JackpotTier.MINI] ?: 0L), Color(0xFFC8F4FF), Color(0xFF1F6FB0), Color(0xFF0B3A66), Modifier.weight(1f).fillMaxHeight())
+        JackpotMarquee(creeping(JackpotTier.GRAND, vm.jackpots[JackpotTier.GRAND] ?: 0L), Modifier.fillMaxWidth(0.92f).height(69.dp).align(Alignment.CenterHorizontally))
+        Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp).height(42.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            JackpotBadge("MAJOR", creeping(JackpotTier.MAJOR, vm.jackpots[JackpotTier.MAJOR] ?: 0L), Color(0xFFC46AFF), Color(0xFF5A12C8), Color(0xFF0A0A3A), Modifier.weight(1f).fillMaxHeight())
+            JackpotBadge("MINOR", creeping(JackpotTier.MINOR, vm.jackpots[JackpotTier.MINOR] ?: 0L), Color(0xFF4AB0FF), Color(0xFF1238C8), Color(0xFF0A0A3A), Modifier.weight(1f).fillMaxHeight())
+            JackpotBadge("MINI", creeping(JackpotTier.MINI, vm.jackpots[JackpotTier.MINI] ?: 0L), Color(0xFF5AE06A), Color(0xFF0F7A1A), Color(0xFF0A0A3A), Modifier.weight(1f).fillMaxHeight())
         }
     }
 }

@@ -90,6 +90,8 @@ import com.funpixelnest.slots.ui.skin.SkinButton
 import com.funpixelnest.slots.ui.skin.SkinDialog
 import com.funpixelnest.slots.ui.skin.SkinIcon
 import com.funpixelnest.slots.ui.skin.SkinTone
+import com.funpixelnest.slots.ui.skin.glossy
+import com.funpixelnest.slots.ui.skin.glowPanel
 import com.funpixelnest.slots.ui.skin.VelvetBackdrop
 import com.funpixelnest.slots.ui.skin.drawPadlock
 import com.funpixelnest.slots.ui.skin.drawSkinIcon
@@ -196,9 +198,9 @@ fun LobbyScreen(
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Row(Modifier.fillMaxWidth().padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("All Games", style = ts(24.sp, Color.White, androidx.compose.ui.text.font.FontWeight.Black))
+                    com.funpixelnest.slots.ui.skin.GoldDisplay("HOT SLOTS", 26.sp)
                     Spacer(Modifier.weight(1f))
-                    Text("$unlocked / ${graph.themes.size} UNLOCKED", style = ts(12.sp, Color(0xFFB9A3DA), spacing = 1.sp))
+                    Text("$unlocked / ${graph.themes.size} OPEN", style = com.funpixelnest.slots.ui.skin.displayText(13.sp), modifier = Modifier.glossy(SkinTone.Red).padding(horizontal = 14.dp, vertical = 3.dp))
                 }
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -305,7 +307,7 @@ private fun FeaturedCarousel(graph: AppGraph, featured: List<ThemeIndexEntry>, i
             featured.indices.forEach { i ->
                 Box(
                     Modifier.size(10.dp)
-                        .background(if (i == cur) Brush.radialGradient(listOf(Color(0xFFFFF3B0), Color(0xFFFFC93C))) else Brush.radialGradient(listOf(Color(0xFFB45CFF), Color(0xFF7B2FD0))), CircleShape),
+                        .background(if (i == cur) Brush.radialGradient(listOf(Color(0xFFFFF3B0), Color(0xFFFFC93C))) else Brush.radialGradient(listOf(Color(0xFF8AB8FF), Color(0xFF2A5AFF))), CircleShape),
                 )
             }
         }
@@ -322,12 +324,11 @@ private fun HeroBanner(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, o
             .clickable(onClick = onPlay),
     ) {
         if (assets != null) AssetImage(assets, bgKey, Modifier.fillMaxSize(), ContentScale.Crop)
-        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xE61A0533), Color(0x991A0533), Color.Transparent))))
+        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xE60A0A52), Color(0x990A0A52), Color.Transparent))))
         Column(Modifier.fillMaxHeight().padding(16.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Features.forTheme(entry.id)?.let { f ->
                 Row(
-                    Modifier.background(Brush.verticalGradient(listOf(Color(0xFFE53950), Color(0xFF9A0E2E))), RoundedCornerShape(50))
-                        .border(1.5.dp, Color(0xFFFF8A9A), RoundedCornerShape(50)).padding(start = 8.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
+                    Modifier.glossy(SkinTone.Gold).padding(start = 8.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Canvas(Modifier.size(12.dp, 15.dp)) { drawFlame() }
@@ -336,11 +337,11 @@ private fun HeroBanner(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, o
                 }
             }
             Column {
-                Text(entry.name, style = ts(34.sp, Color.White, androidx.compose.ui.text.font.FontWeight.Black))
+                Text(entry.name, style = com.funpixelnest.slots.ui.skin.displayText(34.sp))
                 Text("GRAND JACKPOT", style = ts(12.sp, Color(0xFFEDE3FF), spacing = 2.sp))
                 com.funpixelnest.slots.ui.game.GoldText(formatCoins(grand), 30.sp)
             }
-            SkinButton(if (open) "Play now" else "Unlock", Modifier.width(150.dp).height(46.dp), tone = SkinTone.Gold, textSize = 18.sp, shape = RoundedCornerShape(50), onClick = onPlay)
+            SkinButton(if (open) "PLAY NOW" else "UNLOCK", Modifier.width(150.dp).height(46.dp), tone = if (open) SkinTone.Green else SkinTone.Gold, textSize = 18.sp, shape = RoundedCornerShape(50), onClick = onPlay)
         }
     }
 }
@@ -392,36 +393,40 @@ private fun FilterChip(text: String, on: Boolean, onClick: () -> Unit) {
     )
 }
 
-/** Machine card: art, name, feature, jackpot chip; locked ones greyed with the unlock rule. */
+/** Machine card: art on top, name and feature, then PLAY / LEVEL n / UNLOCK pill; locked art greyed. */
 @Composable
 private fun MachineCard(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, onClick: () -> Unit) {
     val rule = Unlocks.rule(entry.order)
     val grey = remember { ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0.1f) }) }
-    Box(
-        // painted icon (600x504) inside a glowing gold frame
-        Modifier.fillMaxWidth().aspectRatio(600f / 504f)
-            .goldGlowFrame(22.dp, 3.5.dp).clip(RoundedCornerShape(19.dp)).background(Color(0xFF1A0533))
-            .clickable(onClick = onClick),
+    Column(
+        Modifier.fillMaxWidth().glowPanel(20.dp).padding(4.dp).clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val img = rememberImage(graph.commonImages, entry.tile)
-        if (img != null) {
-            androidx.compose.foundation.Image(
-                img, null, Modifier.fillMaxSize().then(if (open) Modifier else Modifier.blur(1.5.dp)), contentScale = ContentScale.Crop,
-                colorFilter = if (open) null else grey, alpha = if (open) 1f else 0.55f,
-            )
-        }
-        if (!open) {
-            Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(Modifier.size(44.dp).background(Color(0x1FFFFFFF), CircleShape).border(1.dp, Skin.Hairline, CircleShape), contentAlignment = Alignment.Center) {
-                    Canvas(Modifier.size(20.dp)) { drawPadlock(Offset.Zero, size.width, Color.White) }
-                }
-                when (rule) {
-                    is Unlock.WatchVideo -> Text("▶ Watch to unlock", style = plain(11, Color(0xFF03230F)), modifier = Modifier.background(Skin.Emerald, RoundedCornerShape(50)).padding(horizontal = 10.dp, vertical = 4.dp))
-                    is Unlock.AtLevel -> Text("Level ${rule.level}", style = plain(11), modifier = Modifier.background(Color(0x26FFFFFF), RoundedCornerShape(50)).border(1.dp, Skin.Hairline, RoundedCornerShape(50)).padding(horizontal = 10.dp, vertical = 4.dp))
-                    Unlock.Free -> Unit
-                }
+        Box(Modifier.fillMaxWidth().aspectRatio(600f / 430f).clip(RoundedCornerShape(15.dp)).background(Color(0xFF0A0A40))) {
+            val img = rememberImage(graph.commonImages, entry.tile)
+            if (img != null) {
+                androidx.compose.foundation.Image(
+                    img, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop, alignment = Alignment.TopCenter,
+                    colorFilter = if (open) null else grey, alpha = if (open) 1f else 0.6f,
+                )
+            }
+            if (!open) {
+                Canvas(Modifier.align(Alignment.Center).size(38.dp)) { drawPadlock(Offset.Zero, size.width, Color(0xFFE8ECFF)) }
             }
         }
+        Text(entry.name, style = com.funpixelnest.slots.ui.skin.displayText(15.sp), maxLines = 1, modifier = Modifier.padding(top = 6.dp))
+        Text(Features.forTheme(entry.id)?.title ?: "Classic slots", style = plain(11, Skin.TextSoft), maxLines = 1)
+        Spacer(Modifier.height(6.dp))
+        val (tone, label) = when {
+            open -> SkinTone.Green to "PLAY"
+            rule is Unlock.WatchVideo -> SkinTone.Gold to "▶ UNLOCK"
+            rule is Unlock.AtLevel -> SkinTone.Purple to "LEVEL ${rule.level}"
+            else -> SkinTone.Green to "PLAY"
+        }
+        Box(Modifier.fillMaxWidth().padding(horizontal = 4.dp).height(30.dp).glossy(tone), contentAlignment = Alignment.Center) {
+            Text(label, style = com.funpixelnest.slots.ui.skin.displayText(15.sp))
+        }
+        Spacer(Modifier.height(4.dp))
     }
 }
 
