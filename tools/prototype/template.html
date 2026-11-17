@@ -1,0 +1,569 @@
+<title>FunPixel Slots Redesign</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;700;800;900&display=swap">
+<style>
+/* Layout: presenter page. The redesigned game runs inside a phone; the tour rail beside it explains each screen. */
+:root{
+  color-scheme:dark;
+  --page:#140a33; --fg:#f6f1ff; --mut:rgba(236,228,255,.72); --line:rgba(255,255,255,.12);
+  --card:rgba(255,255,255,.06); --cardb:rgba(255,255,255,.13);
+  --gold:#ffd34d; --gold2:#f5a200; --goldtx:#4a2600; --pink:#ff3d9a; --green:#3ddc63; --bezel:#07041a;
+  --disp:'Lilita One','Arial Black',Impact,sans-serif; --body:Nunito,'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:radial-gradient(900px 600px at 10% 0%,rgba(255,61,154,.16),transparent 60%),radial-gradient(900px 700px at 100% 100%,rgba(43,217,255,.12),transparent 60%),var(--page);
+  color:var(--fg);font-family:var(--body);font-size:15px;min-height:100vh;padding-block:24px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.stage{max-width:1180px;margin:0 auto;display:flex;gap:40px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
+.phonecol{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:12px;position:sticky;top:16px;max-width:100%}
+.rail{flex:1 1 380px;max-width:560px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+h1.title{margin:4px 0 6px;font-family:var(--disp);font-weight:400;font-size:34px;line-height:1.05;letter-spacing:.01em;text-wrap:balance}
+.lead{margin:0;color:var(--mut);line-height:1.55;max-width:56ch}
+.card{background:var(--card);border:1px solid var(--cardb);border-radius:22px;padding:18px}
+.cap{display:flex;flex-direction:column;gap:12px}
+.cap h2{margin:0;font-family:var(--disp);font-weight:400;font-size:26px;letter-spacing:.01em}
+.cap p{margin:0;color:var(--mut);line-height:1.55}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:13px;font-size:12px;font-weight:900;letter-spacing:.05em}
+.chip.gold{background:linear-gradient(180deg,#fff0a0,var(--gold) 55%,var(--gold2));color:var(--goldtx)}
+.chip.pink{background:var(--pink);color:#fff}
+.sm{font-size:13px;color:var(--mut);font-weight:700}
+.changes{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.changes li{display:flex;gap:9px;line-height:1.45;font-weight:700;font-size:14px}
+.changes li::before{content:"";flex:none;width:8px;height:8px;margin-top:6px;border-radius:2px;transform:rotate(45deg);background:var(--gold)}
+.btn{height:46px;padding:0 20px;border-radius:23px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--card);border:1px solid var(--cardb)}
+.btn.go{background:linear-gradient(180deg,#fff0a0,var(--gold) 55%,var(--gold2));border:0;color:var(--goldtx);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 4px 0 #b56f00}
+.btn:disabled{opacity:.4;cursor:default}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.step{min-height:46px;padding:8px 12px;border-radius:14px;text-align:left;display:flex;flex-direction:column;gap:1px;font-size:13px;font-weight:800;background:var(--card);border:1px solid var(--cardb)}
+.step small{font-size:11px;font-weight:700;color:var(--mut)}
+.step[aria-current="true"]{outline:2px solid var(--gold);background:rgba(255,211,77,.12)}
+.lbl{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.worlds{display:flex;flex-wrap:wrap;gap:8px}
+.wt{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px 0 4px;border-radius:19px;font-size:13px;font-weight:800;background:var(--card);border:1px solid var(--cardb)}
+.wt img{width:30px;height:30px;border-radius:50%;object-fit:cover}
+.wt small{font-weight:700;color:var(--mut)}
+.fit{position:relative}
+.phone{position:absolute;left:0;top:0;width:390px;height:844px;transform-origin:0 0;border-radius:46px;overflow:hidden;background:#000;
+  box-shadow:0 0 0 10px var(--bezel),0 0 0 11px rgba(255,255,255,.14),0 30px 80px rgba(0,0,0,.6)}
+@media (max-width:900px){.stage{gap:24px}.phonecol{position:static}}
+
+/* =================== GAME (inside the phone, 390 x 844) =================== */
+#app{position:absolute;inset:0;overflow:hidden;font-family:var(--body);color:#fff;user-select:none;-webkit-user-select:none;background:#12062e}
+#app img{-webkit-user-drag:none}
+.scr{position:absolute;inset:0;display:none;flex-direction:column}
+.scr.show{display:flex;animation:fade .25s ease}
+.gold-t{background:linear-gradient(180deg,#fff7c2 0%,#ffd34d 45%,#f59a00 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 #6a3300)}
+.statusbar{height:30px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;font-size:13px;font-weight:800;position:relative;z-index:5}
+.statusbar i{font-style:normal;letter-spacing:.06em;opacity:.9}
+.coinsvg{display:inline-block;flex:none}
+
+/* top HUD */
+.hud{flex:none;height:54px;display:flex;align-items:center;gap:8px;padding:0 10px;position:relative;z-index:5}
+.lvl{display:flex;align-items:center;flex:none;cursor:pointer}
+.lvl .badge{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;position:relative;z-index:1;overflow:hidden;
+  background:radial-gradient(circle at 35% 30%,#b58cff,#5a20c8 70%);border:3px solid var(--gold);box-shadow:0 3px 0 #2a0b6a}
+.lvl .badge img{width:100%;height:100%;object-fit:cover}
+.lvl .lvn{position:absolute;left:24px;bottom:-4px;z-index:2;font-family:var(--disp);font-size:11px;padding:0 5px;border-radius:7px;background:linear-gradient(180deg,#fff0a0,#f5a200);color:#4a2600;border:1px solid #8a4a00}
+.lvl .bar{width:62px;height:16px;margin-left:-8px;border-radius:0 9px 9px 0;background:rgba(0,0,0,.45);border:2px solid rgba(255,211,77,.7);overflow:hidden;position:relative}
+.lvl .bar span{position:absolute;inset:0 auto 0 0;width:var(--x,40%);background:linear-gradient(90deg,#3ddc63,#c6ff5a);transition:width .5s}
+.coins{flex:1;min-width:0;height:36px;display:flex;align-items:center;gap:6px;padding:0 4px 0 2px;border-radius:18px;background:rgba(0,0,0,.45);border:2px solid rgba(255,211,77,.55);box-shadow:inset 0 2px 6px rgba(0,0,0,.4)}
+.coins .coinsvg{margin-left:-4px}
+.coins b{flex:1;font-family:var(--disp);font-weight:400;font-size:17px;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.coins .plus{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:var(--disp);font-size:22px;line-height:1;color:#0a3a12;background:linear-gradient(180deg,#a6ff7a,#2fbf4a);box-shadow:0 2px 0 #0f6a22}
+.coins.bump{animation:bump .4s ease}
+.ibtn{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;background:linear-gradient(180deg,#7a4ff0,#3d1a9e);border:2px solid rgba(255,211,77,.7);box-shadow:0 3px 0 #1e0a5a}
+.ibtn svg{width:20px;height:20px}
+.ibtn:active{transform:translateY(2px);box-shadow:0 1px 0 #1e0a5a}
+.backb{width:44px;height:44px;flex:none;border-radius:12px;display:grid;place-items:center;background:linear-gradient(180deg,#fff0a0,#ffd34d 55%,#f5a200);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 4px 0 #8a4a00}
+.backb svg{width:26px;height:26px}
+
+/* ---------- Splash ---------- */
+#splash{align-items:center;background:#12062e center/cover}
+#splash::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,6,50,.35),rgba(20,6,50,.2) 40%,rgba(20,6,50,.95) 82%)}
+.logo{position:relative;margin-top:150px;text-align:center;animation:float 3s ease-in-out infinite}
+.logo b{display:block;font-family:var(--disp);font-weight:400;font-size:64px;line-height:.9;letter-spacing:.02em}
+.logo span{display:inline-block;margin-top:10px;font-family:var(--disp);font-size:20px;letter-spacing:.18em;padding:4px 16px;border-radius:10px;background:linear-gradient(180deg,#c2129b,#6a1fd6);border:2px solid var(--gold)}
+.splashsyms{position:relative;display:flex;gap:6px;margin-top:40px}
+.splashsyms img{width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6));animation:float 3s ease-in-out infinite}
+.splashsyms img:nth-child(2){animation-delay:.3s}.splashsyms img:nth-child(3){animation-delay:.6s}.splashsyms img:nth-child(4){animation-delay:.9s}
+.loadwrap{position:absolute;left:34px;right:34px;bottom:70px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.loadbar{width:100%;height:22px;border-radius:11px;background:rgba(0,0,0,.55);border:2px solid var(--gold);overflow:hidden;position:relative}
+.loadbar span{position:absolute;inset:2px auto 2px 2px;border-radius:8px;width:0;background:linear-gradient(90deg,#ff3d9a,#ffd34d);box-shadow:0 0 12px #ffb02e}
+.loadwrap small{font-weight:800;font-size:13px;color:rgba(255,255,255,.75)}
+.tip{font-weight:800;font-size:13px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.1);text-align:center}
+
+/* ---------- Lobby ---------- */
+#lobby{background:radial-gradient(500px 300px at 50% 0%,#5a20c8,transparent 70%),linear-gradient(180deg,#2a0d6b,#14062e 60%)}
+.offerb{flex:none;margin:4px 10px 0;height:70px;border-radius:16px;position:relative;overflow:hidden;display:flex;align-items:center;gap:8px;padding:0 10px 0 8px;text-align:left;
+  background:linear-gradient(135deg,#c2129b,#6a1fd6 60%,#3a0a8a);border:3px solid var(--gold);box-shadow:0 0 0 2px #6a3300,0 6px 14px rgba(0,0,0,.4)}
+.sun{position:absolute;left:50%;top:50%;width:700px;height:700px;margin:-350px 0 0 -350px;background:repeating-conic-gradient(rgba(255,255,255,.12) 0 8deg,transparent 8deg 18deg);animation:spin 30s linear infinite;pointer-events:none}
+.offerb .op{position:relative;flex:none}
+.offerb .ot{position:relative;display:flex;flex-direction:column;line-height:1;flex:1;min-width:0}
+.otag{font-family:var(--disp);font-size:12px;letter-spacing:.1em;color:#fff2a6}
+.offerb b{font-family:var(--disp);font-weight:400;font-size:25px;margin-top:2px}
+.offerb small{font-size:11px;font-weight:900;margin-top:3px}
+.offerb s{opacity:.7;margin:0 3px}
+.offerb em{font-style:normal;background:#2fbf4a;color:#fff;padding:1px 6px;border-radius:6px}
+.obadge{position:relative;flex:none;width:54px;height:54px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:.9;
+  background:radial-gradient(circle at 40% 35%,#ff7ab6,#e2185a);border:2px solid #fff;transform:rotate(12deg);animation:badge 1.6s ease-in-out infinite;margin:-16px 2px 0 0}
+.obadge b{font-family:var(--disp);font-weight:400;font-size:17px!important;color:#fff;text-shadow:0 2px 0 #8a0a3a;margin:0!important}
+.obadge small{font-size:9px!important;font-weight:900;color:#fff;margin:0!important}
+.otimer{position:absolute;right:6px;bottom:4px;display:flex;align-items:center;gap:3px;font-size:10px;font-weight:900;color:#fff;background:rgba(0,0,0,.5);padding:2px 7px;border-radius:8px}
+.lfixed{flex:none;padding:10px 10px 0;position:relative;z-index:5;box-shadow:0 8px 12px -8px rgba(0,0,0,.6)}
+.hero{position:relative;height:146px;border-radius:20px;overflow:hidden;border:3px solid var(--gold);box-shadow:0 6px 0 #6a3300,0 12px 24px rgba(0,0,0,.4);background:#000}
+.htrack{display:flex;height:100%;transition:transform .55s cubic-bezier(.25,.8,.25,1)}
+.hslide{position:relative;flex:0 0 100%;height:100%;background:#000 center/cover;overflow:hidden}
+.hslide .shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,4,30,.94) 0%,rgba(10,4,30,.6) 52%,transparent 78%)}
+.hslide .ch{position:absolute;right:10px;bottom:10px;height:122px;border-radius:16px;border:2px solid var(--gold);box-shadow:0 6px 12px rgba(0,0,0,.5)}
+.hslide .tx{position:absolute;left:14px;top:12px;bottom:12px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;max-width:200px}
+.hslide .tag{font-size:10px;font-weight:900;letter-spacing:.14em;padding:3px 8px;border-radius:6px;background:var(--pink)}
+.hslide h3{margin:4px 0 0;font-family:var(--disp);font-weight:400;font-size:26px;line-height:.95}
+.hslide p{margin:3px 0 0;font-size:12px;font-weight:800;color:rgba(255,255,255,.82)}
+.pbtn{height:38px;padding:0 22px;border-radius:19px;font-family:var(--disp);font-size:19px;letter-spacing:.06em;color:#0a3a12;
+  background:linear-gradient(180deg,#d6ff9a,#4fd64a 55%,#1f9a2a);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 4px 0 #0f5a18}
+.pbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #0f5a18}
+.dots{display:flex;gap:6px;justify-content:center;margin:7px 0 0}
+.dots i{width:7px;height:7px;border-radius:4px;background:rgba(255,255,255,.3);transition:.3s;cursor:pointer}
+.dots i.on{width:20px;background:var(--gold)}
+.cats{display:flex;gap:5px;margin:8px 0 0;padding:0 0 10px;overflow-x:auto;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:none;height:32px;padding:0 12px;white-space:nowrap;border-radius:16px;font-weight:900;font-size:12px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.14);display:flex;align-items:center}
+.cat.on{background:linear-gradient(180deg,#fff0a0,#ffd34d 55%,#f5a200);color:#4a2600;border-color:transparent;box-shadow:0 3px 0 #a35a00}
+.lscroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:10px 8px 20px 10px;border-top:1px solid rgba(255,211,77,.25);scrollbar-width:thin;scrollbar-color:#ffd34d rgba(255,255,255,.08)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{position:relative;aspect-ratio:600/504;border-radius:18px;overflow:hidden;background:#000;border:3px solid var(--gold);box-shadow:0 5px 0 #6a3300,0 10px 18px rgba(0,0,0,.35);transition:transform .15s}
+.tile:active{transform:scale(.96)}
+.tile img.art{width:100%;height:100%;object-fit:cover;display:block}
+.tile .flag{position:absolute;top:6px;left:6px;font-size:10px;font-weight:900;letter-spacing:.1em;padding:3px 7px;border-radius:6px;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.flag.hot{background:linear-gradient(180deg,#ff8a3d,#e2280f)}
+.flag.new{background:linear-gradient(180deg,#ff7ad9,#c2129b)}
+.flag.jp{background:linear-gradient(180deg,#fff0a0,#f5a200);color:#4a2600}
+.tile .feat{position:absolute;right:6px;top:6px;font-size:9px;font-weight:900;letter-spacing:.06em;padding:3px 7px;border-radius:6px;background:rgba(0,0,0,.65)}
+.tile .lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:rgba(14,6,40,.66);backdrop-filter:grayscale(.85)}
+.lock .pad{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#fff0a0,#f5a200);box-shadow:0 3px 0 #8a4a00}
+.lock .pad svg{width:22px;height:22px}
+.lock b{font-family:var(--disp);font-weight:400;font-size:15px;letter-spacing:.04em;padding:3px 10px;border-radius:10px;background:rgba(0,0,0,.55)}
+.lock small{font-size:11px;font-weight:900;color:#c6ff5a}
+.dock{flex:none;height:78px;display:flex;align-items:flex-end;justify-content:space-around;padding:0 4px 6px;position:relative;z-index:4;
+  background:linear-gradient(180deg,#3d1a9e,#1e0a5a);border-top:3px solid var(--gold);box-shadow:0 -6px 20px rgba(0,0,0,.5)}
+.dk{width:64px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:900;letter-spacing:.05em;position:relative}
+.dk .ico{width:40px;height:40px;display:grid;place-items:center;filter:drop-shadow(0 3px 3px rgba(0,0,0,.4))}
+.dk .pip{position:absolute;top:-4px;right:6px;min-width:18px;height:18px;border-radius:9px;background:#e2280f;border:2px solid #fff;font-size:10px;display:grid;place-items:center;padding:0 4px}
+.dk.mid{width:96px;margin-top:-34px}
+.dk.mid .wheelb{width:84px;height:84px;border-radius:50%;padding:4px;background:linear-gradient(180deg,#fff0a0,#f5a200);box-shadow:0 4px 0 #8a4a00,0 0 24px rgba(255,211,77,.6)}
+.dk.mid .wheelb > div{width:100%;height:100%;border-radius:50%;animation:spin 14s linear infinite}
+.ad{flex:none;height:50px;display:flex;align-items:center;gap:10px;padding:0 12px;background:#fff;color:#222;position:relative;z-index:4}
+.ad i{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#ffb02e,#ff3d9a)}
+.ad span{flex:1;font-size:13px;font-weight:800}
+.ad small{display:block;font-size:10px;color:#777;font-weight:700}
+.ad em{font-style:normal;font-size:12px;font-weight:900;color:#fff;background:#1a73e8;padding:7px 14px;border-radius:16px}
+.ad::before{content:"AD";position:absolute;left:4px;top:3px;font-size:8px;font-weight:900;color:#999}
+
+/* ---------- Game ---------- */
+#game{background:#000}
+#gbg{position:absolute;inset:0;background:#000 center/cover;filter:saturate(1.2) brightness(.92);transform:scale(1.03)}
+#gbg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 18%,transparent 44%,rgba(8,2,26,.55) 66%,rgba(8,2,26,.96) 84%)}
+.gmid{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+.feat{flex:none;margin:0 12px 10px;border-radius:16px;padding:8px 10px 9px;position:relative;
+  background:linear-gradient(180deg,rgba(60,20,120,.92),rgba(24,8,60,.92));border:3px solid var(--gold);box-shadow:0 0 0 2px #6a3300,0 8px 16px rgba(0,0,0,.45)}
+.feat .fh{position:absolute;left:50%;top:-13px;transform:translateX(-50%);white-space:nowrap;font-family:var(--disp);font-size:13px;letter-spacing:.08em;padding:2px 14px;border-radius:10px;background:linear-gradient(180deg,#ff5a8a,#c2125a);border:2px solid #fff3b0}
+.frow{display:flex;gap:5px;margin-top:8px}
+.fpill{flex:1;min-width:0;height:40px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;border:2px solid rgba(255,255,255,.5);box-shadow:0 3px 0 rgba(0,0,0,.4);transition:transform .2s}
+.fpill small{font-family:var(--disp);font-size:9px;letter-spacing:.1em;opacity:.95}
+.fpill b{font-family:var(--disp);font-weight:400;font-size:15px;margin-top:2px;white-space:nowrap}
+.fpill.lit{transform:scale(1.08);border-color:#fff;box-shadow:0 0 16px var(--gold),0 3px 0 rgba(0,0,0,.4)}
+.c-blue{background:linear-gradient(180deg,#4fd6ff,#1478c8)}.c-green{background:linear-gradient(180deg,#a6ff7a,#1f9a2a)}
+.c-pink{background:linear-gradient(180deg,#ff8ad9,#b3127a)}.c-gold{background:linear-gradient(180deg,#fff0a0,#f5a200);color:#4a2600}
+.c-purple{background:linear-gradient(180deg,#b58cff,#5a20c8)}.c-orange{background:linear-gradient(180deg,#ffb36a,#e0560e)}
+.fbig{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px}
+.fbig b{font-family:var(--disp);font-weight:400;font-size:30px;line-height:1}
+.fbig small{font-size:11px;font-weight:900;color:rgba(255,255,255,.8);max-width:150px;line-height:1.25}
+.meter{position:relative;height:22px;border-radius:11px;background:rgba(0,0,0,.5);border:2px solid var(--gold);overflow:hidden;margin-top:8px}
+.meter span{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#1f6fd0,#38d6ff,#e6fbff);transition:width .5s}
+.meter em{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-family:var(--disp);font-size:13px;text-shadow:0 1px 0 #000}
+.fnote{margin-top:5px;text-align:center;font-size:11px;font-weight:800;color:rgba(255,255,255,.75)}
+.topper{position:relative;z-index:4;width:max-content;min-width:200px;max-width:330px;height:42px;margin:0 auto -8px;padding:0 26px;display:grid;place-items:center;border-radius:22px 22px 10px 10px;
+  background:linear-gradient(180deg,#6a2ad6,#2a0b6a);border:3px solid #ffd34d;box-shadow:0 0 0 2px #6a3300,0 0 22px rgba(255,180,0,.45),inset 0 2px 0 rgba(255,255,255,.3)}
+.topper .tname{position:relative;font-family:var(--disp);font-size:21px;letter-spacing:.06em;white-space:nowrap;line-height:1}
+.tbulbs{position:absolute;inset:4px 10px auto;height:5px;background:radial-gradient(circle,#fff6c0 1.6px,transparent 2.6px) 0 0/11px 5px;animation:bulbs .7s steps(2) infinite}
+.machine{flex:none;margin:0 7px;position:relative;z-index:3;padding:9px;border-radius:22px;
+  background:linear-gradient(180deg,#fff2b0,#ffc21a 18%,#b86e00 50%,#ffd34d 82%,#8a4a00);box-shadow:0 0 0 2px #4a2600,0 0 28px rgba(255,180,0,.45),0 12px 24px rgba(0,0,0,.6)}
+.mlights{position:absolute;inset:0;border-radius:22px;padding:3px;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,#fffbe0 1.8px,rgba(255,230,120,0) 3px) 0 0/12px 12px;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:bulbs .7s steps(2) infinite}
+.reels{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:3px;border-radius:14px;background:#120a26;overflow:hidden}
+.reel{position:relative;height:246px;overflow:hidden;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.14) 50%,rgba(255,255,255,.06)),#22124a}
+.reel::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent 18%,transparent 82%,rgba(0,0,0,.45))}
+.strip{position:absolute;left:0;right:0;top:0;will-change:transform}
+.cell{height:82px;display:grid;place-items:center;position:relative}
+.cell img{width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 3px 2px rgba(0,0,0,.45));transition:transform .3s,opacity .3s}
+.strip.blur .cell img{filter:blur(1.6px) drop-shadow(0 3px 2px rgba(0,0,0,.45))}
+.cell.win img{animation:winpop .7s ease-in-out infinite}
+.cell.win::before{content:"";position:absolute;inset:3px;border-radius:12px;border:3px solid var(--gold);box-shadow:0 0 14px var(--gold),inset 0 0 14px rgba(255,211,77,.5)}
+.cell.dim img{opacity:.35}
+.cell.burst img{transform:scale(1.6);opacity:0}
+.cell.drop{animation:drop .38s cubic-bezier(.3,1.3,.5,1)}
+.mark{position:absolute;z-index:2;pointer-events:none;animation:pop .35s cubic-bezier(.2,1.5,.4,1)}
+.mark.coin{right:2px;bottom:2px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:var(--disp);font-size:11px;color:#4a2200;
+  background:radial-gradient(circle at 40% 35%,#fff6c8,#ffd44a 55%,#c8801a);border:2px solid #8a5208;box-shadow:0 2px 4px rgba(0,0,0,.5)}
+.mark.collect{left:3px;right:3px;bottom:4px;height:22px;border-radius:11px;display:grid;place-items:center;font-family:var(--disp);font-size:11px;letter-spacing:.06em;
+  background:linear-gradient(180deg,#b45cff,#5a1fc2);border:2px solid #ffe08a;box-shadow:0 0 12px #b45cff}
+.mark.diamond{right:3px;top:3px;width:26px;height:26px}
+.winbar{flex:none;height:42px;margin:8px 12px 0;border-radius:21px;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;z-index:3;
+  background:rgba(0,0,0,.55);border:2px solid rgba(255,211,77,.4);font-weight:900;font-size:14px;letter-spacing:.04em}
+.winbar b{font-family:var(--disp);font-weight:400;font-size:24px;letter-spacing:.03em}
+.winbar.hit{border-color:var(--gold);box-shadow:0 0 20px rgba(255,211,77,.5)}
+.panel{flex:none;margin:6px 10px 22px;height:106px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;position:relative;z-index:3}
+.betbox{display:flex;flex-direction:column;align-items:stretch;gap:4px}
+.betbox small{font-size:10px;font-weight:900;letter-spacing:.14em;text-align:center;color:rgba(255,255,255,.75)}
+.betctl{height:44px;display:flex;align-items:center;border-radius:22px;background:rgba(0,0,0,.55);border:2px solid rgba(255,211,77,.55)}
+.betctl button{width:34px;height:34px;margin:0 3px;border-radius:50%;display:grid;place-items:center;font-family:var(--disp);font-size:22px;line-height:1;background:linear-gradient(180deg,#7a4ff0,#3d1a9e);box-shadow:0 2px 0 #1e0a5a}
+.betctl button:disabled{opacity:.35}
+.betctl b{flex:1;text-align:center;font-family:var(--disp);font-weight:400;font-size:19px}
+.spinb{width:104px;height:104px;border-radius:50%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;
+  background:radial-gradient(circle at 50% 30%,#d6ff9a,#4fd64a 45%,#178a24 80%);border:4px solid #fff3b0;box-shadow:0 0 0 4px #a35a00,0 6px 0 4px #5a2a00,0 0 30px rgba(120,255,90,.45)}
+.spinb b{font-family:var(--disp);font-weight:400;font-size:28px;letter-spacing:.06em;color:#fff;text-shadow:0 2px 0 #0a5a14}
+.spinb small{font-size:9px;font-weight:900;letter-spacing:.08em;color:#0a3a12;margin-top:3px}
+.spinb:active{transform:translateY(3px)}
+.spinb.busy{filter:saturate(.4) brightness(.85)}
+.spinb.free{background:radial-gradient(circle at 50% 30%,#a6e8ff,#2b8fe0 45%,#123f9a 80%)}
+.spinb.free b{text-shadow:0 2px 0 #0a2a6a}.spinb.free small{color:#e6f6ff}
+.spinb.auto{background:radial-gradient(circle at 50% 30%,#ffe08a,#ff9a00 45%,#c24a00 80%)}
+.side{display:flex;flex-direction:column;gap:6px}
+.pill{height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:7px;padding:0 8px;font-weight:900;font-size:12px;letter-spacing:.04em;background:rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.25)}
+.pill svg{width:20px;height:20px;flex:none}
+.pill.on{border-color:var(--gold);background:rgba(255,154,0,.25)}
+.toast{position:absolute;left:50%;top:150px;z-index:30;transform:translate(-50%,10px);max-width:330px;width:max-content;padding:10px 18px;border-radius:16px;background:rgba(20,6,50,.95);border:2px solid var(--gold);
+  font-weight:800;font-size:14px;text-align:center;opacity:0;pointer-events:none;transition:.25s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.banner{position:absolute;left:50%;top:50%;z-index:25;transform:translate(-50%,-50%);white-space:nowrap;font-family:var(--disp);font-size:30px;letter-spacing:.04em;padding:8px 22px;border-radius:16px;
+  background:linear-gradient(180deg,#e53950,#6a0d1e);border:3px solid var(--gold);box-shadow:0 0 30px rgba(255,180,0,.6);animation:pop .4s cubic-bezier(.2,1.6,.4,1);pointer-events:none}
+.fly{position:absolute;z-index:40;pointer-events:none;transition:transform .7s cubic-bezier(.5,-.3,.6,1),opacity .2s .6s}
+
+/* overlays */
+.ov{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,2,26,.74);backdrop-filter:blur(4px)}
+.ov.show{display:flex;animation:fade .25s ease}
+.sheet{width:100%;max-width:350px;border-radius:26px;padding:20px 18px 18px;position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:linear-gradient(180deg,#4a1fa8,#1e0a5a);border:3px solid var(--gold);box-shadow:0 0 0 3px #6a3300,0 20px 50px rgba(0,0,0,.6);animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+.sheet h3{margin:0;font-family:var(--disp);font-weight:400;font-size:28px;letter-spacing:.03em}
+.sheet p{margin:0;font-weight:700;font-size:14px;color:rgba(255,255,255,.82);line-height:1.4}
+.so-tag{font-family:var(--disp);font-size:12px;letter-spacing:.1em;color:#fff2a6}
+.x{position:absolute;top:-14px;right:-12px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#ff6a6a,#c2121e);border:3px solid #fff;font-family:var(--disp);font-size:20px;box-shadow:0 3px 0 #5a0008;z-index:3}
+.bigbtn{width:100%;height:52px;border-radius:26px;font-family:var(--disp);font-size:21px;letter-spacing:.06em;color:#0a3a12;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(180deg,#d6ff9a,#4fd64a 55%,#1f9a2a);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 5px 0 #0f5a18}
+.bigbtn.gold{color:#4a2600;background:linear-gradient(180deg,#fff0a0,#ffd34d 55%,#f5a200);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 5px 0 #8a4a00}
+.bigbtn svg{width:22px;height:22px}
+.bigbtn:active{transform:translateY(3px)}
+.bigbtn:disabled{filter:grayscale(.7);opacity:.6}
+.amt{font-family:var(--disp);font-size:38px;letter-spacing:.02em}
+#bigwin{background:radial-gradient(circle at 50% 42%,rgba(255,170,0,.35),rgba(8,2,26,.9) 60%);flex-direction:column;gap:8px}
+.rays{position:absolute;left:50%;top:42%;width:900px;height:900px;margin:-450px 0 0 -450px;background:repeating-conic-gradient(rgba(255,230,140,.16) 0 9deg,transparent 9deg 22deg);animation:spin 14s linear infinite;pointer-events:none}
+.bwtitle{position:relative;font-family:var(--disp);font-size:58px;line-height:.9;letter-spacing:.03em;text-align:center;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+#bwAmt{position:relative;font-family:var(--disp);font-size:44px;letter-spacing:.03em;padding:2px 24px;border-radius:30px;background:linear-gradient(180deg,#3d1a9e,#1e0a5a);border:3px solid var(--gold);box-shadow:0 0 30px rgba(255,211,77,.6);font-variant-numeric:tabular-nums}
+.row2{position:relative;display:flex;gap:10px;margin-top:14px;width:100%;max-width:320px}
+.rain{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.rain span{position:absolute;top:-40px;animation:fall linear forwards}
+/* bonus boards */
+.hsgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;width:100%;padding:6px;border-radius:14px;background:#120a26;border:3px solid var(--gold)}
+.hsc{aspect-ratio:1;border-radius:10px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-family:var(--disp);font-size:13px;color:#4a2200}
+.hsc.on{background:radial-gradient(circle at 40% 35%,#fff6c8,#ffd44a 55%,#c8801a);border:2px solid #8a5208;animation:pop .35s cubic-bezier(.2,1.5,.4,1)}
+.hsc.jp{background:radial-gradient(circle at 40% 35%,#ffb3e0,#e91e8c);color:#fff}
+.respins{display:flex;gap:6px}
+.respins i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--disp);background:rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.3)}
+.respins i.on{background:linear-gradient(180deg,#a6ff7a,#2fbf4a);border-color:#fff}
+.wheelwrap{position:relative;width:280px;height:280px}
+.wheel{width:100%;height:100%;border-radius:50%;border:8px solid #ffd34d;box-shadow:0 0 0 4px #6a3300,0 0 30px rgba(255,211,77,.5);transition:transform 4.2s cubic-bezier(.12,.8,.18,1);position:relative;overflow:hidden}
+.wheel .lab{position:absolute;left:50%;top:50%;width:50%;height:22px;margin-top:-11px;transform-origin:0 50%;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font-family:var(--disp);font-size:15px;text-shadow:0 2px 0 rgba(0,0,0,.5)}
+.wptr{position:absolute;left:50%;top:-16px;width:36px;height:46px;margin-left:-18px;z-index:2;filter:drop-shadow(0 3px 2px rgba(0,0,0,.5))}
+.whub{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;z-index:2;font-family:var(--disp);font-size:20px;color:#fff;
+  background:radial-gradient(circle at 40% 35%,#ff6a8a,#c2125a);border:4px solid #ffd34d;box-shadow:0 4px 0 #6a0020}
+.chests{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.chest{aspect-ratio:1;border-radius:14px;display:grid;place-items:center;background:linear-gradient(180deg,#5a1c9a,#2e0a5a);border:2px solid var(--gold);font-family:var(--disp);font-size:16px;transition:transform .2s}
+.chest:not(.open):hover{transform:translateY(-3px)}
+.chest.open{background:radial-gradient(circle,#fff0a0,#f5a200);color:#4a2600;animation:pop .35s}
+.chest.dead{opacity:.55}
+/* reward pages */
+.wpbg{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 46%,#8a2ad6 0%,#3a0a8a 40%,#12052e 75%)}
+.wrays{position:absolute;left:50%;top:46%;width:1100px;height:1100px;margin:-550px 0 0 -550px;background:repeating-conic-gradient(rgba(255,220,120,.12) 0 7deg,transparent 7deg 18deg);animation:spin 40s linear infinite}
+.pbody{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;gap:14px;padding:6px 16px 16px;overflow-y:auto}
+.ptitle{font-family:var(--disp);font-weight:400;font-size:38px;letter-spacing:.04em;margin:0;text-align:center}
+.psub{margin:-8px 0 0;font-weight:800;font-size:13px;color:rgba(255,255,255,.8);text-align:center}
+.dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
+.dday{border-radius:14px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;background:linear-gradient(180deg,#3d1a9e,#1e0a5a);border:2px solid rgba(255,255,255,.18);font-weight:900;font-size:11px}
+.dday b{font-family:var(--disp);font-weight:400;font-size:15px}
+.dday.done{opacity:.6}.dday.today{border-color:var(--gold);box-shadow:0 0 16px rgba(255,211,77,.5);background:linear-gradient(180deg,#6a2ad6,#3a0a8a)}
+.dday.big{grid-column:span 2}
+.dday .ok{color:#c6ff5a}
+.meterbig{width:100%;height:24px;border-radius:12px;background:rgba(0,0,0,.5);border:2px solid var(--gold);position:relative;overflow:hidden}
+.meterbig span{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#ff3d9a,#ffd34d)}
+.perks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+.perks div{padding:10px 6px;border-radius:14px;background:rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:900;font-size:11px;text-align:center}
+.perks b{font-family:var(--disp);font-weight:400;font-size:20px;color:var(--gold)}
+/* store */
+#store{background:radial-gradient(500px 300px at 50% 0%,#4a1fa8,transparent 70%),linear-gradient(180deg,#2a0d6b,#1a0848)}
+.sttl{flex:none;display:flex;align-items:baseline;justify-content:space-between;padding:6px 16px 8px}
+.sttl h2{margin:0;font-family:var(--disp);font-weight:400;font-size:30px}
+.sttl span{font-family:var(--disp);font-size:14px;letter-spacing:.06em;color:#8ab4ff}
+.stabs{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 14px 10px;padding:4px;border-radius:18px;background:rgba(0,0,0,.4);border:2px solid rgba(255,211,77,.5)}
+.stabs button{height:38px;border-radius:14px;font-family:var(--disp);font-size:17px;letter-spacing:.06em;color:rgba(255,255,255,.75)}
+.stabs button.on{color:#5a2a00;background:linear-gradient(180deg,#fff3a0,#ffc21a 55%,#e08a00);box-shadow:inset 0 2px 0 rgba(255,255,255,.7),0 3px 0 #8a4a00}
+.sscroll{flex:1;min-height:0;overflow-y:auto;padding:4px 12px 20px;display:flex;flex-direction:column;gap:12px;border-top:1px solid rgba(255,211,77,.2)}
+.soffer{position:relative;overflow:hidden;flex:none;border-radius:18px;border:3px solid var(--gold);box-shadow:0 0 0 2px #6a3300,0 8px 16px rgba(0,0,0,.4);
+  background:linear-gradient(135deg,#c2129b,#6a1fd6 55%,#3a0a8a);display:flex;align-items:center;gap:10px;padding:14px}
+.so-tx{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;line-height:1;gap:4px;flex:1;min-width:0}
+.so-tx b{font-family:var(--disp);font-weight:400;font-size:30px}
+.so-tx small{font-size:12px;font-weight:900}
+.price{height:40px;min-width:90px;padding:0 14px;border-radius:20px;font-family:var(--disp);font-size:18px;letter-spacing:.03em;color:#fff;text-shadow:0 2px 0 #0a5a14;
+  background:linear-gradient(180deg,#b6ff7a,#3ddc4a 50%,#16952a);box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 4px 0 #0a5a14;position:relative;z-index:1}
+.price:active{transform:translateY(3px)}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.spack{position:relative;border-radius:16px;overflow:hidden;border:3px solid #ffd34d;box-shadow:0 0 0 2px #6a3300,0 6px 12px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;padding-bottom:10px;
+  background:repeating-conic-gradient(from 0deg at 50% 42%,rgba(255,255,255,.09) 0 9deg,transparent 9deg 20deg),radial-gradient(circle at 50% 40%,#5a6aff,#2a1a9a 70%)}
+.spack h4{margin:0;width:100%;text-align:center;padding:6px 0;font-family:var(--disp);font-weight:400;font-size:15px;background:#1a1460}
+.sbody{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0}
+.sbody b{font-family:var(--disp);font-weight:400;font-size:19px;color:#ffe14a;text-shadow:0 2px 0 #6a3300}
+.sbody small{font-size:10px;font-weight:900;color:#c6ff5a;letter-spacing:.06em}
+.srib{position:absolute;top:34px;right:-2px;font-size:10px;font-weight:900;letter-spacing:.06em;padding:3px 10px;border-radius:8px 0 0 8px;background:linear-gradient(180deg,#ff9a3d,#e2280f);box-shadow:0 2px 0 #7a0a2a}
+.sfree{flex:none;height:58px;border-radius:16px;display:flex;align-items:center;gap:10px;padding:0 14px;text-align:left;background:linear-gradient(90deg,#0a7a4a,#13a35a);border:2px solid #7affb0;box-shadow:0 4px 0 #064a2a}
+.sfree span{flex:1}.sfree b{display:block;font-family:var(--disp);font-weight:400;font-size:18px}.sfree small{font-size:11px;font-weight:800;opacity:.85}
+.sfree em{font-style:normal;font-family:var(--disp);font-size:20px;color:#fff2a6}
+.sfine{margin:0;text-align:center;font-size:10px;font-weight:800;color:rgba(255,255,255,.5)}
+/* lists: tasks, settings, profile */
+.qlist{width:100%;display:flex;flex-direction:column;gap:7px;max-height:440px;overflow-y:auto;text-align:left}
+.q{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:14px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12)}
+.q.ready{border-color:var(--gold)}
+.q > div{flex:1;min-width:0}
+.q b{display:block;font-size:13px;font-weight:900}
+.qbar{height:8px;border-radius:4px;background:rgba(255,255,255,.12);margin:5px 0 3px;overflow:hidden}
+.qbar span{display:block;height:100%;background:linear-gradient(90deg,#38d6ff,#3ddc63)}
+.q small{font-size:11px;font-weight:800;color:rgba(255,255,255,.7)}
+.q .claim{height:32px;padding:0 12px;border-radius:16px;font-family:var(--disp);font-size:14px;color:#0a3a12;background:linear-gradient(180deg,#d6ff9a,#4fd64a 55%,#1f9a2a);box-shadow:0 3px 0 #0f5a18}
+.q .done{font-weight:900;font-size:12px;color:#c6ff5a}
+.tabs2{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;padding:4px;border-radius:16px;background:rgba(0,0,0,.35)}
+.tabs2 button{height:34px;border-radius:12px;font-family:var(--disp);font-size:15px;color:rgba(255,255,255,.75)}
+.tabs2 button.on{color:#4a2600;background:linear-gradient(180deg,#fff0a0,#ffd34d 55%,#f5a200)}
+.avgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;width:100%}
+.avgrid button{aspect-ratio:1;border-radius:50%;overflow:hidden;border:2px solid transparent}
+.avgrid button.on{border-color:var(--gold);box-shadow:0 0 10px var(--gold)}
+.avgrid img{width:100%;height:100%;object-fit:cover;display:block}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;text-align:left}
+.stats div{padding:7px 10px;border-radius:12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,211,77,.35)}
+.stats small{display:block;font-size:9px;font-weight:900;letter-spacing:.08em;color:rgba(255,255,255,.65)}
+.stats b{font-family:var(--disp);font-weight:400;font-size:16px;color:#ffe9a8}
+.setrow{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;border-radius:14px;background:rgba(0,0,0,.3);text-align:left}
+.setrow b{display:block;font-size:14px;font-weight:900}
+.setrow small{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.65)}
+.sw{flex:none;position:relative;width:52px;height:28px;border-radius:14px;background:#4a4466;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s}
+.sw.on{background:linear-gradient(180deg,#a6ff7a,#2fbf4a)}.sw.on::after{left:27px}
+.nameinput{width:100%;height:44px;border-radius:14px;border:2px solid var(--gold);background:#14052a;color:#fff;font-family:var(--disp);font-size:20px;text-align:center}
+@keyframes fade{from{opacity:0}}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{50%{transform:translateY(-8px)}}
+@keyframes bulbs{50%{opacity:.35}}
+@keyframes bump{50%{transform:scale(1.08)}}
+@keyframes badge{50%{transform:rotate(12deg) scale(1.08)}}
+@keyframes winpop{50%{transform:scale(1.14)}}
+@keyframes drop{from{transform:translateY(-80px);opacity:.3}}
+@keyframes fall{to{transform:translateY(900px) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+
+<div class="stage">
+  <div class="phonecol">
+    <div class="fit" id="fit"><div class="phone" id="phone"><div id="app">
+
+      <section class="scr" id="splash">
+        <div class="statusbar"><span>9:41</span><i>●●● ▮</i></div>
+        <div class="logo"><b class="gold-t">FUNPIXEL</b><b class="gold-t">SLOTS</b><span>CASINO GAMES</span></div>
+        <div class="splashsyms" id="splashSyms"></div>
+        <div class="loadwrap">
+          <div class="tip" id="tip">Tip: fill the Diamond meter in Gems for 8 Super Free Spins!</div>
+          <div class="loadbar"><span id="loadfill"></span></div>
+          <small id="loadtx">Loading 0%</small>
+        </div>
+      </section>
+
+      <section class="scr" id="lobby">
+        <div class="statusbar"><span>9:41</span><i>●●● ▮</i></div>
+        <div class="hud">
+          <div class="lvl" data-open="profile" role="button" aria-label="Profile"><span class="badge"><img data-avatar alt=""></span><span class="lvn" data-lv>6</span><span class="bar"><span></span></span></div>
+          <div class="coins" data-coins><span data-coinico></span><b>0</b><button class="plus" data-open="store" aria-label="Buy coins">+</button></div>
+          <button class="ibtn" data-open="settings" aria-label="Settings"><svg viewBox="0 0 24 24"><path fill="#fff" d="M19.4 13a7.5 7.5 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L15 3.4h-4l-.4 2.6a7 7 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.5 7.5 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7 7 0 0 0 1.7-1l2.4 1 2-3.4zM13 15.5A3.5 3.5 0 1 1 13 8.5a3.5 3.5 0 0 1 0 7z" transform="translate(-1 0)"/></svg></button>
+        </div>
+        <button class="offerb" data-open="store" aria-label="Welcome offer"><span class="sun"></span><span class="op" data-chest></span><span class="ot"><span class="otag">WELCOME OFFER</span><b class="gold-t">10,000,000</b><small>COINS <s>2.5M</s> <em>$4.99</em></small></span><span class="obadge"><b>+300%</b><small>MORE</small></span><span class="otimer">⏱ <span data-timer>23:59:41</span></span></button>
+        <div class="lfixed">
+          <div class="hero" id="hero"><div class="htrack" id="htrack"></div></div>
+          <div class="dots" id="heroDots"></div>
+          <div class="cats" id="cats"></div>
+        </div>
+        <div class="lscroll" id="lscroll"><div class="grid" id="tiles"></div></div>
+        <nav class="dock">
+          <button class="dk" data-open="tasks"><span class="ico" data-ico="tasks"></span><span>TASKS</span><span class="pip" id="taskPip">1</span></button>
+          <button class="dk" data-open="daily"><span class="ico" data-ico="gift"></span><span>DAILY</span><span class="pip">1</span></button>
+          <button class="dk mid" data-open="wheel"><span class="wheelb"><div id="dockWheel"></div></span><span>LUCKY WHEEL</span></button>
+          <button class="dk" data-open="piggy"><span class="ico" data-ico="piggy"></span><span>PIGGY</span></button>
+          <button class="dk" data-open="missions"><span class="ico" data-ico="target"></span><span>MISSIONS</span><span class="pip">2</span></button>
+        </nav>
+        <div class="ad"><i></i><span>Banner ad space<small>Demo banner · not a real offer</small></span><em>INSTALL</em></div>
+      </section>
+
+      <section class="scr" id="game">
+        <div id="gbg"></div>
+        <div class="statusbar"><span>9:41</span><i>●●● ▮</i></div>
+        <div class="hud">
+          <button class="ibtn" id="homeBtn" aria-label="Back to lobby"><svg viewBox="0 0 24 24"><path fill="#fff" d="M12 3l9 8h-3v9h-4.5v-6h-3v6H6v-9H3z"/></svg></button>
+          <div class="lvl" data-open="profile" role="button" aria-label="Profile"><span class="badge"><img data-avatar alt=""></span><span class="lvn" data-lv>6</span><span class="bar"><span></span></span></div>
+          <div class="coins" data-coins><span data-coinico></span><b>0</b><button class="plus" data-open="store" aria-label="Buy coins">+</button></div>
+          <button class="ibtn" data-open="paytable" aria-label="Paytable"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M12 11v6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="12" cy="7.5" r="1.6" fill="#fff"/></svg></button>
+        </div>
+        <div class="gmid">
+          <div class="feat" id="feat"></div>
+          <div class="topper"><span class="tbulbs"></span><span class="tname gold-t" id="tname">PIRATES</span></div>
+          <div class="machine" id="machine"><span class="mlights"></span><div class="reels" id="reels"></div></div>
+        </div>
+        <div class="winbar" id="winbar"><span id="winlbl">243 WAYS · GOOD LUCK!</span><b id="winamt" class="gold-t"></b></div>
+        <div class="panel">
+          <div class="betbox"><small>TOTAL BET</small><div class="betctl"><button id="betDn" aria-label="Lower bet">–</button><b id="betTx">2.5K</b><button id="betUp" aria-label="Raise bet">+</button></div></div>
+          <button class="spinb" id="spinBtn"><b id="spinTx">SPIN</b><small id="spinSub">HOLD FOR AUTO</small></button>
+          <div class="side">
+            <button class="pill" id="autoBtn"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M18 2v5h-5M6 22v-5h5" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="autoTx">AUTO</span></button>
+            <button class="pill" id="maxBtn"><span>MAX BET</span></button>
+          </div>
+        </div>
+        <div class="ad"><i></i><span>Banner ad space<small>Demo banner · not a real offer</small></span><em>INSTALL</em></div>
+      </section>
+
+      <section class="scr" id="store">
+        <div class="statusbar"><span>9:41</span><i>●●● ▮</i></div>
+        <div class="hud"><button class="backb" data-back aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#5a2a00" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="coins" data-coins style="flex:none;width:200px;margin-left:auto"><span data-coinico></span><b>0</b></div></div>
+        <div class="sttl"><h2>Coin Store</h2><span>BEST DEALS</span></div>
+        <div class="stabs" id="stabs"><button class="on" data-st="offers">OFFERS</button><button data-st="packs">PACKS</button></div>
+        <div class="sscroll" id="sscroll"></div>
+      </section>
+
+      <section class="scr" id="wheelpg">
+        <div class="wpbg"><div class="wrays"></div></div>
+        <div class="statusbar"><span>9:41</span><i>●●● ▮</i></div>
+        <div class="hud"><button class="backb" data-back aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#5a2a00" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="coins" data-coins style="flex:none;width:200px;margin-left:auto"><span data-coinico></span><b>0</b></div></div>
+        <div class="pbody"><h2 class="ptitle gold-t">LUCKY WHEEL</h2><p class="psub">One free spin every day · prizes grow with your level</p>
+          <div class="wheelwrap"><div class="wheel" id="luckyWheel"></div><svg class="wptr" viewBox="0 0 44 56"><path d="M22 54L4 16a18 18 0 1 1 36 0z" fill="#ffd34d" stroke="#6a3300" stroke-width="3"/><circle cx="22" cy="18" r="8" fill="#e2185a" stroke="#6a0020" stroke-width="2"/></svg><button class="whub" id="luckyHub">SPIN</button></div>
+          <button class="bigbtn" id="luckySpin" style="max-width:320px">FREE SPIN</button>
+          <p class="psub" id="luckyNext">Next free spin in 23:59:59</p>
+        </div>
+      </section>
+
+      <section class="scr" id="dailypg">
+        <div class="wpbg"><div class="wrays"></div></div>
+        <div class="statusbar"><span>9:41</span><i>●●● ▮</i></div>
+        <div class="hud"><button class="backb" data-back aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#5a2a00" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="coins" data-coins style="flex:none;width:200px;margin-left:auto"><span data-coinico></span><b>0</b></div></div>
+        <div class="pbody"><h2 class="ptitle gold-t">DAILY BONUS</h2><p class="psub">Come back every day · day 7 pays the most</p>
+          <div class="dgrid" id="dGrid"></div>
+          <button class="bigbtn gold" id="dClaim" style="max-width:330px">CLAIM</button>
+          <button class="sm" id="dDemo" style="text-decoration:underline">Demo: jump to the next day ›</button>
+        </div>
+      </section>
+
+      <section class="scr" id="piggypg">
+        <div class="wpbg"><div class="wrays"></div></div>
+        <div class="statusbar"><span>9:41</span><i>●●● ▮</i></div>
+        <div class="hud"><button class="backb" data-back aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#5a2a00" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="coins" data-coins style="flex:none;width:200px;margin-left:auto"><span data-coinico></span><b>0</b></div></div>
+        <div class="pbody"><h2 class="ptitle gold-t">PIGGY BANK</h2><p class="psub">Every spin drops 3% of the bet into your piggy</p>
+          <div id="pigArt" style="animation:float 3s ease-in-out infinite"></div>
+          <div style="text-align:center"><div class="so-tag">SAVED IN YOUR PIGGY</div><b class="amt gold-t" id="pSaved">0</b></div>
+          <div class="meterbig"><span id="pFill"></span></div>
+          <p class="psub" id="pCap" style="margin:0"></p>
+          <div class="perks"><div><b>3%</b>of every bet</div><div><b>20%</b>full to break</div><div><b>Lv↑</b>bigger piggy</div></div>
+          <button class="bigbtn gold" id="pBreak" style="max-width:330px">BREAK FOR $2.99</button>
+        </div>
+      </section>
+
+      <div class="toast" id="toast"></div>
+
+      <div class="ov" id="bigwin"><div class="rays"></div><div class="rain" id="rain"></div>
+        <div class="bwtitle gold-t" id="bwTitle">BIG WIN!</div><div id="bwAmt">0</div>
+        <div class="row2"><button class="bigbtn gold" id="bwCollect">COLLECT</button><button class="bigbtn" id="bwDouble"><span data-vid></span>×2</button></div>
+      </div>
+
+      <div class="ov" id="popup"><div class="sheet"><div class="rain" id="rain2" style="border-radius:24px"></div>
+        <span class="so-tag" id="ppTag">FEATURE</span><div id="ppArt"></div><h3 class="gold-t" id="ppTitle">FREE SPINS!</h3><b class="amt gold-t" id="ppAmt"></b><p id="ppSub"></p>
+        <div class="row2" style="margin-top:4px"><button class="bigbtn gold" id="ppOk">COLLECT</button><button class="bigbtn" id="ppX2"><span data-vid></span>×2</button></div></div></div>
+
+      <div class="ov" id="hsov"><div class="sheet"><span class="so-tag">HOLD &amp; SPIN</span><h3 class="gold-t" id="hsTotal">0</h3><div class="hsgrid" id="hsGrid"></div>
+        <div class="respins" id="hsRespins"><i>1</i><i>2</i><i>3</i></div><p id="hsNote">Coins lock in place · a new coin resets the respins</p>
+        <button class="bigbtn gold" id="hsGo">RESPIN</button></div></div>
+
+      <div class="ov" id="bwheelov"><div class="sheet"><span class="so-tag">BONUS WHEEL</span><h3 class="gold-t">SPIN FOR A JACKPOT</h3>
+        <div class="wheelwrap" style="width:260px;height:260px"><div class="wheel" id="bonusWheel"></div><svg class="wptr" viewBox="0 0 44 56"><path d="M22 54L4 16a18 18 0 1 1 36 0z" fill="#ffd34d" stroke="#6a3300" stroke-width="3"/><circle cx="22" cy="18" r="8" fill="#e2185a" stroke="#6a0020" stroke-width="2"/></svg><button class="whub" id="bwHub">SPIN</button></div>
+        <p>Coins, multipliers or a Mini, Minor, Major or Grand jackpot</p></div></div>
+
+      <div class="ov" id="pickov"><div class="sheet"><span class="so-tag">PICK BONUS</span><h3 class="gold-t" id="pickTotal">PICK 3 CHESTS</h3>
+        <div class="chests" id="chests"></div><p id="pickNote">3 picks left</p></div></div>
+
+      <div class="ov" id="lvup"><div class="sheet"><div class="rain" id="rain3" style="border-radius:24px"></div>
+        <div style="position:relative;width:140px;height:140px;display:grid;place-items:center"><svg viewBox="0 0 100 100" style="position:absolute;inset:0;animation:float 3s ease-in-out infinite"><defs><linearGradient id="lvg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6b0"/><stop offset=".6" stop-color="#ffc21a"/><stop offset="1" stop-color="#c47a00"/></linearGradient></defs><path d="M50 4l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 35l30-3z" fill="url(#lvg)" stroke="#8a4a00" stroke-width="3" stroke-linejoin="round"/></svg><b id="lvNum" style="position:relative;font-family:var(--disp);font-weight:400;font-size:50px;color:#4a2600;margin-top:8px">7</b></div>
+        <h3 class="gold-t">LEVEL UP!</h3><p id="lvSub">Higher bets are now available.</p>
+        <b class="amt gold-t" id="lvAmt">350,000</b>
+        <div class="row2"><button class="bigbtn gold" id="lvOk">COLLECT</button><button class="bigbtn" id="lvX2"><span data-vid></span>×2</button></div></div></div>
+
+      <div class="ov" id="unlock"><div class="sheet"><button class="x" data-close>×</button>
+        <img id="ulkImg" alt="" style="width:180px;border-radius:16px;border:3px solid var(--gold)"><h3 id="ulkName">Gems</h3>
+        <p id="ulkRule">Unlocks at Level 5</p>
+        <div class="meterbig" style="height:18px"><span id="ulkBar" style="width:60%"></span></div>
+        <span class="so-tag" id="ulkOr">— OR UNLOCK NOW —</span>
+        <button class="bigbtn" id="ulkWatch"><span data-vid></span>WATCH VIDEO</button></div></div>
+
+      <div class="ov" id="questov"><div class="sheet"><button class="x" data-close>×</button>
+        <h3 class="gold-t" id="qTitle">DAILY TASKS</h3><div class="tabs2"><button class="on" data-q="tasks">TASKS</button><button data-q="missions">MISSIONS</button></div>
+        <p id="qSub" style="font-size:12px">New tasks in 09:12:44</p><div class="qlist" id="qList"></div></div></div>
+
+      <div class="ov" id="profileov"><div class="sheet"><button class="x" data-close>×</button>
+        <div style="display:flex;align-items:center;gap:12px;width:100%;text-align:left">
+          <img data-avatar alt="" style="width:76px;height:76px;border-radius:50%;border:3px solid var(--gold)">
+          <div style="flex:1;min-width:0"><b id="pfName" style="font-family:var(--disp);font-size:24px;font-weight:400">Lucky Player</b><div class="sm" id="pfLv">LEVEL 6</div></div>
+          <button class="ibtn" id="pfEdit" aria-label="Rename" style="width:34px;height:34px">✎</button>
+        </div>
+        <input class="nameinput" id="pfInput" maxlength="16" hidden>
+        <div class="lbl" style="align-self:flex-start">CHOOSE AVATAR</div><div class="avgrid" id="avGrid"></div>
+        <div class="lbl" style="align-self:flex-start">STATISTICS</div><div class="stats" id="pfStats"></div></div></div>
+
+      <div class="ov" id="settings"><div class="sheet"><button class="x" data-close>×</button><h3 class="gold-t">SETTINGS</h3>
+        <div style="display:flex;flex-direction:column;gap:6px;width:100%">
+          <div class="setrow"><span><b>Sound effects</b><small>Spins, wins and buttons</small></span><button class="sw" data-sw="sound" aria-label="Sound effects"></button></div>
+          <div class="setrow"><span><b>Music</b><small>Background music in slots</small></span><button class="sw on" data-sw="music" aria-label="Music"></button></div>
+          <div class="setrow"><span><b>Vibration</b><small>Buzz on spins and big wins</small></span><button class="sw on" data-sw="vibe" aria-label="Vibration"></button></div>
+          <div class="setrow"><span><b>Notifications</b><small>Free coins and wheel reminders</small></span><button class="sw" data-sw="notif" aria-label="Notifications"></button></div>
+        </div><small class="sm">Social casino · virtual coins only · no cash value</small></div></div>
+
+      <div class="ov" id="paytable"><div class="sheet"><button class="x" data-close>×</button><h3 class="gold-t" id="ptTitle">PAYTABLE</h3><p id="ptFeat"></p><div id="ptSyms" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;width:100%"></div><p style="font-size:12px">243 ways · pays left to right · wild substitutes from reel 2</p></div></div>
+
+    </div></div></div>
+    <div class="row" style="justify-content:center"><button class="btn" id="resetBtn" style="height:38px;font-size:13px">Restart the tour</button></div>
+  </div>
+
+  <div class="rail">
+    <div>
+      <span class="eyebrow">FunPixel Slots · redesign prototype</span>
+      <h1 class="title">Our slots, our 7 features, in the new casino style</h1>
+      <p class="lead">A working prototype that keeps every symbol from our own machines and all the features we built, and moves the rest of the game to the new look: offer banner, bigger reels in a lit gold cabinet, a feature board above each machine, and full-page rewards. Spin it on the phone or follow the tour.</p>
+    </div>
+    <div class="card cap" id="caption" aria-live="polite"></div>
+    <div class="row"><button class="btn" id="prev">Back</button><button class="btn go" id="next">Next screen</button></div>
+    <div class="steps" id="steps" role="group" aria-label="Tour steps"></div>
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <div class="row" style="justify-content:space-between"><span class="lbl">Play a machine</span><span class="sm">One per feature · opens in the phone</span></div>
+      <div class="worlds" id="worlds"></div>
+    </div>
+    <p class="sm" style="margin:0;line-height:1.5">Coins are virtual and for fun only. Store prices and videos are placeholders. Feature odds are raised a little so each one is easy to see; the tour forces each feature to start.</p>
+  </div>
+</div>
+<!--ASSETS-->
+<!--JS-->
