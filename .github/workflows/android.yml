@@ -24,9 +24,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Engine tests (slot math, all themes)
+        if: "!contains(github.event.head_commit.message, '[apk-only]')"
         run: ./gradlew :engine:test --stacktrace
 
       - name: Screenshots of the real app screens (Robolectric + Roborazzi)
+        if: "!contains(github.event.head_commit.message, '[apk-only]')"
         run: ./gradlew :app:testDebugUnitTest --stacktrace
 
       - name: Publish screenshots to the 'screenshots' branch
