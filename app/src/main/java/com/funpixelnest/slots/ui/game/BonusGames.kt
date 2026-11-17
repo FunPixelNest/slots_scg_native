@@ -67,6 +67,11 @@ import com.funpixelnest.slots.ui.skin.SkinIcon
 import com.funpixelnest.slots.ui.skin.SkinTone
 import com.funpixelnest.slots.ui.skin.Sunburst
 import com.funpixelnest.slots.ui.skin.drawSkinIcon
+import com.funpixelnest.slots.ui.skin.ball
+import com.funpixelnest.slots.ui.skin.glowPanel
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.alpha
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -75,12 +80,12 @@ import kotlinx.coroutines.launch
 fun BonusOverlay(graph: AppGraph, vm: GameViewModel) {
     val b = vm.bonus ?: return
     Box(
-        Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.82f))
+        Modifier.fillMaxSize().background(Brush.radialGradient(listOf(Color(0xE62A1AA8), Color(0xF5070838))))
             .clickable(remember { MutableInteractionSource() }, null) { }
             .testTag("bonus-game"),
         contentAlignment = Alignment.Center,
     ) {
-        Sunburst(Modifier.fillMaxSize(), color = Skin.Gold)
+        Sunburst(Modifier.fillMaxSize())
         when (b) {
             is BonusUi.HoldSpin -> HoldAndSpinBonus(graph, vm, b)
             is BonusUi.Wheel -> WheelBonus(graph, vm, b)
@@ -92,17 +97,17 @@ fun BonusOverlay(graph: AppGraph, vm: GameViewModel) {
 @Composable
 private fun BonusTitle(title: String, sub: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Ribbon(title, tone = SkinTone.Red, textSize = 24.sp)
+        com.funpixelnest.slots.ui.skin.GoldDisplay(title, 40.sp)
         Spacer(Modifier.height(6.dp))
-        Text(sub, style = outlinedText(13.sp, Skin.TextSoft))
+        Text(sub, style = outlinedText(13.sp, Skin.TextSoft).copy(shadow = null))
     }
 }
 
 @Composable
 private fun PrizeText(p: Prize, size: Int = 14) {
     val jp = p.jackpot
-    if (jp != null) Text(jp.label, style = outlinedText(size.sp, Color(0xFFFF8A80)))
-    else Text(formatCompact(p.coins), style = outlinedText(size.sp, Skin.GoldLight))
+    if (jp != null) Text(jp.label, style = com.funpixelnest.slots.ui.skin.displayText(size.sp, Color.White))
+    else Text(formatCompact(p.coins), style = com.funpixelnest.slots.ui.skin.displayText(size.sp, Color(0xFF5A2000)).copy(shadow = null))
 }
 
 // ------------------------------------------------------------------ Hold & Spin
@@ -127,10 +132,11 @@ private fun HoldAndSpinBonus(graph: AppGraph, vm: GameViewModel, b: BonusUi.Hold
     val board = tick // read so the board redraws after every respin
     Column(Modifier.fillMaxWidth().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp)) {
         BonusTitle("HOLD & SPIN", "Coins lock in place. Each new coin resets the respins. Fill all 15 for the GRAND!")
-        Text(
-            if (game.isOver && board >= 0) "BONUS COMPLETE" else "RESPINS LEFT: ${game.respinsLeft}",
-            style = outlinedText(20.sp, if (game.isOver) Color(0xFF7CF29A) else Color.White),
-        )
+        if (game.isOver && board >= 0) Text("BONUS COMPLETE", style = com.funpixelnest.slots.ui.skin.displayText(22.sp, Color(0xFF8CFF6A)))
+        else Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("RESPINS", style = outlinedText(12.sp, Skin.TextSoft).copy(shadow = null, letterSpacing = 2.sp))
+            repeat(3) { i -> Box(Modifier.size(26.dp).then(if (i < game.respinsLeft) Modifier.ball(SkinTone.Green) else Modifier.background(Color(0xFF0A0A40), CircleShape).border(2.dp, Color(0xFF3A3A8A), CircleShape))) }
+        }
         GoldFrame(Modifier.fillMaxWidth().aspectRatio(5f / 3.3f), corner = 18.dp) {
             Column(Modifier.fillMaxSize().padding(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 for (row in 0 until game.rows) Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -139,21 +145,23 @@ private fun HoldAndSpinBonus(graph: AppGraph, vm: GameViewModel, b: BonusUi.Hold
                         val prize = game.coins[c]
                         Box(
                             Modifier.weight(1f).fillMaxSize()
-                                .background(
-                                    if (prize != null) Brush.radialGradient(listOf(Color(0xFF8E44E8), Color(0xFF2A0846)))
-                                    else Brush.verticalGradient(listOf(Color(0xFF1A0530), Color(0xFF0B0114))),
-                                    RoundedCornerShape(10.dp),
-                                ),
+                                .then(if (prize == null) Modifier.background(Color(0x8C00001E), RoundedCornerShape(12.dp)).border(1.5.dp, Color(0x596AB4FF), RoundedCornerShape(12.dp)) else Modifier),
                             contentAlignment = Alignment.Center,
                         ) {
                             if (prize != null) {
-                                Column(
-                                    Modifier.scale(if (c in fresh) pulse else 1f),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                ) {
-                                    CoinIcon(Modifier.size(30.dp))
-                                    PrizeText(prize, 12)
+                                val jp = prize.jackpot
+                                val tone = when (jp) {
+                                    null -> null
+                                    JackpotTier.MINI -> SkinTone.Green
+                                    JackpotTier.MINOR -> SkinTone.Blue
+                                    JackpotTier.MAJOR -> SkinTone.Purple
+                                    else -> SkinTone.Red
                                 }
+                                Box(
+                                    Modifier.scale(if (c in fresh) pulse else 1f).fillMaxSize(0.92f).aspectRatio(1f)
+                                        .then(if (tone != null) Modifier.ball(tone) else Modifier.ball(SkinTone.Gold).background(Brush.radialGradient(listOf(Color(0xFFFFF6B0), Color(0xFFFFC21A), Color(0xFFD07000))), CircleShape)),
+                                    contentAlignment = Alignment.Center,
+                                ) { PrizeText(prize, 13) }
                             }
                         }
                     }
@@ -161,7 +169,7 @@ private fun HoldAndSpinBonus(graph: AppGraph, vm: GameViewModel, b: BonusUi.Hold
             }
         }
         val total = game.coins.values.sumOf { it.coins }
-        Text("TOTAL ${formatCoins(total)}", style = outlinedText(22.sp, Skin.GoldLight))
+        com.funpixelnest.slots.ui.game.WinMeter(total, Modifier.height(46.dp), "TOTAL")
         if (game.grandWon) Text("BOARD FULL – GRAND JACKPOT!", style = outlinedText(18.sp, Color(0xFFFF8A80)))
         if (game.isOver) {
             SkinButton("COLLECT", Modifier.width(220.dp).height(54.dp), tone = SkinTone.Green, textSize = 20.sp) {
@@ -174,7 +182,7 @@ private fun HoldAndSpinBonus(graph: AppGraph, vm: GameViewModel, b: BonusUi.Hold
 
 // ------------------------------------------------------------------ Bonus wheel
 
-private val WHEEL_COLORS = listOf(Color(0xFFE53935), Color(0xFF5B1FA8), Color(0xFF138A3A), Color(0xFF1652B8))
+private val WHEEL_COLORS = listOf(Color(0xFF2A6BFF), Color(0xFF9A3AFF), Color(0xFF1AA6C8), Color(0xFFFF8A00), Color(0xFF2FA83A), Color(0xFFC41A9A))
 
 @Composable
 private fun WheelBonus(graph: AppGraph, vm: GameViewModel, b: BonusUi.Wheel) {
@@ -229,13 +237,13 @@ private fun WheelBonus(graph: AppGraph, vm: GameViewModel, b: BonusUi.Wheel) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     CoinIcon(Modifier.size(30.dp)); Spacer(Modifier.width(8.dp))
                     val jp = prize.jackpot
-                    Text(if (jp != null) "${jp.label} JACKPOT  ${formatCoins(prize.coins)}" else formatCoins(prize.coins), style = outlinedText(24.sp, Skin.GoldLight))
+                    com.funpixelnest.slots.ui.skin.GoldDisplay(if (jp != null) "${jp.label} JACKPOT  ${formatCoins(prize.coins)}" else formatCoins(prize.coins), 26.sp)
                 }
                 SkinButton("COLLECT", Modifier.width(220.dp).height(54.dp), tone = SkinTone.Green, textSize = 20.sp) {
                     vm.finishBonus(prize.coins, listOfNotNull(prize.jackpot))
                 }
             }
-            else -> SkinButton("SPIN THE WHEEL", Modifier.width(240.dp).height(56.dp), tone = SkinTone.Red, enabled = !spinning, textSize = 20.sp) {
+            else -> SkinButton("SPIN THE WHEEL", Modifier.width(240.dp).height(56.dp), tone = SkinTone.Green, enabled = !spinning, textSize = 20.sp) {
                 spinning = true
                 graph.sound.play(Sfx.Spin)
                 val target = wheel.spin(kotlin.random.Random)
@@ -271,15 +279,7 @@ private fun PickBonusGame(graph: AppGraph, vm: GameViewModel, b: BonusUi.Pick) {
                     val shown = isPicked || revealAll
                     Box(
                         Modifier.size(98.dp)
-                            .background(Skin.goldBorder, RoundedCornerShape(16.dp)).padding(2.5.dp)
-                            .background(
-                                when {
-                                    isPicked -> Brush.radialGradient(listOf(Color(0xFFFFE27A), Color(0xFFE08A00)))
-                                    shown -> Brush.verticalGradient(listOf(Color(0xFF3A1B5C), Color(0xFF1A0530)))
-                                    else -> Brush.verticalGradient(listOf(Color(0xFF8E44E8), Color(0xFF3B0D5C)))
-                                },
-                                RoundedCornerShape(14.dp),
-                            )
+                            .glowPanel(18.dp, magenta = isPicked).alpha(if (shown && !isPicked) 0.7f else 1f)
                             .clickable(remember { MutableInteractionSource() }, null, enabled = !shown && !pick.isOver) {
                                 pick.pick(i)?.let { opened += i; graph.sound.play(Sfx.WinCoins) }
                             },
@@ -297,7 +297,7 @@ private fun PickBonusGame(graph: AppGraph, vm: GameViewModel, b: BonusUi.Pick) {
                 }
             }
         }
-        Text("WON ${formatCoins(pick.total())}", style = outlinedText(22.sp, Skin.GoldLight))
+        com.funpixelnest.slots.ui.game.WinMeter(pick.total(), Modifier.height(46.dp), "TOTAL")
         if (revealAll) {
             SkinButton("COLLECT", Modifier.width(220.dp).height(54.dp), tone = SkinTone.Green, textSize = 20.sp) {
                 vm.finishBonus(pick.total(), opened.mapNotNull { pick.hidden[it].jackpot })
