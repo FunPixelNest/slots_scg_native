@@ -359,8 +359,26 @@ def coinline(v, size=40):
     return f'<div class="fx" style="justify-content:center;gap:8px"><div class="coin" style="position:relative;left:0;transform:none;width:{size}px;height:{size}px">{STAR}</div><span class="dg" style="font-size:{size + 6}px">{v}</span></div>'
 
 
-def btns(primary='COLLECT', secondary='▶ x2 WATCH'):
-    return f'<div class="fx" style="gap:10px;margin-top:16px">{f"<span class=\'pill B\' style=\'flex:1;height:48px;font-size:16px\'>{secondary}</span>" if secondary else ""}<span class="pill G" style="flex:1.2;height:48px;font-size:20px">{primary}</span></div>'
+BURST = 'polygon(50% 0,61% 12%,76% 4%,79% 20%,95% 21%,89% 36%,100% 50%,89% 64%,95% 79%,79% 80%,76% 96%,61% 88%,50% 100%,39% 88%,24% 96%,21% 80%,5% 79%,11% 64%,0 50%,11% 36%,5% 21%,21% 20%,24% 4%,39% 12%)'
+
+
+def watch2x(dbl):
+    """Rewarded-video button: magenta glossy bar, play disc, two-line label, gold x2 burst badge."""
+    return f'''<div style="position:relative;height:62px;margin-top:6px;border-radius:20px;padding:3px;background:linear-gradient(90deg,#ffe46a,#ff9af0,#8ad0ff,#ffe46a);background-size:200% 100%;box-shadow:0 0 0 2px #3a0a5a,0 5px 0 2px #24063e,0 0 22px rgba(255,90,230,.75)">
+ <div style="height:100%;border-radius:17px;position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;padding:0 70px 0 8px;background:linear-gradient(180deg,#ff8af0,#e03ad0 45%,#b012b8 55%,#7a0a9a);box-shadow:inset 0 -5px 0 rgba(0,0,0,.18)">
+  <div style="position:absolute;left:6%;right:30%;top:3px;height:42%;border-radius:12px;background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,0))"></div>
+  <div style="position:absolute;top:0;bottom:0;left:58%;width:26px;transform:skewX(-20deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent)"></div>
+  <div style="position:relative;width:42px;height:42px;flex:none;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#ffe0fa);box-shadow:0 0 0 3px rgba(255,255,255,.35),0 2px 4px rgba(60,0,60,.5);display:grid;place-items:center"><svg viewBox="0 0 24 24" style="width:22px;height:22px;margin-left:3px"><path d="M7 4.5v15l12-7.5z" fill="#c41ab8"/></svg></div>
+  <div style="position:relative;line-height:1.02"><div style="white-space:nowrap;font:900 11px Nunito;letter-spacing:.1em;color:#ffd6f6;-webkit-text-stroke:2.5px #6a0a7a;paint-order:stroke fill;text-shadow:0 2px 0 #4a0658,0 0 6px rgba(70,0,90,.8)">WATCH VIDEO &amp; GET <span style="display:inline-block;vertical-align:1px;margin-left:3px;font:900 8px Nunito;letter-spacing:.08em;color:#fff;-webkit-text-stroke:0;text-shadow:none;background:#5a0a6a;padding:1px 4px;border-radius:4px">AD</span></div><div class="t" style="font:400 22px Lilita One;text-shadow:0 2px 0 #5a0a6a">{dbl}</div></div>
+ </div>
+ <div style="position:absolute;right:-12px;top:-16px;width:76px;height:76px;transform:rotate(12deg);filter:drop-shadow(0 3px 0 #7a3a00) drop-shadow(0 0 10px rgba(255,190,40,.9))"><div style="width:100%;height:100%;clip-path:{BURST};background:radial-gradient(circle at 45% 40%,#fff6b0,#ffc21a 55%,#e07a00);display:grid;place-items:center"><span style="font:400 30px Lilita One;color:#fff;-webkit-text-stroke:5px #a03a00;paint-order:stroke fill;line-height:1">x2</span></div></div>
+</div>'''
+
+
+def btns(primary='COLLECT', secondary='▶ x2 WATCH', dbl=None):
+    if not secondary:
+        return f'<div style="margin-top:16px"><span class="pill G" style="height:48px;font-size:20px">{primary}</span></div>'
+    return f'<div style="display:flex;flex-direction:column;gap:12px;margin-top:18px">{watch2x(dbl)}<span class="pill G" style="height:42px;font-size:17px;margin:0 22px">{primary}</span></div>'
 
 
 def p_welcome():
@@ -376,7 +394,7 @@ def p_daily():
         sty = {'ok': 'opacity:.6', 'now': 'border-color:#ffc21a;box-shadow:0 0 0 1.5px #5a2a00,0 0 16px rgba(255,190,40,.9),inset 0 0 12px rgba(255,190,40,.4);transform:scale(1.06)', '': '', 'big': 'grid-column:span 2;border-color:#ff5cf4;box-shadow:0 0 14px rgba(255,80,240,.8)'}[st]
         ic = I('chestC', 'width:56px;display:block;margin:0 auto') if st == 'big' else f'<div class="coin" style="position:relative;left:0;top:0;transform:none;width:30px;height:30px;margin:2px auto">{STAR}</div>'
         days += f'<div class="hd" style="position:relative;padding:6px 2px;text-align:center;border-radius:14px;{sty}"><div class="t" style="font-size:11px">{"TODAY" if st == "now" else "DAY " + str(d)}</div>{ic}<div class="t" style="font:400 15px Lilita One;color:#ffe46a">{amt}</div>{"<span class=ab style=right:4px;top:2px;color:#6aff7a;font:900 16px_Nunito>✔</span>".replace("_", " ") if st == "ok" else ""}</div>'
-    body = f'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">{days}</div>{btns("COLLECT 375K", "▶ x2")}'
+    body = f'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">{days}</div>{btns("COLLECT 375K", "x2", "750,000 COINS")}'
     return over_lobby(modal('DAILY BONUS', body, 190, 'Come back every day for bigger rewards'))
 
 
@@ -392,7 +410,7 @@ def p_bigwin():
   <div class="rays" style="left:-40px;right:-40px;top:60px;height:420px"></div>{sparkles(5, 16, 120, 640)}
   <div class="ab dg" style="left:0;right:0;top:150px;text-align:center;font-size:76px;line-height:.86">BIG<br>WIN!</div>
   {I("coins", "position:absolute;left:75px;top:300px;width:240px;filter:drop-shadow(0 0 20px rgba(255,190,40,.6))")}
-  <div class="ab pn" style="left:30px;right:30px;top:480px;padding:20px 22px;border-radius:24px"><div class="lb" style="text-align:center;font-size:13px;letter-spacing:.1em">YOU WON</div>{coinline("487,500")}{btns()}</div></div>'''
+  <div class="ab pn" style="left:18px;right:18px;top:456px;padding:18px 16px;border-radius:24px"><div class="lb" style="text-align:center;font-size:13px;letter-spacing:.1em">YOU WON</div>{coinline("487,500")}{btns("COLLECT 487,500", "x2", "975,000 COINS")}</div></div>'''
     return over_game(m)
 
 
@@ -421,7 +439,7 @@ def p_freespins():
 
 def p_fs_summary():
     body = f'''<div class="lb" style="text-align:center;font-size:13px;letter-spacing:.1em">YOU WON IN 10 FREE SPINS</div>{coinline("1,250,000")}
- <div class="fx" style="justify-content:center;gap:10px;margin-top:12px"><div class="hd" style="padding:8px 14px;text-align:center"><div class="lb" style="font-size:11px">BEST MULTIPLIER</div><div class="dg" style="font-size:24px">x5</div></div><div class="hd" style="padding:8px 14px;text-align:center"><div class="lb" style="font-size:11px">WINNING SPINS</div><div class="dg" style="font-size:24px">7</div></div></div>{btns()}'''
+ <div class="fx" style="justify-content:center;gap:10px;margin-top:12px"><div class="hd" style="padding:8px 14px;text-align:center"><div class="lb" style="font-size:11px">BEST MULTIPLIER</div><div class="dg" style="font-size:24px">x5</div></div><div class="hd" style="padding:8px 14px;text-align:center"><div class="lb" style="font-size:11px">WINNING SPINS</div><div class="dg" style="font-size:24px">7</div></div></div>{btns("COLLECT 1,250,000", "x2", "2,500,000 COINS")}'''
     return over_game(f'{sparkles(3, 12)}' + modal('FEATURE WIN', body, 250, close=False), 'christmas_eve')
 
 
@@ -549,8 +567,10 @@ def page(sections, head):
     return f'<title>FunPixel Slots Screens</title><meta name="claude:viewport-fit-sides" content="cover">{FONTS}<style>{CSS}{XCSS}{pub}</style>{DEFS}{head}{body}{js}'
 
 
+WATCH = [('Rewarded video button', [(p_bigwin, 'Big win', 'Watch video button on top, Collect below'), (p_daily, 'Daily bonus'), (p_fs_summary, 'Feature win summary')])]
 HEAD = '<p class="cap" style="font-size:34px">FunPixel Slots: full screen set</p><p class="sub">BingoFlash-style UI · gameplay for all 7 features · bonus rounds · popups</p>'
 open(OUT + '/screens.html', 'w').write(page(SECTIONS, HEAD))
 for n, sec in enumerate(SECTIONS):
     open(OUT + f'/screens_{n}.html', 'w').write(page([sec], ''))
+open(OUT + '/watch.html', 'w').write(page(WATCH, ''))
 print('ok', len(IM))
