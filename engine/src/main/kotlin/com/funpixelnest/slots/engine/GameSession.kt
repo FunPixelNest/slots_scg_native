@@ -115,6 +115,7 @@ class GameSession(
         if (!free && betIndex < minStep) setBetIndex(minStep)
         if (!free && store.coins < totalBet) return Result.failure(NotEnoughCoinsException())
         if (free) freeSpins-- else store.coins -= totalBet
+        val bet = totalBet // a level-up during this spin may raise the bet for the next one
 
         val stops = cfg.reelStrips.map { random.nextInt(it.size) }
         val baseGrid = machine.gridAt(stops)
@@ -179,7 +180,7 @@ class GameSession(
             effects = effects.copy(bonus = feature)
         }
         var spinsWon = outcome.freeSpins * outcome.freeSpinsMultiplier
-        if (cfg.bet.freeSpinsScaleWithBet) spinsWon *= betIndex + 1
+        if (cfg.bet.freeSpinsScaleWithBet) spinsWon *= (betIndex - minStep + 1).coerceAtLeast(1)
         spinsWon += extraSpins
         freeSpins += spinsWon
 
@@ -196,9 +197,9 @@ class GameSession(
             superFree = false
         }
 
-        val tier = Economy.winTier(winCoins, totalBet)
+        val tier = Economy.winTier(winCoins, bet)
         return Result.success(
-            SpinResult(outcome, totalBet, free, winCoins, spinsWon, tier, jackpot, levelUp, reward, xp, effects, baseGrid),
+            SpinResult(outcome, bet, free, winCoins, spinsWon, tier, jackpot, levelUp, reward, xp, effects, baseGrid),
         )
     }
 

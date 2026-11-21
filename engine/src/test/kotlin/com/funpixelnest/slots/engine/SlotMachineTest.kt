@@ -124,11 +124,11 @@ class SlotMachineTest {
 
     @Test
     fun `session debits bet and credits wins and jackpots`() {
-        val cfg = theme("china") // plain pays + progressive jackpots
+        val cfg = theme("modern") // plain pays (pay scale 1.0) + progressive jackpots
         val store = InMemoryPlayerStore(coins = 10_000_000_000)
         val s = GameSession(SlotMachine(cfg), store, Random(7))
         s.setBetIndex(1)
-        assertEquals(5_000, s.totalBet)
+        assertEquals(20_000, s.totalBet)
         var expected = store.coins
         var jackpots = 0
         repeat(5_000) {
