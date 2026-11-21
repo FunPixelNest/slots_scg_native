@@ -139,18 +139,20 @@ dice = (
 
 
 # ------------------------------------------------------------------ gold bars
-def bar(x, y, w=68):
-    return (f'<path d="M{x},{y} L{x + w},{y} L{x + w - 8},{y - 26} L{x + 8},{y - 26}Z" fill="url(#barF)" stroke="#5A2A00" stroke-width="5" stroke-linejoin="round"/>'
-            f'<path d="M{x + 8},{y - 26} L{x + w - 8},{y - 26} L{x + w - 18},{y - 40} L{x + 18},{y - 40}Z" fill="url(#barT)" stroke="#5A2A00" stroke-width="5" stroke-linejoin="round"/>'
-            f'<rect x="{x + w / 2 - 14}" y="{y - 19}" width="28" height="12" rx="3" fill="none" stroke="#B86B00" stroke-width="2.5"/>'
-            f'<path d="M{x + 12},{y - 5} L{x + 20},{y - 22}" stroke="#fff" stroke-width="4" opacity=".6" stroke-linecap="round"/>')
+def bar(x, y, w=50):
+    i1, i2, h1, h2 = 5, 13, 24, 14
+    return (f'<path d="M{x},{y} L{x + w},{y} L{x + w - i1},{y - h1} L{x + i1},{y - h1}Z" fill="url(#barF)" stroke="#5A2A00" stroke-width="5" stroke-linejoin="round"/>'
+            f'<path d="M{x + i1},{y - h1} L{x + w - i1},{y - h1} L{x + w - i2},{y - h1 - h2} L{x + i2},{y - h1 - h2}Z" fill="url(#barT)" stroke="#5A2A00" stroke-width="5" stroke-linejoin="round"/>'
+            f'<rect x="{x + w / 2 - 10}" y="{y - 17}" width="20" height="10" rx="3" fill="none" stroke="#B86B00" stroke-width="2.5"/>'
+            f'<path d="M{x + 9},{y - 5} L{x + 13},{y - 19}" stroke="#fff" stroke-width="4" opacity=".6" stroke-linecap="round"/>')
 
 
 gold = (
     grads(lin("barF", [(0, "#FFE680"), (.6, "#F0A818"), (1, "#B86800")]), lin("barT", [(0, "#FFFBD8"), (1, "#FFD24A")]))
-    + '<g transform="translate(0 10)">'
-    + bar(54, 190) + bar(134, 190) + bar(94, 150) + '</g>'
-    + sparkle(166, 92, 1.1) + sparkle(78, 120, .7)
+    + bar(48, 198) + bar(103, 198) + bar(158, 198)
+    + bar(75, 166) + bar(130, 166)
+    + bar(103, 134)
+    + sparkle(168, 84, 1.1) + sparkle(80, 104, .8)
 )
 
 

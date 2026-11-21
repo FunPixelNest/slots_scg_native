@@ -57,22 +57,22 @@ def spiral(cx, cy, r, turns, n=120):
 
 
 # ------------------------------------------------------------------ brown: chocolate bonbon
+foil_top = " ".join(f"{70 + i * 9.67:.1f},{150 if i % 2 == 0 else 140}" for i in range(13))
 bonbon = (
-    '<defs>' + rg("choc", [(0, "#B87A4A"), (.55, "#6A3418"), (1, "#2E1408")], cx=".38", cy=".3", r=".75")
-    + lg("cup", [(0, "#FF9AC8"), (1, "#C02A7A")]) + '</defs>'
-    # paper cup with pleats
-    '<path d="M62,138 L194,138 L178,200 L78,200Z" fill="url(#cup)" stroke="' + INK + '" stroke-width="7" stroke-linejoin="round"/>'
-    + "".join(f'<path d="M{x},142 L{x + (128 - x) * .12:.1f},198" stroke="#8A0A4A" stroke-width="3" opacity=".6"/>' for x in range(78, 190, 14))
-    # truffle body
-    + '<path d="M58,146 C50,96 86,62 128,62 C170,62 206,96 198,146 C190,160 66,160 58,146Z" fill="url(#choc)" stroke="#1E0A04" stroke-width="7" stroke-linejoin="round"/>'
-    # drizzle
-    '<path d="M72,108 C84,94 92,120 104,102 C114,88 120,116 132,98 C142,84 150,112 160,96 C170,84 178,104 186,100" fill="none" stroke="#FFE8F4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'
-    '<path d="M80,94 C92,80 100,74 120,70" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55"/>'
-    # cherry on top
-    '<path d="M134,58 C138,44 148,36 160,32" fill="none" stroke="#3A6A1A" stroke-width="5" stroke-linecap="round"/>'
-    '<circle cx="128" cy="62" r="16" fill="#E8203A" stroke="' + INK + '" stroke-width="5"/>'
-    '<ellipse cx="122" cy="56" rx="5" ry="3.5" fill="#fff" opacity=".9"/>'
-    + sparkle(186, 74, .7)
+    '<defs>' + rg("choc", [(0, "#C88A5A"), (.5, "#6A3418"), (1, "#2A1206")], cx=".36", cy=".3", r=".75") + '</defs>'
+    # sphere
+    '<circle cx="128" cy="122" r="64" fill="url(#choc)" stroke="#1E0A04" stroke-width="7"/>'
+    # gold foil cup with crinkled rim
+    f'<path d="M64,140 L{foil_top} 192,140 C192,176 166,200 128,200 C90,200 64,176 64,140Z" fill="url(#gold)" stroke="{INK}" stroke-width="6" stroke-linejoin="round"/>'
+    + "".join(f'<path d="M{x},{150} L{128 + (x - 128) * .7:.1f},194" stroke="#A85A00" stroke-width="3" opacity=".6"/>' for x in range(80, 184, 19))
+    + '<path d="M74,160 C80,178 94,190 108,194" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".6"/>'
+    # white chocolate drizzle
+    '<path d="M76,104 C88,86 96,116 108,94 C118,78 124,108 136,88 C146,72 154,104 166,86 C174,76 180,94 184,96" fill="none" stroke="#2A1206" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>'
+    '<path d="M76,102 C88,84 96,114 108,92 C118,76 124,106 136,86 C146,70 154,102 166,84 C174,74 180,92 184,94" fill="none" stroke="#FFF2E0" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>'
+    '<path d="M88,80 C96,68 106,62 118,60" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".55"/>'
+    # pink sugar heart on top
+    + mini_heart(128, 60, .16, "#FF5AB4")
+    + sparkle(190, 66, .7)
 )
 
 # ------------------------------------------------------------------ lily: lilac wrapped candy
@@ -80,6 +80,7 @@ wrapped = (
     '<defs>' + rg("lil", [(0, "#F6E6FF"), (.55, "#B47AF4"), (1, "#5A22A8")], cx=".38", cy=".32", r=".75")
     + lg("lilw", [(0, "#E8D0FF"), (1, "#8A4ACC")])
     + '<clipPath id="wrapBody"><ellipse cx="128" cy="128" rx="54" ry="42"/></clipPath></defs>'
+    '<g transform="translate(128,128) scale(.88) translate(-128,-128)">'
     # wrapper ends
     '<path d="M80,128 L42,88 C34,96 40,106 36,114 C30,122 40,130 34,138 C38,148 32,158 42,168Z" fill="url(#lilw)" stroke="' + INK + '" stroke-width="7" stroke-linejoin="round"/>'
     '<path d="M176,128 L214,88 C222,96 216,106 220,114 C226,122 216,130 222,138 C218,148 224,158 214,168Z" fill="url(#lilw)" stroke="' + INK + '" stroke-width="7" stroke-linejoin="round"/>'
@@ -91,7 +92,7 @@ wrapped = (
     '<g clip-path="url(#wrapBody)" opacity=".7"><g transform="rotate(-30 128 128)">'
     + "".join(f'<rect x="{x}" y="60" width="10" height="140" fill="#fff"/>' for x in range(70, 200, 26))
     + '</g></g>'
-    '<ellipse cx="108" cy="108" rx="18" ry="9" fill="#fff" opacity=".85" transform="rotate(-20 108 108)"/>'
+    '<ellipse cx="108" cy="108" rx="18" ry="9" fill="#fff" opacity=".85" transform="rotate(-20 108 108)"/></g>'
     + sparkle(176, 74, .8) + sparkle(82, 184, .55)
 )
 
@@ -112,7 +113,7 @@ lolly = (
 # ------------------------------------------------------------------ red: heart gummy
 gummy = (
     '<defs>' + rg("gum", [(0, "#FFB0BC"), (.45, "#FF2A48"), (1, "#8A0418")], cx=".38", cy=".3", r=".75") + '</defs>'
-    '<g transform="translate(128,132) scale(.62) translate(-128,-128)">'
+    '<g transform="translate(128,132) scale(.7) translate(-128,-128)">'
     f'<path d="{SUITS["heart"]}" fill="{INK}" stroke="{INK}" stroke-width="22" stroke-linejoin="round"/>'
     f'<path d="{SUITS["heart"]}" fill="url(#gum)"/>'
     '<path d="M56,96 C56,72 74,62 92,64" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" opacity=".85"/>'
