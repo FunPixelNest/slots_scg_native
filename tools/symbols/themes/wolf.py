@@ -88,8 +88,8 @@ cone = (
     + cone_scales()
     + '<path d="M128,64 L124,48" stroke="#5A300E" stroke-width="8" stroke-linecap="round"/>'
     + '</g>'
-    + "".join(f'<path d="M122,58 L{122 + dx},{58 + dy}" stroke="#041A10" stroke-width="9" stroke-linecap="round"/>' for dx, dy in ((-30, -14), (-18, -26), (34, -10), (20, -24), (2, -30)))
-    + "".join(f'<path d="M122,58 L{122 + dx},{58 + dy}" stroke="url(#needle)" stroke-width="5" stroke-linecap="round"/>' for dx, dy in ((-30, -14), (-18, -26), (34, -10), (20, -24), (2, -30)))
+    + '<path d="M120,60 C116,50 118,42 126,36" stroke="#2A1406" stroke-width="11" fill="none" stroke-linecap="round"/>'
+    + '<path d="M120,60 C116,50 118,42 126,36" stroke="#8A5A26" stroke-width="5" fill="none" stroke-linecap="round"/>'
 )
 
 # ---------------------------------------------------------------- fang necklace
