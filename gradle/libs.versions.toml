@@ -13,6 +13,15 @@ roborazzi = "1.32.2"
 junit = "4.13.2"
 androidxTestExt = "1.2.1"
 
+playServicesAds = "23.6.0"
+adapterApplovin = "13.0.1.0"
+adapterUnity = "4.12.3.0"
+adapterMintegral = "16.8.61.0"
+adapterVungle = "7.4.1.0"
+firebaseBom = "33.7.0"
+googleServices = "4.4.2"
+crashlyticsPlugin = "3.0.2"
+
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -37,9 +46,21 @@ junit = { module = "junit:junit", version.ref = "junit" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidxTestExt" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
+mediation-applovin = { module = "com.google.ads.mediation:applovin", version.ref = "adapterApplovin" }
+mediation-unity = { module = "com.google.ads.mediation:unity", version.ref = "adapterUnity" }
+mediation-mintegral = { module = "com.google.ads.mediation:mintegral", version.ref = "adapterMintegral" }
+mediation-vungle = { module = "com.google.ads.mediation:vungle", version.ref = "adapterVungle" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-config = { module = "com.google.firebase:firebase-config" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }

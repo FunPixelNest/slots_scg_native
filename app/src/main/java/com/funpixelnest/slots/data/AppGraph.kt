@@ -272,7 +272,15 @@ class AppGraph(context: Context) {
     val player = PrefsPlayerStore(app.getSharedPreferences("player", Context.MODE_PRIVATE))
     val haptics = com.funpixelnest.slots.audio.Haptics(app, player)
     val sound = SoundPlayer(app, player, haptics)
-    val ads = PlaceholderRewardedAds()
+    /** In-app stand-in video, used when no rewarded ad is ready. */
+    val placeholderAds = PlaceholderRewardedAds()
+    val analytics = com.funpixelnest.slots.ads.Analytics(app)
+    val crashes = com.funpixelnest.slots.ads.Crashes(app)
+    val remote = com.funpixelnest.slots.ads.Remote(app)
+    val adManager = com.funpixelnest.slots.ads.AdManager(app, placeholderAds, analytics)
+    /** Rewarded videos (AdMob + mediation, falling back to the placeholder video). */
+    val ads: RewardedAds = adManager
+    val interstitials = com.funpixelnest.slots.ads.InterstitialRules(adManager, remote)
     val billing: Billing = PlaceholderBilling()
 
     /** Store / piggy bank sheet shown above the current screen. */

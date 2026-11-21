@@ -10,6 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Mintegral SDK (used by the AdMob Mintegral mediation adapter)
+        maven("https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea")
     }
 }
 

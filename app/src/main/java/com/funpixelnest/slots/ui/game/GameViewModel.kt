@@ -163,7 +163,13 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
         if (phase == Phase.Idle || phase == Phase.ShowingWin) spin()
     }
 
+    /** Paid spins pass through the interstitial rule (every N spins, from Remote Config) first. */
     private fun spin() {
+        if (session.freeSpins > 0) doSpin() else graph.interstitials.onSpin { doSpin() }
+    }
+
+    private fun doSpin() {
+        if (phase != Phase.Idle && phase != Phase.ShowingWin) return
         presentJob?.cancel()
         val r = session.spin().getOrElse {
             autoSpinsLeft = 0

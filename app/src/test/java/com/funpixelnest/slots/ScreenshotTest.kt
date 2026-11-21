@@ -204,7 +204,7 @@ class LobbyScreenshotTest : ScreenshotBase() {
     @Test
     fun rewardedVideo() {
         graph.ads.show("free_coins") {}
-        compose.setContent { com.funpixelnest.slots.ui.common.RewardedVideoOverlay(graph.ads) }
+        compose.setContent { com.funpixelnest.slots.ui.common.RewardedVideoOverlay(graph.placeholderAds) }
         settle(1500)
         shot("lobby_06_rewarded_video")
     }

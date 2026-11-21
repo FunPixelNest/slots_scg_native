@@ -75,8 +75,11 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
                 WinTier.MEGA -> "MEGA WIN!"
                 else -> "BIG WIN!"
             }
-            AutoDismiss(3500, vm::dismissPopup)
-            PopupFrame(title, vm::dismissPopup, tone = SkinTone.Gold, sunburst = true) {
+            // every Nth close of a big win popup shows an interstitial (Remote Config)
+            val close = remember(p) { { vm.dismissPopup(); graph.interstitials.onBigWinClose() } }
+            LaunchedEffect(p) { graph.analytics.log("big_win", "tier" to p.tier.name, "coins" to p.coins) }
+            AutoDismiss(3500, close)
+            PopupFrame(title, close, tone = SkinTone.Gold, sunburst = true) {
                 com.funpixelnest.slots.ui.skin.BigCoin(Modifier.size(64.dp))
                 CountingGold(p.coins, 46.sp)
                 Text("COINS", style = outlinedText(14.sp, Skin.TextSoft).copy(letterSpacing = 3.sp))
@@ -96,12 +99,15 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
             }
         }
         is Popup.FreeSpinsDone -> {
-            AutoDismiss(4000, vm::dismissPopup)
-            PopupFrame("Free Spins Over", vm::dismissPopup, tone = SkinTone.Green, sunburst = true) {
+            // every Nth close of the free spins win popup shows an interstitial (Remote Config)
+            val close = remember(p) { { vm.dismissPopup(); graph.interstitials.onFreeSpinsWinClose() } }
+            LaunchedEffect(p) { graph.analytics.log("free_spins_win", "coins" to p.coins) }
+            AutoDismiss(4000, close)
+            PopupFrame("Free Spins Over", close, tone = SkinTone.Green, sunburst = true) {
                 Text("You won", style = outlinedText(14.sp, Skin.TextSoft).copy(shadow = null))
                 com.funpixelnest.slots.ui.skin.BigCoin(Modifier.size(56.dp))
                 CountingGold(p.coins, 40.sp)
-                SkinButton("CONTINUE", Modifier.fillMaxWidth().height(48.dp), tone = SkinTone.Gold) { vm.dismissPopup() }
+                SkinButton("CONTINUE", Modifier.fillMaxWidth().height(48.dp), tone = SkinTone.Gold) { close() }
             }
         }
         is Popup.LevelUp -> RewardClaimDialog(
@@ -110,7 +116,12 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
                 if (p.betUnlocked) Text("Higher bets unlocked", style = outlinedText(13.sp, Skin.Sapphire).copy(shadow = null))
                 p.machines.forEach { Text("New machine: $it", style = outlinedText(13.sp, Skin.Emerald).copy(shadow = null)) }
             },
-        ) { vm.syncCoins(); vm.dismissPopup() }
+        ) { granted ->
+            vm.syncCoins(); vm.dismissPopup()
+            // every Nth close of the level-up popup shows an interstitial (not right after a rewarded video)
+            graph.interstitials.onLevelUpClose(watchedVideo = granted > p.reward)
+            graph.analytics.log("level_up", "level" to p.level)
+        }
         Popup.NoCoins -> RewardClaimDialog(
             graph, "Out of Coins", "Here's a refill to keep playing", PlayerRules.START_COINS,
             extra = {

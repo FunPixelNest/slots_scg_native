@@ -36,6 +36,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // ads (AdMob + mediation) and Remote Config start with the app
+        graph.adManager.start(this)
+        graph.remote.fetch()
+        graph.analytics.log("app_open")
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).apply {
             hide(WindowInsetsCompat.Type.systemBars())
@@ -62,7 +66,10 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("game/{id}") { entry ->
                     val id = entry.arguments?.getString("id").orEmpty()
-                    GameScreen(graph, id, onExit = { nav.popBackStack("lobby", inclusive = false) })
+                    GameScreen(graph, id, onExit = {
+                        nav.popBackStack("lobby", inclusive = false)
+                        graph.interstitials.onHome() // every Nth home tap (Remote Config)
+                    })
                 }
             }
             }
@@ -75,16 +82,18 @@ class MainActivity : ComponentActivity() {
             }
             }
             // safe area for a bottom banner ad on every screen
-            AdBannerSlot()
+            if (com.funpixelnest.slots.ads.isRobolectric) AdBannerSlot()
+            else AdBannerSlot { com.funpixelnest.slots.ads.AdMobBanner() }
             }
             // rewarded videos (machine unlocks, free coins) play above every screen
-            RewardedVideoOverlay(graph.ads)
+            RewardedVideoOverlay(graph.placeholderAds)
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
+        graph.adManager.attach(this)
         graph.sound.onResume()
     }
 
