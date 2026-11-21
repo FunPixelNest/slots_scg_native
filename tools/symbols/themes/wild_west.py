@@ -37,14 +37,19 @@ bag = (
 # ---------------------------------------------------------------- hip flask
 flask = (
     DEFS
-    + '<rect x="110" y="56" width="36" height="22" rx="4" fill="url(#gun)" stroke="#1A2030" stroke-width="5"/>'
-    + '<path d="M114,62 L142,62 M114,70 L142,70" stroke="#5A6478" stroke-width="2.5"/>'
-    + '<path d="M80,90 C80,76 176,76 176,90 L184,184 C184,202 72,202 72,184Z" fill="url(#gun)" stroke="#1A2030" stroke-width="7" stroke-linejoin="round"/>'
-    + '<path d="M90,92 C90,86 108,84 120,84 L112,188 C96,188 84,186 84,180Z" fill="#fff" opacity=".45"/>'
-    + '<path d="M77,118 L179,118 L182,164 L74,164Z" fill="url(#leather)" stroke="#2A1406" stroke-width="5" stroke-linejoin="round"/>'
-    + '<path d="M82,125 L174,125 M80,157 L176,157" stroke="#F4D2A0" stroke-width="2.5" stroke-dasharray="6 5"/>'
-    + star(128, 141, 17, "url(#gold)", "#5A2A00", 3)
-    + '<circle cx="128" cy="141" r="4" fill="url(#turq)" stroke="#04282A" stroke-width="1.5"/>'
+    + '<g transform="rotate(-10 128 130)">'
+    + '<path d="M146,66 C164,62 170,74 162,84" stroke="#1A2030" stroke-width="6" fill="none" stroke-linecap="round"/>'
+    + '<path d="M146,66 C164,62 170,74 162,84" stroke="url(#gun)" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    + '<rect x="116" y="68" width="24" height="18" rx="3" fill="url(#gun)" stroke="#1A2030" stroke-width="5"/>'
+    + '<rect x="108" y="52" width="40" height="20" rx="6" fill="url(#gun)" stroke="#1A2030" stroke-width="5"/>'
+    + '<path d="M114,58 L142,58" stroke="#fff" stroke-width="3" opacity=".8" stroke-linecap="round"/>'
+    + '<path d="M78,110 C78,92 100,86 114,84 L142,84 C156,86 178,92 178,110 L178,184 C178,200 166,204 128,204 C90,204 78,200 78,184Z" fill="url(#gun)" stroke="#1A2030" stroke-width="7" stroke-linejoin="round"/>'
+    + '<path d="M88,110 C88,98 100,94 112,92 L104,196 C94,194 88,190 88,182Z" fill="#fff" opacity=".5"/>'
+    + '<path d="M78,124 L178,124 L178,168 L78,168Z" fill="url(#leather)" stroke="#2A1406" stroke-width="5" stroke-linejoin="round"/>'
+    + '<path d="M82,131 L174,131 M82,161 L174,161" stroke="#F4D2A0" stroke-width="2.5" stroke-dasharray="6 5"/>'
+    + star(128, 146, 17, "url(#gold)", "#5A2A00", 3)
+    + '<circle cx="128" cy="146" r="4" fill="url(#turq)" stroke="#04282A" stroke-width="1.5"/>'
+    + '</g>'
 )
 
 # ---------------------------------------------------------------- revolver
@@ -95,7 +100,7 @@ def sheriff(cx, cy, r):
     balls = "".join(f'<circle cx="{cx + r * math.cos(math.radians(-90 + 60 * i)):.1f}" cy="{cy + r * math.sin(math.radians(-90 + 60 * i)):.1f}" r="{r * .14:.1f}" fill="url(#gold)" stroke="#5A2A00" stroke-width="4"/>' for i in range(6))
     return (f'<polygon points="{pts}" fill="url(#gold)" stroke="#5A2A00" stroke-width="6" stroke-linejoin="round" filter="url(#drop)"/>'
             + balls
-            + f'<circle cx="{cx}" cy="{cy}" r="{r * .42:.1f}" fill="url(#turq)" stroke="#5A2A00" stroke-width="4"/>'
+            + f'<circle cx="{cx}" cy="{cy}" r="{r * .42:.1f}" fill="#C8402A" stroke="#5A2A00" stroke-width="4"/>'
             + star(cx, cy, r * .3, "url(#gold)", "#5A2A00", 3)
             + f'<polygon points="{star_pts(cx, cy, r * .8, 6, .56)}" fill="none" stroke="#B86B00" stroke-width="2.5" stroke-linejoin="round"/>')
 
@@ -124,6 +129,6 @@ SYMBOLS = {
     "flask": medallion("shield", TURQ, flask),
     "gun": medallion("square", DUSK, revolver),
     "hat": medallion("hex", SUNSET, hat),
-    "wild": wild(LEATHER, wild_emblem),
-    "scatter": scatter(TURQ, scatter_emblem, "BONUS"),
+    "wild": wild(TURQ, wild_emblem),
+    "scatter": scatter(DUSK, scatter_emblem, "BONUS"),
 }

@@ -145,9 +145,10 @@ def cracker(rot, h=80):
 
 firecrackers = (
     '<defs>' + lg("crk", [(0, "#FF6A5A"), (.5, "#E0141E"), (1, "#7A0408")], "1", "0") + '</defs>'
+    '<g transform="translate(128,124) scale(1.22) translate(-128,-124)">'
     + cracker(-26, 74) + cracker(26, 74) + cracker(0, 88)
-    + '<path d="M96,132 C110,140 146,140 160,132 L158,146 C146,152 110,152 98,146Z" fill="url(#gold)" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
-    + sparkle(78, 66, .8) + sparkle(186, 92, .6)
+    + '<path d="M96,132 C110,140 146,140 160,132 L158,146 C146,152 110,152 98,146Z" fill="url(#gold)" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/></g>'
+    + sparkle(74, 72, .8) + sparkle(188, 140, .6)
 )
 
 
@@ -162,8 +163,8 @@ SYMBOLS = {
     "a": letter("A", ROYAL, gem(198, 52, 18, "#FFB0B0", "#E0202A", "#7A0408", INK)),
     "coins": medallion("circle", RED, coins),
     "fan": medallion("hex", JADE, fan),
-    "scroll": medallion("square", GOLD, scroll),
+    "scroll": medallion("square", P("#A8E0FF", "#1A6AB0", "#08285A", "#04122E"), scroll),
     "sycee": medallion("shield", RED, sycee),
     "wild": wild(RED, lantern),
-    "scatter": scatter(P("#FFE08A", "#E89A10", "#8A3A00", "#3A1404"), firecrackers, "BONUS"),
+    "scatter": scatter(JADE, firecrackers, "BONUS"),
 }
