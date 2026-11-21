@@ -16,92 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_eg2/gamescreen/symbols/j",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/jblurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/jsheet"
-   }
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_eg2/gamescreen/symbols/q",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/qblurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/qsheet"
-   }
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_eg2/gamescreen/symbols/k",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/kblurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/ksheet"
-   }
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_eg2/gamescreen/symbols/a",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/ablurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/asheet"
-   }
+   "image": "symbols_v2/a"
   },
   {
    "key": "book",
    "name": "Book",
-   "image": "sprites_eg2/gamescreen/symbols/book",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/bookblurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/booksheet"
-   }
+   "image": "symbols_v2/book"
   },
   {
    "key": "scarab",
    "name": "Scarab",
-   "image": "sprites_eg2/gamescreen/symbols/scarab",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/scarabblurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/scarabsheet"
-   }
+   "image": "symbols_v2/scarab"
   },
   {
    "key": "scroll",
    "name": "Scroll",
-   "image": "sprites_eg2/gamescreen/symbols/scroll",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/scrollblurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/scrollsheet"
-   }
+   "image": "symbols_v2/scroll"
   },
   {
    "key": "vase",
    "name": "Vase",
-   "image": "sprites_eg2/gamescreen/symbols/vase",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/vaseblurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/vasesheet"
-   }
+   "image": "symbols_v2/vase"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_eg2/gamescreen/symbols/wild",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_eg2/gamescreen/symbols/scatter",
-   "blur": "sprites_eg2/gamescreen/symbolsblurred/scatterblurred",
-   "anim": {
-    "sheet": "sprites_eg2/animations/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

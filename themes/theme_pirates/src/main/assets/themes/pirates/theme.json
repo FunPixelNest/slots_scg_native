@@ -16,52 +16,52 @@
   {
    "key": "cross",
    "name": "Cross",
-   "image": "sprites_pirates/game_screen/symbols/cross"
+   "image": "symbols_v2/cross"
   },
   {
    "key": "diamonds",
    "name": "Diamonds",
-   "image": "sprites_pirates/game_screen/symbols/diamonds"
+   "image": "symbols_v2/diamonds"
   },
   {
    "key": "hearts",
    "name": "Hearts",
-   "image": "sprites_pirates/game_screen/symbols/hearts"
+   "image": "symbols_v2/hearts"
   },
   {
    "key": "peaks",
    "name": "Peaks",
-   "image": "sprites_pirates/game_screen/symbols/peaks"
+   "image": "symbols_v2/peaks"
   },
   {
    "key": "bag",
    "name": "Bag",
-   "image": "sprites_pirates/game_screen/symbols/bag"
+   "image": "symbols_v2/bag"
   },
   {
    "key": "pistol",
    "name": "Pistol",
-   "image": "sprites_pirates/game_screen/symbols/pistol"
+   "image": "symbols_v2/pistol"
   },
   {
    "key": "saber",
    "name": "Saber",
-   "image": "sprites_pirates/game_screen/symbols/saber"
+   "image": "symbols_v2/saber"
   },
   {
    "key": "smoke",
    "name": "Smoke",
-   "image": "sprites_pirates/game_screen/symbols/smoke"
+   "image": "symbols_v2/smoke"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_pirates/game_screen/symbols/wild"
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_pirates/game_screen/symbols/scatter"
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

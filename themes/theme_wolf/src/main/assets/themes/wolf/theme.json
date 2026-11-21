@@ -16,92 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_wolf/gamescreen/symbols/j",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/jblurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/jsheet"
-   }
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_wolf/gamescreen/symbols/q",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/qblurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/qsheet"
-   }
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_wolf/gamescreen/symbols/k",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/kblurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/ksheet"
-   }
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_wolf/gamescreen/symbols/a",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/ablurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/asheet"
-   }
+   "image": "symbols_v2/a"
   },
   {
    "key": "agaric",
    "name": "Agaric",
-   "image": "sprites_wolf/gamescreen/symbols/agaric",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/agaricblurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/agaricsheet"
-   }
+   "image": "symbols_v2/agaric"
   },
   {
    "key": "compass",
    "name": "Compass",
-   "image": "sprites_wolf/gamescreen/symbols/compass",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/compassblurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/compasssheet"
-   }
+   "image": "symbols_v2/compass"
   },
   {
    "key": "cone",
    "name": "Cone",
-   "image": "sprites_wolf/gamescreen/symbols/cone",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/coneblurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/conesheet"
-   }
+   "image": "symbols_v2/cone"
   },
   {
    "key": "tooth",
    "name": "Tooth",
-   "image": "sprites_wolf/gamescreen/symbols/tooth",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/toothblurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/toothsheet"
-   }
+   "image": "symbols_v2/tooth"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_wolf/gamescreen/symbols/wild",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_wolf/gamescreen/symbols/scatter",
-   "blur": "sprites_wolf/gamescreen/symbolsblurred/scatterblurred",
-   "anim": {
-    "sheet": "sprites_wolf/animations/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

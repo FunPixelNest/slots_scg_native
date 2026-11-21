@@ -16,92 +16,52 @@
   {
    "key": "apple",
    "name": "Apple",
-   "image": "sprites_fa/gamescreen/symbols/apple",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/appleblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/applesheet"
-   }
+   "image": "symbols_v2/apple"
   },
   {
    "key": "beet",
    "name": "Beet",
-   "image": "sprites_fa/gamescreen/symbols/beet",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/beetblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/beetsheet"
-   }
+   "image": "symbols_v2/beet"
   },
   {
    "key": "cow",
    "name": "Cow",
-   "image": "sprites_fa/gamescreen/symbols/cow",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/cowblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/cowsheet"
-   }
+   "image": "symbols_v2/cow"
   },
   {
    "key": "hen",
    "name": "Hen",
-   "image": "sprites_fa/gamescreen/symbols/hen",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/henblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/hensheet"
-   }
+   "image": "symbols_v2/hen"
   },
   {
    "key": "pig",
    "name": "Pig",
-   "image": "sprites_fa/gamescreen/symbols/pig",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/pigblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/pigsheet"
-   }
+   "image": "symbols_v2/pig"
   },
   {
    "key": "pumpkin",
    "name": "Pumpkin",
-   "image": "sprites_fa/gamescreen/symbols/pumpkin",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/pumpkinblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/pumpkinsheet"
-   }
+   "image": "symbols_v2/pumpkin"
   },
   {
    "key": "sheep",
    "name": "Sheep",
-   "image": "sprites_fa/gamescreen/symbols/sheep",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/sheepblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/sheepsheet"
-   }
+   "image": "symbols_v2/sheep"
   },
   {
    "key": "tomato",
    "name": "Tomato",
-   "image": "sprites_fa/gamescreen/symbols/tomato",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/tomatoblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/tomatosheet"
-   }
+   "image": "symbols_v2/tomato"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_fa/gamescreen/symbols/wild",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_fa/gamescreen/symbols/scatter",
-   "blur": "sprites_fa/gamescreen/symbolsblurred/scatterblurred",
-   "anim": {
-    "sheet": "sprites_fa/animations/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

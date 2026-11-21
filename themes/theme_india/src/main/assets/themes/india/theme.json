@@ -16,52 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_indian/game_screen/symbols/j"
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_indian/game_screen/symbols/q"
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_indian/game_screen/symbols/k"
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_indian/game_screen/symbols/a"
+   "image": "symbols_v2/a"
   },
   {
    "key": "elephant",
    "name": "Elephant",
-   "image": "sprites_indian/game_screen/symbols/elephant"
+   "image": "symbols_v2/elephant"
   },
   {
    "key": "monkey",
    "name": "Monkey",
-   "image": "sprites_indian/game_screen/symbols/monkey"
+   "image": "symbols_v2/monkey"
   },
   {
    "key": "peacock",
    "name": "Peacock",
-   "image": "sprites_indian/game_screen/symbols/peacock"
+   "image": "symbols_v2/peacock"
   },
   {
    "key": "tiger",
    "name": "Tiger",
-   "image": "sprites_indian/game_screen/symbols/tiger"
+   "image": "symbols_v2/tiger"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_indian/game_screen/symbols/wild"
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_indian/game_screen/symbols/scatter"
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

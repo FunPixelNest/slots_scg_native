@@ -16,92 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_gm/gamescreen/symbols/j",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/jblurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/jsheet"
-   }
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_gm/gamescreen/symbols/q",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/qblurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/qsheet"
-   }
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_gm/gamescreen/symbols/k",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/kblurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/ksheet"
-   }
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_gm/gamescreen/symbols/a",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/ablurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/asheet"
-   }
+   "image": "symbols_v2/a"
   },
   {
    "key": "gold",
    "name": "Gold",
-   "image": "sprites_gm/gamescreen/symbols/gold",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/goldblurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/goldsheet"
-   }
+   "image": "symbols_v2/gold"
   },
   {
    "key": "lantern",
    "name": "Lantern",
-   "image": "sprites_gm/gamescreen/symbols/lantern",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/lanternblurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/lanternsheet"
-   }
+   "image": "symbols_v2/lantern"
   },
   {
    "key": "minecart",
    "name": "Minecart",
-   "image": "sprites_gm/gamescreen/symbols/minecart",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/minecartblurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/minecartsheet"
-   }
+   "image": "symbols_v2/minecart"
   },
   {
    "key": "pickaxe",
    "name": "Pickaxe",
-   "image": "sprites_gm/gamescreen/symbols/pickaxe",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/pickaxeblurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/pickaxesheet"
-   }
+   "image": "symbols_v2/pickaxe"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_gm/gamescreen/symbols/wild",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_gm/gamescreen/symbols/scatter",
-   "blur": "sprites_gm/gamescreen/symbolsblurred/scatterblurred",
-   "anim": {
-    "sheet": "sprites_gm/animations/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

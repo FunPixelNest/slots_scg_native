@@ -16,332 +16,52 @@
   {
    "key": "club",
    "name": "Club",
-   "image": "sprites_greek/game_screen/symbols/club",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/club/club_01",
-     "sprites_greek/animations/club/club_02",
-     "sprites_greek/animations/club/club_03",
-     "sprites_greek/animations/club/club_04",
-     "sprites_greek/animations/club/club_05",
-     "sprites_greek/animations/club/club_06",
-     "sprites_greek/animations/club/club_07",
-     "sprites_greek/animations/club/club_08",
-     "sprites_greek/animations/club/club_09",
-     "sprites_greek/animations/club/club_10",
-     "sprites_greek/animations/club/club_11",
-     "sprites_greek/animations/club/club_12",
-     "sprites_greek/animations/club/club_13",
-     "sprites_greek/animations/club/club_14",
-     "sprites_greek/animations/club/club_15",
-     "sprites_greek/animations/club/club_16",
-     "sprites_greek/animations/club/club_17",
-     "sprites_greek/animations/club/club_18",
-     "sprites_greek/animations/club/club_19",
-     "sprites_greek/animations/club/club_20",
-     "sprites_greek/animations/club/club_21",
-     "sprites_greek/animations/club/club_22",
-     "sprites_greek/animations/club/club_23",
-     "sprites_greek/animations/club/club_24"
-    ]
-   }
+   "image": "symbols_v2/club"
   },
   {
    "key": "diamond",
    "name": "Diamond",
-   "image": "sprites_greek/game_screen/symbols/diamond",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/diamond/diamond_01",
-     "sprites_greek/animations/diamond/diamond_02",
-     "sprites_greek/animations/diamond/diamond_03",
-     "sprites_greek/animations/diamond/diamond_04",
-     "sprites_greek/animations/diamond/diamond_05",
-     "sprites_greek/animations/diamond/diamond_06",
-     "sprites_greek/animations/diamond/diamond_07",
-     "sprites_greek/animations/diamond/diamond_08",
-     "sprites_greek/animations/diamond/diamond_09",
-     "sprites_greek/animations/diamond/diamond_10",
-     "sprites_greek/animations/diamond/diamond_11",
-     "sprites_greek/animations/diamond/diamond_12",
-     "sprites_greek/animations/diamond/diamond_13",
-     "sprites_greek/animations/diamond/diamond_14",
-     "sprites_greek/animations/diamond/diamond_15",
-     "sprites_greek/animations/diamond/diamond_16",
-     "sprites_greek/animations/diamond/diamond_17",
-     "sprites_greek/animations/diamond/diamond_18",
-     "sprites_greek/animations/diamond/diamond_19",
-     "sprites_greek/animations/diamond/diamond_20",
-     "sprites_greek/animations/diamond/diamond_21",
-     "sprites_greek/animations/diamond/diamond_22",
-     "sprites_greek/animations/diamond/diamond_23",
-     "sprites_greek/animations/diamond/diamond_24"
-    ]
-   }
+   "image": "symbols_v2/diamond"
   },
   {
    "key": "heart",
    "name": "Heart",
-   "image": "sprites_greek/game_screen/symbols/heart",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/heart/heart_01",
-     "sprites_greek/animations/heart/heart_02",
-     "sprites_greek/animations/heart/heart_03",
-     "sprites_greek/animations/heart/heart_04",
-     "sprites_greek/animations/heart/heart_05",
-     "sprites_greek/animations/heart/heart_06",
-     "sprites_greek/animations/heart/heart_07",
-     "sprites_greek/animations/heart/heart_08",
-     "sprites_greek/animations/heart/heart_09",
-     "sprites_greek/animations/heart/heart_10",
-     "sprites_greek/animations/heart/heart_11",
-     "sprites_greek/animations/heart/heart_12",
-     "sprites_greek/animations/heart/heart_13",
-     "sprites_greek/animations/heart/heart_14",
-     "sprites_greek/animations/heart/heart_15",
-     "sprites_greek/animations/heart/heart_16",
-     "sprites_greek/animations/heart/heart_17",
-     "sprites_greek/animations/heart/heart_18",
-     "sprites_greek/animations/heart/heart_19",
-     "sprites_greek/animations/heart/heart_20",
-     "sprites_greek/animations/heart/heart_21",
-     "sprites_greek/animations/heart/heart_22",
-     "sprites_greek/animations/heart/heart_23",
-     "sprites_greek/animations/heart/heart_24"
-    ]
-   }
+   "image": "symbols_v2/heart"
   },
   {
    "key": "spade",
    "name": "Spade",
-   "image": "sprites_greek/game_screen/symbols/spade",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/spade/spade_01",
-     "sprites_greek/animations/spade/spade_02",
-     "sprites_greek/animations/spade/spade_03",
-     "sprites_greek/animations/spade/spade_04",
-     "sprites_greek/animations/spade/spade_05",
-     "sprites_greek/animations/spade/spade_06",
-     "sprites_greek/animations/spade/spade_07",
-     "sprites_greek/animations/spade/spade_08",
-     "sprites_greek/animations/spade/spade_09",
-     "sprites_greek/animations/spade/spade_10",
-     "sprites_greek/animations/spade/spade_11",
-     "sprites_greek/animations/spade/spade_12",
-     "sprites_greek/animations/spade/spade_13",
-     "sprites_greek/animations/spade/spade_14",
-     "sprites_greek/animations/spade/spade_15",
-     "sprites_greek/animations/spade/spade_16",
-     "sprites_greek/animations/spade/spade_17",
-     "sprites_greek/animations/spade/spade_18",
-     "sprites_greek/animations/spade/spade_19",
-     "sprites_greek/animations/spade/spade_20",
-     "sprites_greek/animations/spade/spade_21",
-     "sprites_greek/animations/spade/spade_22",
-     "sprites_greek/animations/spade/spade_23",
-     "sprites_greek/animations/spade/spade_24"
-    ]
-   }
+   "image": "symbols_v2/spade"
   },
   {
    "key": "alpha",
    "name": "Alpha",
-   "image": "sprites_greek/game_screen/symbols/alpha",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/alpha/alpha_01",
-     "sprites_greek/animations/alpha/alpha_02",
-     "sprites_greek/animations/alpha/alpha_03",
-     "sprites_greek/animations/alpha/alpha_04",
-     "sprites_greek/animations/alpha/alpha_05",
-     "sprites_greek/animations/alpha/alpha_06",
-     "sprites_greek/animations/alpha/alpha_07",
-     "sprites_greek/animations/alpha/alpha_08",
-     "sprites_greek/animations/alpha/alpha_09",
-     "sprites_greek/animations/alpha/alpha_10",
-     "sprites_greek/animations/alpha/alpha_11",
-     "sprites_greek/animations/alpha/alpha_12",
-     "sprites_greek/animations/alpha/alpha_13",
-     "sprites_greek/animations/alpha/alpha_14",
-     "sprites_greek/animations/alpha/alpha_15",
-     "sprites_greek/animations/alpha/alpha_16",
-     "sprites_greek/animations/alpha/alpha_17",
-     "sprites_greek/animations/alpha/alpha_18",
-     "sprites_greek/animations/alpha/alpha_19",
-     "sprites_greek/animations/alpha/alpha_20",
-     "sprites_greek/animations/alpha/alpha_21",
-     "sprites_greek/animations/alpha/alpha_22",
-     "sprites_greek/animations/alpha/alpha_23",
-     "sprites_greek/animations/alpha/alpha_24"
-    ]
-   }
+   "image": "symbols_v2/alpha"
   },
   {
    "key": "beta",
    "name": "Beta",
-   "image": "sprites_greek/game_screen/symbols/beta",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/beta/beta_01",
-     "sprites_greek/animations/beta/beta_02",
-     "sprites_greek/animations/beta/beta_03",
-     "sprites_greek/animations/beta/beta_04",
-     "sprites_greek/animations/beta/beta_05",
-     "sprites_greek/animations/beta/beta_06",
-     "sprites_greek/animations/beta/beta_07",
-     "sprites_greek/animations/beta/beta_08",
-     "sprites_greek/animations/beta/beta_09",
-     "sprites_greek/animations/beta/beta_10",
-     "sprites_greek/animations/beta/beta_11",
-     "sprites_greek/animations/beta/beta_12",
-     "sprites_greek/animations/beta/beta_13",
-     "sprites_greek/animations/beta/beta_14",
-     "sprites_greek/animations/beta/beta_15",
-     "sprites_greek/animations/beta/beta_16",
-     "sprites_greek/animations/beta/beta_17",
-     "sprites_greek/animations/beta/beta_18",
-     "sprites_greek/animations/beta/beta_19",
-     "sprites_greek/animations/beta/beta_20",
-     "sprites_greek/animations/beta/beta_21",
-     "sprites_greek/animations/beta/beta_22",
-     "sprites_greek/animations/beta/beta_23",
-     "sprites_greek/animations/beta/beta_24"
-    ]
-   }
+   "image": "symbols_v2/beta"
   },
   {
    "key": "psi",
    "name": "Psi",
-   "image": "sprites_greek/game_screen/symbols/psi",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/psi/psi_01",
-     "sprites_greek/animations/psi/psi_02",
-     "sprites_greek/animations/psi/psi_03",
-     "sprites_greek/animations/psi/psi_04",
-     "sprites_greek/animations/psi/psi_05",
-     "sprites_greek/animations/psi/psi_06",
-     "sprites_greek/animations/psi/psi_07",
-     "sprites_greek/animations/psi/psi_08",
-     "sprites_greek/animations/psi/psi_09",
-     "sprites_greek/animations/psi/psi_10",
-     "sprites_greek/animations/psi/psi_11",
-     "sprites_greek/animations/psi/psi_12",
-     "sprites_greek/animations/psi/psi_13",
-     "sprites_greek/animations/psi/psi_14",
-     "sprites_greek/animations/psi/psi_15",
-     "sprites_greek/animations/psi/psi_16",
-     "sprites_greek/animations/psi/psi_17",
-     "sprites_greek/animations/psi/psi_18",
-     "sprites_greek/animations/psi/psi_19",
-     "sprites_greek/animations/psi/psi_20",
-     "sprites_greek/animations/psi/psi_21",
-     "sprites_greek/animations/psi/psi_22",
-     "sprites_greek/animations/psi/psi_23",
-     "sprites_greek/animations/psi/psi_24"
-    ]
-   }
+   "image": "symbols_v2/psi"
   },
   {
    "key": "sigma",
    "name": "Sigma",
-   "image": "sprites_greek/game_screen/symbols/sigma",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/sigma/sigma_01",
-     "sprites_greek/animations/sigma/sigma_02",
-     "sprites_greek/animations/sigma/sigma_03",
-     "sprites_greek/animations/sigma/sigma_04",
-     "sprites_greek/animations/sigma/sigma_05",
-     "sprites_greek/animations/sigma/sigma_06",
-     "sprites_greek/animations/sigma/sigma_07",
-     "sprites_greek/animations/sigma/sigma_08",
-     "sprites_greek/animations/sigma/sigma_09",
-     "sprites_greek/animations/sigma/sigma_10",
-     "sprites_greek/animations/sigma/sigma_11",
-     "sprites_greek/animations/sigma/sigma_12",
-     "sprites_greek/animations/sigma/sigma_13",
-     "sprites_greek/animations/sigma/sigma_14",
-     "sprites_greek/animations/sigma/sigma_15",
-     "sprites_greek/animations/sigma/sigma_16",
-     "sprites_greek/animations/sigma/sigma_17",
-     "sprites_greek/animations/sigma/sigma_18",
-     "sprites_greek/animations/sigma/sigma_19",
-     "sprites_greek/animations/sigma/sigma_20",
-     "sprites_greek/animations/sigma/sigma_21",
-     "sprites_greek/animations/sigma/sigma_22",
-     "sprites_greek/animations/sigma/sigma_23",
-     "sprites_greek/animations/sigma/sigma_24"
-    ]
-   }
+   "image": "symbols_v2/sigma"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_greek/game_screen/symbols/wild",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/wild/wild_01",
-     "sprites_greek/animations/wild/wild_02",
-     "sprites_greek/animations/wild/wild_03",
-     "sprites_greek/animations/wild/wild_04",
-     "sprites_greek/animations/wild/wild_05",
-     "sprites_greek/animations/wild/wild_06",
-     "sprites_greek/animations/wild/wild_07",
-     "sprites_greek/animations/wild/wild_08",
-     "sprites_greek/animations/wild/wild_09",
-     "sprites_greek/animations/wild/wild_10",
-     "sprites_greek/animations/wild/wild_11",
-     "sprites_greek/animations/wild/wild_12",
-     "sprites_greek/animations/wild/wild_13",
-     "sprites_greek/animations/wild/wild_14",
-     "sprites_greek/animations/wild/wild_15",
-     "sprites_greek/animations/wild/wild_16",
-     "sprites_greek/animations/wild/wild_17",
-     "sprites_greek/animations/wild/wild_18",
-     "sprites_greek/animations/wild/wild_19",
-     "sprites_greek/animations/wild/wild_20",
-     "sprites_greek/animations/wild/wild_21",
-     "sprites_greek/animations/wild/wild_22",
-     "sprites_greek/animations/wild/wild_23",
-     "sprites_greek/animations/wild/wild_24"
-    ]
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_greek/game_screen/symbols/scatter",
-   "anim": {
-    "frames": [
-     "sprites_greek/animations/scatter/scatter_01",
-     "sprites_greek/animations/scatter/scatter_02",
-     "sprites_greek/animations/scatter/scatter_03",
-     "sprites_greek/animations/scatter/scatter_04",
-     "sprites_greek/animations/scatter/scatter_05",
-     "sprites_greek/animations/scatter/scatter_06",
-     "sprites_greek/animations/scatter/scatter_07",
-     "sprites_greek/animations/scatter/scatter_08",
-     "sprites_greek/animations/scatter/scatter_09",
-     "sprites_greek/animations/scatter/scatter_10",
-     "sprites_greek/animations/scatter/scatter_11",
-     "sprites_greek/animations/scatter/scatter_12",
-     "sprites_greek/animations/scatter/scatter_13",
-     "sprites_greek/animations/scatter/scatter_14",
-     "sprites_greek/animations/scatter/scatter_15",
-     "sprites_greek/animations/scatter/scatter_16",
-     "sprites_greek/animations/scatter/scatter_17",
-     "sprites_greek/animations/scatter/scatter_18",
-     "sprites_greek/animations/scatter/scatter_19",
-     "sprites_greek/animations/scatter/scatter_20",
-     "sprites_greek/animations/scatter/scatter_21",
-     "sprites_greek/animations/scatter/scatter_22",
-     "sprites_greek/animations/scatter/scatter_23",
-     "sprites_greek/animations/scatter/scatter_24"
-    ]
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

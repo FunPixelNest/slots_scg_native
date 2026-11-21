@@ -74,7 +74,7 @@ monkey = (
 )
 
 
-def feather(ang, dist=76, cx=128, cy=142, w=19, h=30):
+def feather(ang, dist=70, cx=128, cy=142, w=19, h=30):
     x = cx + dist * math.cos(math.radians(ang))
     y = cy + dist * math.sin(math.radians(ang))
     rot = ang + 90
@@ -88,7 +88,7 @@ def feather(ang, dist=76, cx=128, cy=142, w=19, h=30):
 
 peacock = (
     rgd("pFeat", "#9AF0A0", "#2AA84A", "#0A5A2A") + lgd("pBody", "#7AD8FF", "#1A6AD8", "#0A2A7A", x2="1", y2="1")
-    + "".join(feather(a) for a in (-190, -164, -138, -112, -86, -60, -34, -8, 16, 168))
+    + "".join(feather(a) for a in (-186, -160, -134, -108, -82, -56, -30, -4))
     + "".join(feather(a, 46, w=13, h=20) for a in (-165, -140, -115, -90, -65, -40, -15))
     # body
     + '<path d="M128,206 C102,206 96,176 108,156 C114,144 118,126 116,104 C114,86 122,74 134,74 C146,74 150,90 142,102 C134,116 140,134 148,152 C160,180 154,206 128,206Z" fill="url(#pBody)" stroke="#06143A" stroke-width="7" stroke-linejoin="round"/>'

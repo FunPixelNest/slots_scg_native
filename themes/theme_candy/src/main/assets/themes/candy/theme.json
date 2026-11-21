@@ -16,68 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_candy/game_screen/symbols/j",
-   "blur": "sprites_candy/game_screen/symbolsblurred/jblurred"
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_candy/game_screen/symbols/q",
-   "blur": "sprites_candy/game_screen/symbolsblurred/qblurred"
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_candy/game_screen/symbols/k",
-   "blur": "sprites_candy/game_screen/symbolsblurred/kblurred"
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_candy/game_screen/symbols/a",
-   "blur": "sprites_candy/game_screen/symbolsblurred/ablurred"
+   "image": "symbols_v2/a"
   },
   {
    "key": "brown",
    "name": "Brown",
-   "image": "sprites_candy/game_screen/symbols/brown",
-   "blur": "sprites_candy/game_screen/symbolsblurred/brownblurred"
+   "image": "symbols_v2/brown"
   },
   {
    "key": "lily",
    "name": "Lily",
-   "image": "sprites_candy/game_screen/symbols/lily",
-   "blur": "sprites_candy/game_screen/symbolsblurred/lilyblurred"
+   "image": "symbols_v2/lily"
   },
   {
    "key": "pink",
    "name": "Pink",
-   "image": "sprites_candy/game_screen/symbols/pink",
-   "blur": "sprites_candy/game_screen/symbolsblurred/pinkblurred"
+   "image": "symbols_v2/pink"
   },
   {
    "key": "red",
    "name": "Red",
-   "image": "sprites_candy/game_screen/symbols/red",
-   "blur": "sprites_candy/game_screen/symbolsblurred/redblurred"
+   "image": "symbols_v2/red"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_candy/game_screen/symbols/wild",
-   "blur": "sprites_candy/game_screen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_candy/animations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_candy/game_screen/symbols/scatter",
-   "blur": "sprites_candy/game_screen/symbolsblurred/scatterblurred",
-   "anim": {
-    "sheet": "sprites_candy/animations/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

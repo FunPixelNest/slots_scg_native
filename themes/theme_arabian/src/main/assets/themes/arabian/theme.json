@@ -16,92 +16,52 @@
   {
    "key": "crosses",
    "name": "Crosses",
-   "image": "sprites_arabic/gamescreen/symbols/crosses",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/crossesblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/crossessheet"
-   }
+   "image": "symbols_v2/crosses"
   },
   {
    "key": "diamonds",
    "name": "Diamonds",
-   "image": "sprites_arabic/gamescreen/symbols/diamonds",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/diamondsblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/diamondssheet"
-   }
+   "image": "symbols_v2/diamonds"
   },
   {
    "key": "hearts",
    "name": "Hearts",
-   "image": "sprites_arabic/gamescreen/symbols/hearts",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/heartsblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/heartssheet"
-   }
+   "image": "symbols_v2/hearts"
   },
   {
    "key": "spades",
    "name": "Spades",
-   "image": "sprites_arabic/gamescreen/symbols/spades",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/spadesblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/spadessheet"
-   }
+   "image": "symbols_v2/spades"
   },
   {
    "key": "dagger",
    "name": "Dagger",
-   "image": "sprites_arabic/gamescreen/symbols/dagger",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/daggerblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/daggersheet"
-   }
+   "image": "symbols_v2/dagger"
   },
   {
    "key": "ring",
    "name": "Ring",
-   "image": "sprites_arabic/gamescreen/symbols/ring",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/ringblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/ringsheet"
-   }
+   "image": "symbols_v2/ring"
   },
   {
    "key": "shoes",
    "name": "Shoes",
-   "image": "sprites_arabic/gamescreen/symbols/shoes",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/shoesblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/shoessheet"
-   }
+   "image": "symbols_v2/shoes"
   },
   {
    "key": "tombak",
    "name": "Tombak",
-   "image": "sprites_arabic/gamescreen/symbols/tombak",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/tombakblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/tombaksheet"
-   }
+   "image": "symbols_v2/tombak"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_arabic/gamescreen/symbols/wild",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_arabic/gamescreen/symbols/scatter",
-   "blur": "sprites_arabic/gamescreen/symbolsblurred/scatterblurred",
-   "anim": {
-    "sheet": "sprites_arabic/animations/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

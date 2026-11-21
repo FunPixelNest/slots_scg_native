@@ -16,332 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_egypt/game_screen/symbols/j",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/j/j_01",
-     "sprites_egypt/animations/j/j_03",
-     "sprites_egypt/animations/j/j_05",
-     "sprites_egypt/animations/j/j_07",
-     "sprites_egypt/animations/j/j_09",
-     "sprites_egypt/animations/j/j_11",
-     "sprites_egypt/animations/j/j_13",
-     "sprites_egypt/animations/j/j_15",
-     "sprites_egypt/animations/j/j_17",
-     "sprites_egypt/animations/j/j_19",
-     "sprites_egypt/animations/j/j_21",
-     "sprites_egypt/animations/j/j_23",
-     "sprites_egypt/animations/j/j_25",
-     "sprites_egypt/animations/j/j_27",
-     "sprites_egypt/animations/j/j_29",
-     "sprites_egypt/animations/j/j_31",
-     "sprites_egypt/animations/j/j_33",
-     "sprites_egypt/animations/j/j_35",
-     "sprites_egypt/animations/j/j_37",
-     "sprites_egypt/animations/j/j_39",
-     "sprites_egypt/animations/j/j_41",
-     "sprites_egypt/animations/j/j_43",
-     "sprites_egypt/animations/j/j_45",
-     "sprites_egypt/animations/j/j_47"
-    ]
-   }
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_egypt/game_screen/symbols/q",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/q/q_01",
-     "sprites_egypt/animations/q/q_03",
-     "sprites_egypt/animations/q/q_05",
-     "sprites_egypt/animations/q/q_07",
-     "sprites_egypt/animations/q/q_09",
-     "sprites_egypt/animations/q/q_11",
-     "sprites_egypt/animations/q/q_13",
-     "sprites_egypt/animations/q/q_15",
-     "sprites_egypt/animations/q/q_17",
-     "sprites_egypt/animations/q/q_19",
-     "sprites_egypt/animations/q/q_21",
-     "sprites_egypt/animations/q/q_23",
-     "sprites_egypt/animations/q/q_25",
-     "sprites_egypt/animations/q/q_27",
-     "sprites_egypt/animations/q/q_29",
-     "sprites_egypt/animations/q/q_31",
-     "sprites_egypt/animations/q/q_33",
-     "sprites_egypt/animations/q/q_35",
-     "sprites_egypt/animations/q/q_37",
-     "sprites_egypt/animations/q/q_39",
-     "sprites_egypt/animations/q/q_41",
-     "sprites_egypt/animations/q/q_43",
-     "sprites_egypt/animations/q/q_45",
-     "sprites_egypt/animations/q/q_47"
-    ]
-   }
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_egypt/game_screen/symbols/k",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/k/k_01",
-     "sprites_egypt/animations/k/k_03",
-     "sprites_egypt/animations/k/k_05",
-     "sprites_egypt/animations/k/k_07",
-     "sprites_egypt/animations/k/k_09",
-     "sprites_egypt/animations/k/k_11",
-     "sprites_egypt/animations/k/k_13",
-     "sprites_egypt/animations/k/k_15",
-     "sprites_egypt/animations/k/k_17",
-     "sprites_egypt/animations/k/k_19",
-     "sprites_egypt/animations/k/k_21",
-     "sprites_egypt/animations/k/k_23",
-     "sprites_egypt/animations/k/k_25",
-     "sprites_egypt/animations/k/k_27",
-     "sprites_egypt/animations/k/k_29",
-     "sprites_egypt/animations/k/k_31",
-     "sprites_egypt/animations/k/k_33",
-     "sprites_egypt/animations/k/k_35",
-     "sprites_egypt/animations/k/k_37",
-     "sprites_egypt/animations/k/k_39",
-     "sprites_egypt/animations/k/k_41",
-     "sprites_egypt/animations/k/k_43",
-     "sprites_egypt/animations/k/k_45",
-     "sprites_egypt/animations/k/k_47"
-    ]
-   }
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_egypt/game_screen/symbols/a",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/a/a_01",
-     "sprites_egypt/animations/a/a_03",
-     "sprites_egypt/animations/a/a_05",
-     "sprites_egypt/animations/a/a_07",
-     "sprites_egypt/animations/a/a_09",
-     "sprites_egypt/animations/a/a_11",
-     "sprites_egypt/animations/a/a_13",
-     "sprites_egypt/animations/a/a_15",
-     "sprites_egypt/animations/a/a_17",
-     "sprites_egypt/animations/a/a_19",
-     "sprites_egypt/animations/a/a_21",
-     "sprites_egypt/animations/a/a_23",
-     "sprites_egypt/animations/a/a_25",
-     "sprites_egypt/animations/a/a_27",
-     "sprites_egypt/animations/a/a_29",
-     "sprites_egypt/animations/a/a_31",
-     "sprites_egypt/animations/a/a_33",
-     "sprites_egypt/animations/a/a_35",
-     "sprites_egypt/animations/a/a_37",
-     "sprites_egypt/animations/a/a_39",
-     "sprites_egypt/animations/a/a_41",
-     "sprites_egypt/animations/a/a_43",
-     "sprites_egypt/animations/a/a_45",
-     "sprites_egypt/animations/a/a_47"
-    ]
-   }
+   "image": "symbols_v2/a"
   },
   {
    "key": "ankh",
    "name": "Ankh",
-   "image": "sprites_egypt/game_screen/symbols/ankh",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/ankh/ankh_01",
-     "sprites_egypt/animations/ankh/ankh_03",
-     "sprites_egypt/animations/ankh/ankh_05",
-     "sprites_egypt/animations/ankh/ankh_07",
-     "sprites_egypt/animations/ankh/ankh_09",
-     "sprites_egypt/animations/ankh/ankh_11",
-     "sprites_egypt/animations/ankh/ankh_13",
-     "sprites_egypt/animations/ankh/ankh_15",
-     "sprites_egypt/animations/ankh/ankh_17",
-     "sprites_egypt/animations/ankh/ankh_19",
-     "sprites_egypt/animations/ankh/ankh_21",
-     "sprites_egypt/animations/ankh/ankh_23",
-     "sprites_egypt/animations/ankh/ankh_25",
-     "sprites_egypt/animations/ankh/ankh_27",
-     "sprites_egypt/animations/ankh/ankh_29",
-     "sprites_egypt/animations/ankh/ankh_31",
-     "sprites_egypt/animations/ankh/ankh_33",
-     "sprites_egypt/animations/ankh/ankh_35",
-     "sprites_egypt/animations/ankh/ankh_37",
-     "sprites_egypt/animations/ankh/ankh_39",
-     "sprites_egypt/animations/ankh/ankh_41",
-     "sprites_egypt/animations/ankh/ankh_43",
-     "sprites_egypt/animations/ankh/ankh_45",
-     "sprites_egypt/animations/ankh/ankh_47"
-    ]
-   }
+   "image": "symbols_v2/ankh"
   },
   {
    "key": "eye",
    "name": "Eye",
-   "image": "sprites_egypt/game_screen/symbols/eye",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/eye/eye_01",
-     "sprites_egypt/animations/eye/eye_03",
-     "sprites_egypt/animations/eye/eye_05",
-     "sprites_egypt/animations/eye/eye_07",
-     "sprites_egypt/animations/eye/eye_09",
-     "sprites_egypt/animations/eye/eye_11",
-     "sprites_egypt/animations/eye/eye_13",
-     "sprites_egypt/animations/eye/eye_15",
-     "sprites_egypt/animations/eye/eye_17",
-     "sprites_egypt/animations/eye/eye_19",
-     "sprites_egypt/animations/eye/eye_21",
-     "sprites_egypt/animations/eye/eye_23",
-     "sprites_egypt/animations/eye/eye_25",
-     "sprites_egypt/animations/eye/eye_27",
-     "sprites_egypt/animations/eye/eye_29",
-     "sprites_egypt/animations/eye/eye_31",
-     "sprites_egypt/animations/eye/eye_33",
-     "sprites_egypt/animations/eye/eye_35",
-     "sprites_egypt/animations/eye/eye_37",
-     "sprites_egypt/animations/eye/eye_39",
-     "sprites_egypt/animations/eye/eye_41",
-     "sprites_egypt/animations/eye/eye_43",
-     "sprites_egypt/animations/eye/eye_45",
-     "sprites_egypt/animations/eye/eye_47"
-    ]
-   }
+   "image": "symbols_v2/eye"
   },
   {
    "key": "lotus",
    "name": "Lotus",
-   "image": "sprites_egypt/game_screen/symbols/lotus",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/lotus/lotus_01",
-     "sprites_egypt/animations/lotus/lotus_03",
-     "sprites_egypt/animations/lotus/lotus_05",
-     "sprites_egypt/animations/lotus/lotus_07",
-     "sprites_egypt/animations/lotus/lotus_09",
-     "sprites_egypt/animations/lotus/lotus_11",
-     "sprites_egypt/animations/lotus/lotus_13",
-     "sprites_egypt/animations/lotus/lotus_15",
-     "sprites_egypt/animations/lotus/lotus_17",
-     "sprites_egypt/animations/lotus/lotus_19",
-     "sprites_egypt/animations/lotus/lotus_21",
-     "sprites_egypt/animations/lotus/lotus_23",
-     "sprites_egypt/animations/lotus/lotus_25",
-     "sprites_egypt/animations/lotus/lotus_27",
-     "sprites_egypt/animations/lotus/lotus_29",
-     "sprites_egypt/animations/lotus/lotus_31",
-     "sprites_egypt/animations/lotus/lotus_33",
-     "sprites_egypt/animations/lotus/lotus_35",
-     "sprites_egypt/animations/lotus/lotus_37",
-     "sprites_egypt/animations/lotus/lotus_39",
-     "sprites_egypt/animations/lotus/lotus_41",
-     "sprites_egypt/animations/lotus/lotus_43",
-     "sprites_egypt/animations/lotus/lotus_45",
-     "sprites_egypt/animations/lotus/lotus_47"
-    ]
-   }
+   "image": "symbols_v2/lotus"
   },
   {
    "key": "shen",
    "name": "Shen",
-   "image": "sprites_egypt/game_screen/symbols/shen",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/shen/shen_01",
-     "sprites_egypt/animations/shen/shen_03",
-     "sprites_egypt/animations/shen/shen_05",
-     "sprites_egypt/animations/shen/shen_07",
-     "sprites_egypt/animations/shen/shen_09",
-     "sprites_egypt/animations/shen/shen_11",
-     "sprites_egypt/animations/shen/shen_13",
-     "sprites_egypt/animations/shen/shen_15",
-     "sprites_egypt/animations/shen/shen_17",
-     "sprites_egypt/animations/shen/shen_19",
-     "sprites_egypt/animations/shen/shen_21",
-     "sprites_egypt/animations/shen/shen_23",
-     "sprites_egypt/animations/shen/shen_25",
-     "sprites_egypt/animations/shen/shen_27",
-     "sprites_egypt/animations/shen/shen_29",
-     "sprites_egypt/animations/shen/shen_31",
-     "sprites_egypt/animations/shen/shen_33",
-     "sprites_egypt/animations/shen/shen_35",
-     "sprites_egypt/animations/shen/shen_37",
-     "sprites_egypt/animations/shen/shen_39",
-     "sprites_egypt/animations/shen/shen_41",
-     "sprites_egypt/animations/shen/shen_43",
-     "sprites_egypt/animations/shen/shen_45",
-     "sprites_egypt/animations/shen/shen_47"
-    ]
-   }
+   "image": "symbols_v2/shen"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_egypt/game_screen/symbols/wild",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/wild/wild_01",
-     "sprites_egypt/animations/wild/wild_03",
-     "sprites_egypt/animations/wild/wild_05",
-     "sprites_egypt/animations/wild/wild_07",
-     "sprites_egypt/animations/wild/wild_09",
-     "sprites_egypt/animations/wild/wild_11",
-     "sprites_egypt/animations/wild/wild_13",
-     "sprites_egypt/animations/wild/wild_15",
-     "sprites_egypt/animations/wild/wild_17",
-     "sprites_egypt/animations/wild/wild_19",
-     "sprites_egypt/animations/wild/wild_21",
-     "sprites_egypt/animations/wild/wild_23",
-     "sprites_egypt/animations/wild/wild_25",
-     "sprites_egypt/animations/wild/wild_27",
-     "sprites_egypt/animations/wild/wild_29",
-     "sprites_egypt/animations/wild/wild_31",
-     "sprites_egypt/animations/wild/wild_33",
-     "sprites_egypt/animations/wild/wild_35",
-     "sprites_egypt/animations/wild/wild_37",
-     "sprites_egypt/animations/wild/wild_39",
-     "sprites_egypt/animations/wild/wild_41",
-     "sprites_egypt/animations/wild/wild_43",
-     "sprites_egypt/animations/wild/wild_45",
-     "sprites_egypt/animations/wild/wild_47"
-    ]
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_egypt/game_screen/symbols/scatter",
-   "anim": {
-    "frames": [
-     "sprites_egypt/animations/scatter/scatter_01",
-     "sprites_egypt/animations/scatter/scatter_03",
-     "sprites_egypt/animations/scatter/scatter_05",
-     "sprites_egypt/animations/scatter/scatter_07",
-     "sprites_egypt/animations/scatter/scatter_09",
-     "sprites_egypt/animations/scatter/scatter_11",
-     "sprites_egypt/animations/scatter/scatter_13",
-     "sprites_egypt/animations/scatter/scatter_15",
-     "sprites_egypt/animations/scatter/scatter_17",
-     "sprites_egypt/animations/scatter/scatter_19",
-     "sprites_egypt/animations/scatter/scatter_21",
-     "sprites_egypt/animations/scatter/scatter_23",
-     "sprites_egypt/animations/scatter/scatter_25",
-     "sprites_egypt/animations/scatter/scatter_27",
-     "sprites_egypt/animations/scatter/scatter_29",
-     "sprites_egypt/animations/scatter/scatter_31",
-     "sprites_egypt/animations/scatter/scatter_33",
-     "sprites_egypt/animations/scatter/scatter_35",
-     "sprites_egypt/animations/scatter/scatter_37",
-     "sprites_egypt/animations/scatter/scatter_39",
-     "sprites_egypt/animations/scatter/scatter_41",
-     "sprites_egypt/animations/scatter/scatter_43",
-     "sprites_egypt/animations/scatter/scatter_45",
-     "sprites_egypt/animations/scatter/scatter_47"
-    ]
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

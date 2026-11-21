@@ -16,62 +16,52 @@
   {
    "key": "bag",
    "name": "Bag",
-   "image": "sprites_mw/gamescreen/symbols/bag",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/bagblurred"
+   "image": "symbols_v2/bag"
   },
   {
    "key": "bandit1",
    "name": "Bandit1",
-   "image": "sprites_mw/gamescreen/symbols/bandit1",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/bandit1blurred"
+   "image": "symbols_v2/bandit1"
   },
   {
    "key": "bandit2",
    "name": "Bandit2",
-   "image": "sprites_mw/gamescreen/symbols/bandit2",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/bandit2blurred"
+   "image": "symbols_v2/bandit2"
   },
   {
    "key": "cuper",
    "name": "Cuper",
-   "image": "sprites_mw/gamescreen/symbols/cuper",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/cuperblurred"
+   "image": "symbols_v2/cuper"
   },
   {
    "key": "dice",
    "name": "Dice",
-   "image": "sprites_mw/gamescreen/symbols/dice",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/diceblurred"
+   "image": "symbols_v2/dice"
   },
   {
    "key": "gold",
    "name": "Gold",
-   "image": "sprites_mw/gamescreen/symbols/gold",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/goldblurred"
+   "image": "symbols_v2/gold"
   },
   {
    "key": "silver",
    "name": "Silver",
-   "image": "sprites_mw/gamescreen/symbols/silver",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/silverblurred"
+   "image": "symbols_v2/silver"
   },
   {
    "key": "whiskey",
    "name": "Whiskey",
-   "image": "sprites_mw/gamescreen/symbols/whiskey",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/whiskeyblurred"
+   "image": "symbols_v2/whiskey"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_mw/gamescreen/symbols/wild",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/wildblurred"
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_mw/gamescreen/symbols/scatter",
-   "blur": "sprites_mw/gamescreen/symbolsblurred/scatterblurred"
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

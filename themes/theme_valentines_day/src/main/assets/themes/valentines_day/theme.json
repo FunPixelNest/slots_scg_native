@@ -16,118 +16,52 @@
   {
    "key": "astra",
    "name": "Astra",
-   "image": "sprites_valentinesday/game_screen/png/symbols/astra",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurredastra"
+   "image": "symbols_v2/astra"
   },
   {
    "key": "kala",
    "name": "Kala",
-   "image": "sprites_valentinesday/game_screen/png/symbols/kala",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurredkala"
+   "image": "symbols_v2/kala"
   },
   {
    "key": "lily",
    "name": "Lily",
-   "image": "sprites_valentinesday/game_screen/png/symbols/lily",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurredlily"
+   "image": "symbols_v2/lily"
   },
   {
    "key": "rose",
    "name": "Rose",
-   "image": "sprites_valentinesday/game_screen/png/symbols/rose",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurredrose"
+   "image": "symbols_v2/rose"
   },
   {
    "key": "club",
    "name": "Club",
-   "image": "sprites_valentinesday/game_screen/png/symbols/club",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurredclub"
+   "image": "symbols_v2/club"
   },
   {
    "key": "diamond",
    "name": "Diamond",
-   "image": "sprites_valentinesday/game_screen/png/symbols/diamond",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurreddiamond"
+   "image": "symbols_v2/diamond"
   },
   {
    "key": "heart",
    "name": "Heart",
-   "image": "sprites_valentinesday/game_screen/png/symbols/heart",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurredheart"
+   "image": "symbols_v2/heart"
   },
   {
    "key": "spade",
    "name": "Spade",
-   "image": "sprites_valentinesday/game_screen/png/symbols/spade",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurredspade"
+   "image": "symbols_v2/spade"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_valentinesday/game_screen/png/symbols/wild",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurredwild",
-   "anim": {
-    "frames": [
-     "sprites_valentinesday/animations/wild/wild_01",
-     "sprites_valentinesday/animations/wild/wild_02",
-     "sprites_valentinesday/animations/wild/wild_03",
-     "sprites_valentinesday/animations/wild/wild_04",
-     "sprites_valentinesday/animations/wild/wild_05",
-     "sprites_valentinesday/animations/wild/wild_06",
-     "sprites_valentinesday/animations/wild/wild_07",
-     "sprites_valentinesday/animations/wild/wild_08",
-     "sprites_valentinesday/animations/wild/wild_09",
-     "sprites_valentinesday/animations/wild/wild_10",
-     "sprites_valentinesday/animations/wild/wild_11",
-     "sprites_valentinesday/animations/wild/wild_12",
-     "sprites_valentinesday/animations/wild/wild_13",
-     "sprites_valentinesday/animations/wild/wild_14",
-     "sprites_valentinesday/animations/wild/wild_15",
-     "sprites_valentinesday/animations/wild/wild_16",
-     "sprites_valentinesday/animations/wild/wild_17",
-     "sprites_valentinesday/animations/wild/wild_18",
-     "sprites_valentinesday/animations/wild/wild_19",
-     "sprites_valentinesday/animations/wild/wild_20",
-     "sprites_valentinesday/animations/wild/wild_21",
-     "sprites_valentinesday/animations/wild/wild_22",
-     "sprites_valentinesday/animations/wild/wild_23",
-     "sprites_valentinesday/animations/wild/wild_24"
-    ]
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_valentinesday/game_screen/png/symbols/scatter",
-   "blur": "sprites_valentinesday/game_screen/png/symbol_blurred/blurredscatter",
-   "anim": {
-    "frames": [
-     "sprites_valentinesday/animations/scatter/scatter_01",
-     "sprites_valentinesday/animations/scatter/scatter_02",
-     "sprites_valentinesday/animations/scatter/scatter_03",
-     "sprites_valentinesday/animations/scatter/scatter_04",
-     "sprites_valentinesday/animations/scatter/scatter_05",
-     "sprites_valentinesday/animations/scatter/scatter_06",
-     "sprites_valentinesday/animations/scatter/scatter_07",
-     "sprites_valentinesday/animations/scatter/scatter_08",
-     "sprites_valentinesday/animations/scatter/scatter_09",
-     "sprites_valentinesday/animations/scatter/scatter_10",
-     "sprites_valentinesday/animations/scatter/scatter_11",
-     "sprites_valentinesday/animations/scatter/scatter_12",
-     "sprites_valentinesday/animations/scatter/scatter_13",
-     "sprites_valentinesday/animations/scatter/scatter_14",
-     "sprites_valentinesday/animations/scatter/scatter_15",
-     "sprites_valentinesday/animations/scatter/scatter_16",
-     "sprites_valentinesday/animations/scatter/scatter_17",
-     "sprites_valentinesday/animations/scatter/scatter_18",
-     "sprites_valentinesday/animations/scatter/scatter_19",
-     "sprites_valentinesday/animations/scatter/scatter_20",
-     "sprites_valentinesday/animations/scatter/scatter_21",
-     "sprites_valentinesday/animations/scatter/scatter_22",
-     "sprites_valentinesday/animations/scatter/scatter_23",
-     "sprites_valentinesday/animations/scatter/scatter_24"
-    ]
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

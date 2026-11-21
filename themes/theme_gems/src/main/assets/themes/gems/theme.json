@@ -16,83 +16,47 @@
   {
    "key": "chestgold",
    "name": "Chestgold",
-   "image": "sprites_gems/game_screen/symbols/chestgold",
-   "blur": "sprites_gems/game_screen/symbolsblurred/chestgoldblurred",
-   "anim": {
-    "sheet": "sprites_gems/animations/chestgoldsheet"
-   }
+   "image": "symbols_v2/chestgold"
   },
   {
    "key": "chestsilver",
    "name": "Chestsilver",
-   "image": "sprites_gems/game_screen/symbols/chestsilver",
-   "blur": "sprites_gems/game_screen/symbolsblurred/chestsilverblurred",
-   "anim": {
-    "sheet": "sprites_gems/animations/chestsilversheet"
-   }
+   "image": "symbols_v2/chestsilver"
   },
   {
    "key": "gemc",
    "name": "Gemc",
-   "image": "sprites_gems/game_screen/symbols/gemc",
-   "blur": "sprites_gems/game_screen/symbolsblurred/gemcblurred",
-   "anim": {
-    "sheet": "sprites_gems/animations/gemcsheet"
-   }
+   "image": "symbols_v2/gemc"
   },
   {
    "key": "gemg",
    "name": "Gemg",
-   "image": "sprites_gems/game_screen/symbols/gemg",
-   "blur": "sprites_gems/game_screen/symbolsblurred/gemgblurred",
-   "anim": {
-    "sheet": "sprites_gems/animations/gemgsheet"
-   }
+   "image": "symbols_v2/gemg"
   },
   {
    "key": "gemr",
    "name": "Gemr",
-   "image": "sprites_gems/game_screen/symbols/gemr",
-   "blur": "sprites_gems/game_screen/symbolsblurred/gemrblurred",
-   "anim": {
-    "sheet": "sprites_gems/animations/gemrsheet"
-   }
+   "image": "symbols_v2/gemr"
   },
   {
    "key": "gemv",
    "name": "Gemv",
-   "image": "sprites_gems/game_screen/symbols/gemv",
-   "blur": "sprites_gems/game_screen/symbolsblurred/gemvblurred",
-   "anim": {
-    "sheet": "sprites_gems/animations/gemvsheet"
-   }
+   "image": "symbols_v2/gemv"
   },
   {
    "key": "gemw",
    "name": "Gemw",
-   "image": "sprites_gems/game_screen/symbols/gemw",
-   "blur": "sprites_gems/game_screen/symbolsblurred/gemwblurred",
-   "anim": {
-    "sheet": "sprites_gems/animations/gemwsheet"
-   }
+   "image": "symbols_v2/gemw"
   },
   {
    "key": "gemy",
    "name": "Gemy",
-   "image": "sprites_gems/game_screen/symbols/gemy",
-   "blur": "sprites_gems/game_screen/symbolsblurred/gemyblurred",
-   "anim": {
-    "sheet": "sprites_gems/animations/gemysheet"
-   }
+   "image": "symbols_v2/gemy"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_gems/game_screen/symbols/wild",
-   "blur": "sprites_gems/game_screen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_gems/animations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   }
  ],
  "wildId": 8,

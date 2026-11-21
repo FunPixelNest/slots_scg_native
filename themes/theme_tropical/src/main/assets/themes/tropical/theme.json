@@ -16,52 +16,52 @@
   {
    "key": "ananas",
    "name": "Ananas",
-   "image": "sprites_tropical/gamescreen/symbols/ananas"
+   "image": "symbols_v2/ananas"
   },
   {
    "key": "blueglass",
    "name": "Blueglass",
-   "image": "sprites_tropical/gamescreen/symbols/blueglass"
+   "image": "symbols_v2/blueglass"
   },
   {
    "key": "cherry",
    "name": "Cherry",
-   "image": "sprites_tropical/gamescreen/symbols/cherry"
+   "image": "symbols_v2/cherry"
   },
   {
    "key": "greenglass",
    "name": "Greenglass",
-   "image": "sprites_tropical/gamescreen/symbols/greenglass"
+   "image": "symbols_v2/greenglass"
   },
   {
    "key": "orangeglass",
    "name": "Orangeglass",
-   "image": "sprites_tropical/gamescreen/symbols/orangeglass"
+   "image": "symbols_v2/orangeglass"
   },
   {
    "key": "orrange",
    "name": "Orrange",
-   "image": "sprites_tropical/gamescreen/symbols/orrange"
+   "image": "symbols_v2/orrange"
   },
   {
    "key": "redglass",
    "name": "Redglass",
-   "image": "sprites_tropical/gamescreen/symbols/redglass"
+   "image": "symbols_v2/redglass"
   },
   {
    "key": "strawberry",
    "name": "Strawberry",
-   "image": "sprites_tropical/gamescreen/symbols/strawberry"
+   "image": "symbols_v2/strawberry"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_tropical/gamescreen/symbols/wild"
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_tropical/gamescreen/symbols/scatter"
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

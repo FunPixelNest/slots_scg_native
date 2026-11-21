@@ -16,76 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_modern/game_screen/symbols/j",
-   "anim": {
-    "sheet": "sprites_modern/animations/sheets/jsymbsheet"
-   }
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_modern/game_screen/symbols/q",
-   "anim": {
-    "sheet": "sprites_modern/animations/sheets/qsymbsheet"
-   }
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_modern/game_screen/symbols/k",
-   "anim": {
-    "sheet": "sprites_modern/animations/sheets/ksymbsheet"
-   }
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_modern/game_screen/symbols/a",
-   "anim": {
-    "sheet": "sprites_modern/animations/sheets/asymbsheet"
-   }
+   "image": "symbols_v2/a"
   },
   {
    "key": "9",
    "name": "9",
-   "image": "sprites_modern/game_screen/symbols/9"
+   "image": "symbols_v2/9"
   },
   {
    "key": "10",
    "name": "10",
-   "image": "sprites_modern/game_screen/symbols/10"
+   "image": "symbols_v2/10"
   },
   {
    "key": "diamond",
    "name": "Diamond",
-   "image": "sprites_modern/game_screen/symbols/diamond",
-   "anim": {
-    "sheet": "sprites_modern/animations/sheets/diamondsheet"
-   }
+   "image": "symbols_v2/diamond"
   },
   {
    "key": "heart",
    "name": "Heart",
-   "image": "sprites_modern/game_screen/symbols/heart",
-   "anim": {
-    "sheet": "sprites_modern/animations/sheets/heartsheet"
-   }
+   "image": "symbols_v2/heart"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_modern/game_screen/symbols/wild",
-   "anim": {
-    "sheet": "sprites_modern/animations/sheets/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_modern/game_screen/symbols/scatter",
-   "anim": {
-    "sheet": "sprites_modern/animations/sheets/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

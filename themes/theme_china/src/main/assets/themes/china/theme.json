@@ -16,332 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_china/game_screen/symbols/j",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/j/j_01",
-     "sprites_china/animations/j/j_02",
-     "sprites_china/animations/j/j_03",
-     "sprites_china/animations/j/j_04",
-     "sprites_china/animations/j/j_05",
-     "sprites_china/animations/j/j_06",
-     "sprites_china/animations/j/j_07",
-     "sprites_china/animations/j/j_08",
-     "sprites_china/animations/j/j_09",
-     "sprites_china/animations/j/j_10",
-     "sprites_china/animations/j/j_11",
-     "sprites_china/animations/j/j_12",
-     "sprites_china/animations/j/j_13",
-     "sprites_china/animations/j/j_14",
-     "sprites_china/animations/j/j_15",
-     "sprites_china/animations/j/j_16",
-     "sprites_china/animations/j/j_17",
-     "sprites_china/animations/j/j_18",
-     "sprites_china/animations/j/j_19",
-     "sprites_china/animations/j/j_20",
-     "sprites_china/animations/j/j_21",
-     "sprites_china/animations/j/j_22",
-     "sprites_china/animations/j/j_23",
-     "sprites_china/animations/j/j_24"
-    ]
-   }
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_china/game_screen/symbols/q",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/q/q_01",
-     "sprites_china/animations/q/q_02",
-     "sprites_china/animations/q/q_03",
-     "sprites_china/animations/q/q_04",
-     "sprites_china/animations/q/q_05",
-     "sprites_china/animations/q/q_06",
-     "sprites_china/animations/q/q_07",
-     "sprites_china/animations/q/q_08",
-     "sprites_china/animations/q/q_09",
-     "sprites_china/animations/q/q_10",
-     "sprites_china/animations/q/q_11",
-     "sprites_china/animations/q/q_12",
-     "sprites_china/animations/q/q_13",
-     "sprites_china/animations/q/q_14",
-     "sprites_china/animations/q/q_15",
-     "sprites_china/animations/q/q_16",
-     "sprites_china/animations/q/q_17",
-     "sprites_china/animations/q/q_18",
-     "sprites_china/animations/q/q_19",
-     "sprites_china/animations/q/q_20",
-     "sprites_china/animations/q/q_21",
-     "sprites_china/animations/q/q_22",
-     "sprites_china/animations/q/q_23",
-     "sprites_china/animations/q/q_24"
-    ]
-   }
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_china/game_screen/symbols/k",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/k/k_01",
-     "sprites_china/animations/k/k_02",
-     "sprites_china/animations/k/k_03",
-     "sprites_china/animations/k/k_04",
-     "sprites_china/animations/k/k_05",
-     "sprites_china/animations/k/k_06",
-     "sprites_china/animations/k/k_07",
-     "sprites_china/animations/k/k_08",
-     "sprites_china/animations/k/k_09",
-     "sprites_china/animations/k/k_10",
-     "sprites_china/animations/k/k_11",
-     "sprites_china/animations/k/k_12",
-     "sprites_china/animations/k/k_13",
-     "sprites_china/animations/k/k_14",
-     "sprites_china/animations/k/k_15",
-     "sprites_china/animations/k/k_16",
-     "sprites_china/animations/k/k_17",
-     "sprites_china/animations/k/k_18",
-     "sprites_china/animations/k/k_19",
-     "sprites_china/animations/k/k_20",
-     "sprites_china/animations/k/k_21",
-     "sprites_china/animations/k/k_22",
-     "sprites_china/animations/k/k_23",
-     "sprites_china/animations/k/k_24"
-    ]
-   }
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_china/game_screen/symbols/a",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/a/a_01",
-     "sprites_china/animations/a/a_02",
-     "sprites_china/animations/a/a_03",
-     "sprites_china/animations/a/a_04",
-     "sprites_china/animations/a/a_05",
-     "sprites_china/animations/a/a_06",
-     "sprites_china/animations/a/a_07",
-     "sprites_china/animations/a/a_08",
-     "sprites_china/animations/a/a_09",
-     "sprites_china/animations/a/a_10",
-     "sprites_china/animations/a/a_11",
-     "sprites_china/animations/a/a_12",
-     "sprites_china/animations/a/a_13",
-     "sprites_china/animations/a/a_14",
-     "sprites_china/animations/a/a_15",
-     "sprites_china/animations/a/a_16",
-     "sprites_china/animations/a/a_17",
-     "sprites_china/animations/a/a_18",
-     "sprites_china/animations/a/a_19",
-     "sprites_china/animations/a/a_20",
-     "sprites_china/animations/a/a_21",
-     "sprites_china/animations/a/a_22",
-     "sprites_china/animations/a/a_23",
-     "sprites_china/animations/a/a_24"
-    ]
-   }
+   "image": "symbols_v2/a"
   },
   {
    "key": "coins",
    "name": "Coins",
-   "image": "sprites_china/game_screen/symbols/coins",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/coins/coins_01",
-     "sprites_china/animations/coins/coins_02",
-     "sprites_china/animations/coins/coins_03",
-     "sprites_china/animations/coins/coins_04",
-     "sprites_china/animations/coins/coins_05",
-     "sprites_china/animations/coins/coins_06",
-     "sprites_china/animations/coins/coins_07",
-     "sprites_china/animations/coins/coins_08",
-     "sprites_china/animations/coins/coins_09",
-     "sprites_china/animations/coins/coins_10",
-     "sprites_china/animations/coins/coins_11",
-     "sprites_china/animations/coins/coins_12",
-     "sprites_china/animations/coins/coins_13",
-     "sprites_china/animations/coins/coins_14",
-     "sprites_china/animations/coins/coins_15",
-     "sprites_china/animations/coins/coins_16",
-     "sprites_china/animations/coins/coins_17",
-     "sprites_china/animations/coins/coins_18",
-     "sprites_china/animations/coins/coins_19",
-     "sprites_china/animations/coins/coins_20",
-     "sprites_china/animations/coins/coins_21",
-     "sprites_china/animations/coins/coins_22",
-     "sprites_china/animations/coins/coins_23",
-     "sprites_china/animations/coins/coins_24"
-    ]
-   }
+   "image": "symbols_v2/coins"
   },
   {
    "key": "fan",
    "name": "Fan",
-   "image": "sprites_china/game_screen/symbols/fan",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/fan/fan_01",
-     "sprites_china/animations/fan/fan_02",
-     "sprites_china/animations/fan/fan_03",
-     "sprites_china/animations/fan/fan_04",
-     "sprites_china/animations/fan/fan_05",
-     "sprites_china/animations/fan/fan_06",
-     "sprites_china/animations/fan/fan_07",
-     "sprites_china/animations/fan/fan_08",
-     "sprites_china/animations/fan/fan_09",
-     "sprites_china/animations/fan/fan_10",
-     "sprites_china/animations/fan/fan_11",
-     "sprites_china/animations/fan/fan_12",
-     "sprites_china/animations/fan/fan_13",
-     "sprites_china/animations/fan/fan_14",
-     "sprites_china/animations/fan/fan_15",
-     "sprites_china/animations/fan/fan_16",
-     "sprites_china/animations/fan/fan_17",
-     "sprites_china/animations/fan/fan_18",
-     "sprites_china/animations/fan/fan_19",
-     "sprites_china/animations/fan/fan_20",
-     "sprites_china/animations/fan/fan_21",
-     "sprites_china/animations/fan/fan_22",
-     "sprites_china/animations/fan/fan_23",
-     "sprites_china/animations/fan/fan_24"
-    ]
-   }
+   "image": "symbols_v2/fan"
   },
   {
    "key": "scroll",
    "name": "Scroll",
-   "image": "sprites_china/game_screen/symbols/scroll",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/scroll/scroll_01",
-     "sprites_china/animations/scroll/scroll_02",
-     "sprites_china/animations/scroll/scroll_03",
-     "sprites_china/animations/scroll/scroll_04",
-     "sprites_china/animations/scroll/scroll_05",
-     "sprites_china/animations/scroll/scroll_06",
-     "sprites_china/animations/scroll/scroll_07",
-     "sprites_china/animations/scroll/scroll_08",
-     "sprites_china/animations/scroll/scroll_09",
-     "sprites_china/animations/scroll/scroll_10",
-     "sprites_china/animations/scroll/scroll_11",
-     "sprites_china/animations/scroll/scroll_12",
-     "sprites_china/animations/scroll/scroll_13",
-     "sprites_china/animations/scroll/scroll_14",
-     "sprites_china/animations/scroll/scroll_15",
-     "sprites_china/animations/scroll/scroll_16",
-     "sprites_china/animations/scroll/scroll_17",
-     "sprites_china/animations/scroll/scroll_18",
-     "sprites_china/animations/scroll/scroll_19",
-     "sprites_china/animations/scroll/scroll_20",
-     "sprites_china/animations/scroll/scroll_21",
-     "sprites_china/animations/scroll/scroll_22",
-     "sprites_china/animations/scroll/scroll_23",
-     "sprites_china/animations/scroll/scroll_24"
-    ]
-   }
+   "image": "symbols_v2/scroll"
   },
   {
    "key": "sycee",
    "name": "Sycee",
-   "image": "sprites_china/game_screen/symbols/sycee",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/sycee/sycee_01",
-     "sprites_china/animations/sycee/sycee_02",
-     "sprites_china/animations/sycee/sycee_03",
-     "sprites_china/animations/sycee/sycee_04",
-     "sprites_china/animations/sycee/sycee_05",
-     "sprites_china/animations/sycee/sycee_06",
-     "sprites_china/animations/sycee/sycee_07",
-     "sprites_china/animations/sycee/sycee_08",
-     "sprites_china/animations/sycee/sycee_09",
-     "sprites_china/animations/sycee/sycee_10",
-     "sprites_china/animations/sycee/sycee_11",
-     "sprites_china/animations/sycee/sycee_12",
-     "sprites_china/animations/sycee/sycee_13",
-     "sprites_china/animations/sycee/sycee_14",
-     "sprites_china/animations/sycee/sycee_15",
-     "sprites_china/animations/sycee/sycee_16",
-     "sprites_china/animations/sycee/sycee_17",
-     "sprites_china/animations/sycee/sycee_18",
-     "sprites_china/animations/sycee/sycee_19",
-     "sprites_china/animations/sycee/sycee_20",
-     "sprites_china/animations/sycee/sycee_21",
-     "sprites_china/animations/sycee/sycee_22",
-     "sprites_china/animations/sycee/sycee_23",
-     "sprites_china/animations/sycee/sycee_24"
-    ]
-   }
+   "image": "symbols_v2/sycee"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_china/game_screen/symbols/wild",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/wild/wild_01",
-     "sprites_china/animations/wild/wild_03",
-     "sprites_china/animations/wild/wild_05",
-     "sprites_china/animations/wild/wild_07",
-     "sprites_china/animations/wild/wild_09",
-     "sprites_china/animations/wild/wild_11",
-     "sprites_china/animations/wild/wild_13",
-     "sprites_china/animations/wild/wild_15",
-     "sprites_china/animations/wild/wild_17",
-     "sprites_china/animations/wild/wild_19",
-     "sprites_china/animations/wild/wild_21",
-     "sprites_china/animations/wild/wild_23",
-     "sprites_china/animations/wild/wild_25",
-     "sprites_china/animations/wild/wild_27",
-     "sprites_china/animations/wild/wild_29",
-     "sprites_china/animations/wild/wild_31",
-     "sprites_china/animations/wild/wild_33",
-     "sprites_china/animations/wild/wild_35",
-     "sprites_china/animations/wild/wild_37",
-     "sprites_china/animations/wild/wild_39",
-     "sprites_china/animations/wild/wild_41",
-     "sprites_china/animations/wild/wild_43",
-     "sprites_china/animations/wild/wild_45",
-     "sprites_china/animations/wild/wild_47"
-    ]
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_china/game_screen/symbols/scatter",
-   "anim": {
-    "frames": [
-     "sprites_china/animations/scatter/scatter_01",
-     "sprites_china/animations/scatter/scatter_03",
-     "sprites_china/animations/scatter/scatter_05",
-     "sprites_china/animations/scatter/scatter_07",
-     "sprites_china/animations/scatter/scatter_09",
-     "sprites_china/animations/scatter/scatter_11",
-     "sprites_china/animations/scatter/scatter_13",
-     "sprites_china/animations/scatter/scatter_15",
-     "sprites_china/animations/scatter/scatter_17",
-     "sprites_china/animations/scatter/scatter_19",
-     "sprites_china/animations/scatter/scatter_21",
-     "sprites_china/animations/scatter/scatter_23",
-     "sprites_china/animations/scatter/scatter_25",
-     "sprites_china/animations/scatter/scatter_27",
-     "sprites_china/animations/scatter/scatter_29",
-     "sprites_china/animations/scatter/scatter_31",
-     "sprites_china/animations/scatter/scatter_33",
-     "sprites_china/animations/scatter/scatter_35",
-     "sprites_china/animations/scatter/scatter_37",
-     "sprites_china/animations/scatter/scatter_39",
-     "sprites_china/animations/scatter/scatter_41",
-     "sprites_china/animations/scatter/scatter_43",
-     "sprites_china/animations/scatter/scatter_45",
-     "sprites_china/animations/scatter/scatter_47"
-    ]
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

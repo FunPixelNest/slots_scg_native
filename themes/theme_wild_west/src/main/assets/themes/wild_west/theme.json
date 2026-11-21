@@ -16,92 +16,52 @@
   {
    "key": "crosses",
    "name": "Crosses",
-   "image": "sprites_ww/gamescreen/symbols/crosses",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/crossesblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/crossessheet"
-   }
+   "image": "symbols_v2/crosses"
   },
   {
    "key": "diamonds",
    "name": "Diamonds",
-   "image": "sprites_ww/gamescreen/symbols/diamonds",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/diamondsblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/diamondssheet"
-   }
+   "image": "symbols_v2/diamonds"
   },
   {
    "key": "hearts",
    "name": "Hearts",
-   "image": "sprites_ww/gamescreen/symbols/hearts",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/heartsblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/heartssheet"
-   }
+   "image": "symbols_v2/hearts"
   },
   {
    "key": "spades",
    "name": "Spades",
-   "image": "sprites_ww/gamescreen/symbols/spades",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/spadesblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/spadessheet"
-   }
+   "image": "symbols_v2/spades"
   },
   {
    "key": "bag",
    "name": "Bag",
-   "image": "sprites_ww/gamescreen/symbols/bag",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/bagblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/bagsheet"
-   }
+   "image": "symbols_v2/bag"
   },
   {
    "key": "flask",
    "name": "Flask",
-   "image": "sprites_ww/gamescreen/symbols/flask",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/flaskblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/flasksheet"
-   }
+   "image": "symbols_v2/flask"
   },
   {
    "key": "gun",
    "name": "Gun",
-   "image": "sprites_ww/gamescreen/symbols/gun",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/gunblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/gunsheet"
-   }
+   "image": "symbols_v2/gun"
   },
   {
    "key": "hat",
    "name": "Hat",
-   "image": "sprites_ww/gamescreen/symbols/hat",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/hatblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/hatsheet"
-   }
+   "image": "symbols_v2/hat"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_ww/gamescreen/symbols/wild",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_ww/gamescreen/symbols/scatter",
-   "blur": "sprites_ww/gamescreen/symbolsblurred/scatterblurred",
-   "anim": {
-    "sheet": "sprites_ww/animations/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

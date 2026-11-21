@@ -16,92 +16,52 @@
   {
    "key": "bluebottle",
    "name": "Bluebottle",
-   "image": "sprites_witch/png/gamescreen/symbols/bluebottle",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/bluebottleblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/bluebottlesheet"
-   }
+   "image": "symbols_v2/bluebottle"
   },
   {
    "key": "greenbottle",
    "name": "Greenbottle",
-   "image": "sprites_witch/png/gamescreen/symbols/greenbottle",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/greenbottleblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/greenbottlesheet"
-   }
+   "image": "symbols_v2/greenbottle"
   },
   {
    "key": "margentebottle",
    "name": "Margentebottle",
-   "image": "sprites_witch/png/gamescreen/symbols/margentebottle",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/margentebottleblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/margentebottlesheet"
-   }
+   "image": "symbols_v2/margentebottle"
   },
   {
    "key": "violetbottle",
    "name": "Violetbottle",
-   "image": "sprites_witch/png/gamescreen/symbols/violetbottle",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/violetbottleblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/violetbottlesheet"
-   }
+   "image": "symbols_v2/violetbottle"
   },
   {
    "key": "candles",
    "name": "Candles",
-   "image": "sprites_witch/png/gamescreen/symbols/candles",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/candlesblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/candlessheet"
-   }
+   "image": "symbols_v2/candles"
   },
   {
    "key": "broom",
    "name": "Broom",
-   "image": "sprites_witch/png/gamescreen/symbols/broom",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/broomblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/broomsheet"
-   }
+   "image": "symbols_v2/broom"
   },
   {
    "key": "scroll",
    "name": "Scroll",
-   "image": "sprites_witch/png/gamescreen/symbols/scroll",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/scrollblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/scrollsheet"
-   }
+   "image": "symbols_v2/scroll"
   },
   {
    "key": "hat",
    "name": "Hat",
-   "image": "sprites_witch/png/gamescreen/symbols/hat",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/hatblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/hatsheet"
-   }
+   "image": "symbols_v2/hat"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_witch/png/gamescreen/symbols/wild",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_witch/png/gamescreen/symbols/scatter",
-   "blur": "sprites_witch/png/gamescreen/symbolsblurred/scatterblurred",
-   "anim": {
-    "sheet": "sprites_witch/animations/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

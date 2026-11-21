@@ -16,92 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_mneon/gamescreen/symbols/j",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/j_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/j_01_0"
-   }
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_mneon/gamescreen/symbols/q",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/q_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/q_01_0"
-   }
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_mneon/gamescreen/symbols/k",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/k_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/k_01_0"
-   }
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_mneon/gamescreen/symbols/a",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/a_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/a_01_0"
-   }
+   "image": "symbols_v2/a"
   },
   {
    "key": "clubs",
    "name": "Clubs",
-   "image": "sprites_mneon/gamescreen/symbols/clubs",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/clubs_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/clubs_01_0"
-   }
+   "image": "symbols_v2/clubs"
   },
   {
    "key": "diamonds",
    "name": "Diamonds",
-   "image": "sprites_mneon/gamescreen/symbols/diamonds",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/diamonds_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/diamonds_01_0"
-   }
+   "image": "symbols_v2/diamonds"
   },
   {
    "key": "heart",
    "name": "Heart",
-   "image": "sprites_mneon/gamescreen/symbols/heart",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/heart_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/hearts_01_0"
-   }
+   "image": "symbols_v2/heart"
   },
   {
    "key": "spades",
    "name": "Spades",
-   "image": "sprites_mneon/gamescreen/symbols/spades",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/spades_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/spades_01_0"
-   }
+   "image": "symbols_v2/spades"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_mneon/gamescreen/symbols/wild",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/wild_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/wild_01_0"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_mneon/gamescreen/symbols/scatter",
-   "blur": "sprites_mneon/gamescreen/symbols_blurred/scatter_blurred",
-   "anim": {
-    "sheet": "sprites_mneon/animation/scatter_01_0"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,

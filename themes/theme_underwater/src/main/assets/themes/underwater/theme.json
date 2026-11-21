@@ -16,88 +16,52 @@
   {
    "key": "j",
    "name": "J",
-   "image": "sprites_uw/game_screen/symbols/j",
-   "anim": {
-    "sheet": "sprites_uw/animations/usedanimations/jsymbsheet"
-   }
+   "image": "symbols_v2/j"
   },
   {
    "key": "q",
    "name": "Q",
-   "image": "sprites_uw/game_screen/symbols/q",
-   "anim": {
-    "sheet": "sprites_uw/animations/usedanimations/qsymbsheet"
-   }
+   "image": "symbols_v2/q"
   },
   {
    "key": "k",
    "name": "K",
-   "image": "sprites_uw/game_screen/symbols/k",
-   "anim": {
-    "sheet": "sprites_uw/animations/usedanimations/ksymbsheet"
-   }
+   "image": "symbols_v2/k"
   },
   {
    "key": "a",
    "name": "A",
-   "image": "sprites_uw/game_screen/symbols/a",
-   "anim": {
-    "sheet": "sprites_uw/animations/usedanimations/asymbsheet"
-   }
+   "image": "symbols_v2/a"
   },
   {
    "key": "crab",
    "name": "Crab",
-   "image": "sprites_uw/game_screen/symbols/crab",
-   "blur": "sprites_uw/game_screen/symbolsblurred/crabblurred",
-   "anim": {
-    "sheet": "sprites_uw/animations/crabsheet"
-   }
+   "image": "symbols_v2/crab"
   },
   {
    "key": "hedgehog",
    "name": "Hedgehog",
-   "image": "sprites_uw/game_screen/symbols/hedgehog",
-   "blur": "sprites_uw/game_screen/symbolsblurred/hedgehogblurred",
-   "anim": {
-    "sheet": "sprites_uw/animations/usedanimations/hedgehogsheet"
-   }
+   "image": "symbols_v2/hedgehog"
   },
   {
    "key": "jellyfish",
    "name": "Jellyfish",
-   "image": "sprites_uw/game_screen/symbols/jellyfish",
-   "blur": "sprites_uw/game_screen/symbolsblurred/jellyfishblurred",
-   "anim": {
-    "sheet": "sprites_uw/animations/usedanimations/jellyfishsheet"
-   }
+   "image": "symbols_v2/jellyfish"
   },
   {
    "key": "octopus",
    "name": "Octopus",
-   "image": "sprites_uw/game_screen/symbols/octopus",
-   "blur": "sprites_uw/game_screen/symbolsblurred/octopusblurred",
-   "anim": {
-    "sheet": "sprites_uw/animations/usedanimations/octopussheet"
-   }
+   "image": "symbols_v2/octopus"
   },
   {
    "key": "wild",
    "name": "Wild",
-   "image": "sprites_uw/game_screen/symbols/wild",
-   "blur": "sprites_uw/game_screen/symbolsblurred/wildblurred",
-   "anim": {
-    "sheet": "sprites_uw/animations/usedanimations/wildsheet"
-   }
+   "image": "symbols_v2/wild"
   },
   {
    "key": "scatter",
    "name": "Scatter",
-   "image": "sprites_uw/game_screen/symbols/scatter",
-   "blur": "sprites_uw/game_screen/symbolsblurred/scatterblurred",
-   "anim": {
-    "sheet": "sprites_uw/animations/usedanimations/scattersheet"
-   }
+   "image": "symbols_v2/scatter"
   }
  ],
  "wildId": 8,
