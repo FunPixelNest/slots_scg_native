@@ -96,16 +96,16 @@ spikes = ""
 for i in range(28):
     a = math.radians(i * 360 / 28 + 6)
     L = 82 if i % 2 == 0 else 70
-    w = math.radians(5)
+    w = math.radians(7.5)
     x0, y0 = 128 + 40 * math.cos(a - w), 132 + 40 * math.sin(a - w)
     x1, y1 = 128 + 40 * math.cos(a + w), 132 + 40 * math.sin(a + w)
     xt, yt = 128 + L * math.cos(a), 132 + L * math.sin(a)
-    spikes += f'<polygon points="{x0:.1f},{y0:.1f} {xt:.1f},{yt:.1f} {x1:.1f},{y1:.1f}" fill="url(#spk)" stroke="#071A3A" stroke-width="4" stroke-linejoin="round"/>'
+    spikes += f'<polygon points="{x0:.1f},{y0:.1f} {xt:.1f},{yt:.1f} {x1:.1f},{y1:.1f}" fill="url(#spk)" stroke="#071A3A" stroke-width="3" stroke-linejoin="round"/>'
 dots = "".join(f'<circle cx="{128 + 32 * math.cos(math.radians(a)):.1f}" cy="{132 + 32 * math.sin(math.radians(a)):.1f}" r="3" fill="#E8B8FF" opacity=".7"/>'
                for a in range(0, 360, 30))
 hedgehog = (
     defs(rad("urch", [(0, "#D8A0FF"), (.55, "#7A2AC8"), (1, "#2A0A5A")]),
-         lin("spk", [(0, "#F0D0FF"), (1, "#5A1AA0")], 1, 1))
+         lin("spk", [(0, "#FFE0FF"), (.5, "#C070F0"), (1, "#6A20B0")], 1, 1))
     + spikes
     + '<circle cx="128" cy="132" r="46" fill="url(#urch)" stroke="#071A3A" stroke-width="7"/>'
     + dots
@@ -189,13 +189,13 @@ clam = (
 
 SYMBOLS = {
     "j": letter("J", TEAL, bubble(210, 58, 16) + bubble(228, 30, 9)),
-    "q": letter("Q", CORALP, shell(210, 44, 24)),
-    "k": letter("K", DEEP, starfish(212, 44, 26)),
-    "a": letter("A", PURP, defs(PEARL) + pearl(212, 46, 18)),
-    "crab": medallion("circle", SEA, crab),
+    "q": letter("Q", CORALP, shell(208, 52, 32)),
+    "k": letter("K", DEEP, starfish(210, 46, 30)),
+    "a": letter("A", PURP, defs(PEARL) + pearl(210, 46, 22) + bubble(232, 82, 8)),
+    "crab": medallion("circle", SEA, f'<g transform="translate(128 132) scale(.9) translate(-128 -132)">{crab}</g>'),
     "hedgehog": medallion("hex", SAND, hedgehog),
     "jellyfish": medallion("shield", DEEP, jellyfish),
     "octopus": medallion("square", KELP, octopus),
-    "wild": wild(LAGOON, trident),
-    "scatter": scatter(PURP, clam, "BONUS"),
+    "wild": wild(SEA, trident),
+    "scatter": scatter(LAGOON, clam, "BONUS"),
 }
