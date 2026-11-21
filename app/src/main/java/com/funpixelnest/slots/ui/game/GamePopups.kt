@@ -122,15 +122,26 @@ fun GamePopups(graph: AppGraph, vm: GameViewModel, assets: ThemeAssets) {
             graph.interstitials.onLevelUpClose(watchedVideo = granted > p.reward)
             graph.analytics.log("level_up", "level" to p.level)
         }
-        Popup.NoCoins -> RewardClaimDialog(
-            graph, "Out of Coins", "Here's a refill to keep playing", PlayerRules.START_COINS,
-            extra = {
-                Spacer(Modifier.height(10.dp))
-                SkinButton("VISIT STORE", Modifier.fillMaxWidth().height(42.dp), tone = SkinTone.Glass, textSize = 13.sp) {
-                    vm.dismissPopup(); graph.openStore()
-                }
-            },
-        ) { vm.syncCoins(); vm.dismissPopup() }
+        Popup.NoCoins -> {
+            // free refill once every few hours; otherwise only with a video (or the store)
+            val now = remember { System.currentTimeMillis() }
+            val free = remember { graph.player.freeRefillReady(now) }
+            RewardClaimDialog(
+                graph, "Out of Coins",
+                if (free) "Here's a refill to keep playing" else "Watch a video for a refill",
+                com.funpixelnest.slots.engine.Economy.refill(graph.player.level),
+                freeCollect = free,
+                extra = {
+                    Spacer(Modifier.height(10.dp))
+                    SkinButton("VISIT STORE", Modifier.fillMaxWidth().height(42.dp), tone = SkinTone.Glass, textSize = 13.sp) {
+                        vm.dismissPopup(); graph.openStore()
+                    }
+                },
+            ) { granted ->
+                if (free && granted > 0) graph.player.lastFreeRefillAt = now
+                vm.syncCoins(); vm.dismissPopup()
+            }
+        }
         Popup.Info -> PayTablePopup(assets, vm.session::coinsFor, vm.totalBet, vm.session.linesCount, vm::dismissPopup)
         Popup.Settings -> SettingsPopup(graph, assets, null, vm::dismissPopup)
     }

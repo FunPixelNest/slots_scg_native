@@ -73,6 +73,7 @@ object Features {
         Feature.COIN_COLLECTOR -> 1.21        // so regular pays make up the difference
         Feature.FREE_SPINS_MULTIPLIER -> 1.32
         Feature.PICK_BONUS -> 1.10
+        Feature.HOLD_AND_SPIN -> 0.86         // coin bonus + jackpots were paying over 100%
         else -> 1.0
     }
 }

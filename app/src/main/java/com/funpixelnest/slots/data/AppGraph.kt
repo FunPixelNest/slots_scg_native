@@ -246,7 +246,13 @@ class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
         set(v) { prefs.edit().putLong("video_coins_at", v).apply() }
 
     fun videoCoinsReadyIn(now: Long): Long = (lastVideoCoinsAt + VIDEO_COINS_INTERVAL_MS - now).coerceAtLeast(0L)
-    fun videoCoinsAmount(): Long = 100_000L + 20_000L * (level - 1)
+    /** Last free out-of-coins refill (the next free one is [Economy.REFILL_COOLDOWN_MS] later). */
+    var lastFreeRefillAt: Long
+        get() = prefs.getLong("last_free_refill", 0L)
+        set(v) { prefs.edit().putLong("last_free_refill", v).apply() }
+    fun freeRefillReady(now: Long): Boolean = now - lastFreeRefillAt >= Economy.REFILL_COOLDOWN_MS
+
+    fun videoCoinsAmount(): Long = Economy.videoCoins(level)
 
     fun claimVideoCoins(now: Long): Long {
         if (videoCoinsReadyIn(now) > 0) return 0
@@ -261,7 +267,7 @@ class PrefsPlayerStore(private val prefs: SharedPreferences) : PlayerStore {
         private const val K_LEVEL = "level"
         private const val K_PROGRESS = "level_progress"
         private const val K_ECONOMY_V2 = "economy_v2"
-        const val VIDEO_COINS_INTERVAL_MS = 10 * 60 * 1000L
+        const val VIDEO_COINS_INTERVAL_MS = Economy.VIDEO_COINS_INTERVAL_MS
     }
 }
 

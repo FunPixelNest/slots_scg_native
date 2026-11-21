@@ -76,7 +76,7 @@ class GameSession(
 
     /** Index into [Economy.TOTAL_BETS]. */
     var betIndex: Int = (store.lineBet(cfg.id)?.let { saved -> bets.indexOfLast { it <= saved } } ?: 0)
-        .coerceIn(0, Economy.unlockedBetSteps(store.level) - 1)
+        .coerceIn(Economy.minBetStep(store.level), Economy.unlockedBetSteps(store.level) - 1)
         private set
     var freeSpins: Int = 0
         private set
@@ -89,6 +89,8 @@ class GameSession(
     /** Coins paid for [payUnits] (pay table units are per way-bet = total bet / ways). */
     fun coinsFor(payUnits: Long): Long = payUnits * totalBet / linesCount
     val unlockedSteps: Int get() = Economy.unlockedBetSteps(store.level)
+    /** Lowest bet step at the player's level (the minimum bet rises with level). */
+    val minStep: Int get() = Economy.minBetStep(store.level)
     val isMaxBet: Boolean get() = betIndex == unlockedSteps - 1
 
     /** Level that opens the next bet step, or null when the ladder is fully open. */
@@ -100,7 +102,7 @@ class GameSession(
 
     fun setBetIndex(index: Int) {
         if (freeSpins > 0) return // bet is locked during free games
-        betIndex = index.coerceIn(0, unlockedSteps - 1)
+        betIndex = index.coerceIn(minStep, unlockedSteps - 1)
         store.setLineBet(cfg.id, bets[betIndex])
     }
 
@@ -110,6 +112,7 @@ class GameSession(
 
     fun spin(): Result<SpinResult> {
         val free = freeSpins > 0
+        if (!free && betIndex < minStep) setBetIndex(minStep)
         if (!free && store.coins < totalBet) return Result.failure(NotEnoughCoinsException())
         if (free) freeSpins-- else store.coins -= totalBet
 
@@ -210,8 +213,8 @@ class GameSession(
         return win
     }
 
-    /** Every spin earns XP: more at higher bets, double on a win. */
-    fun xpForSpin(win: Boolean): Int = (betIndex + 1) * if (win) 2 else 1
+    /** Every spin earns XP: 1 at the minimum bet, +1 per bet step above it, double on a win. */
+    fun xpForSpin(win: Boolean): Int = (betIndex - minStep + 1).coerceAtLeast(1) * if (win) 2 else 1
 
     private fun addXp(points: Float): Pair<Int?, Long> {
         var p = store.levelProgress + points * 100f / Economy.xpForLevel(store.level)
@@ -225,6 +228,8 @@ class GameSession(
         }
         store.levelProgress = p
         store.coins += reward
+        // the minimum bet may have moved up with the new level
+        if (betIndex < minStep) { betIndex = minStep; store.setLineBet(cfg.id, bets[betIndex]) }
         return up to reward
     }
 

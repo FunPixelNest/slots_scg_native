@@ -129,7 +129,8 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
      */
     private suspend fun fitBetToBalance() {
         if (session.freeSpins > 0 || session.coins >= session.totalBet) return
-        val affordable = Economy.TOTAL_BETS.indices.lastOrNull { it < session.betIndex && Economy.TOTAL_BETS[it] <= session.coins } ?: return
+        // never below the level's minimum bet; when even that is too much the refill popup shows on the next spin
+        val affordable = Economy.TOTAL_BETS.indices.lastOrNull { it >= session.minStep && it < session.betIndex && Economy.TOTAL_BETS[it] <= session.coins } ?: return
         session.setBetIndex(affordable)
         betIndex = session.betIndex
         jackpots = readJackpots()
@@ -284,6 +285,7 @@ class GameViewModel(private val graph: AppGraph, val assets: ThemeAssets) : View
                 shower(40)
             }
             shownCoins = session.coins
+            betIndex = session.betIndex
             fitBetToBalance()
             // keep going for free games and auto spins
             if (session.freeSpins > 0 || autoSpinsLeft > 0) {

@@ -156,6 +156,8 @@ fun RewardClaimDialog(
     subtitle: String?,
     amount: Long,
     alreadyGranted: Boolean = false,
+    /** False: no free COLLECT, only the video (and a CLOSE that grants nothing). */
+    freeCollect: Boolean = true,
     extra: @Composable () -> Unit = {},
     onDone: (granted: Long) -> Unit,
 ) {
@@ -180,10 +182,14 @@ fun RewardClaimDialog(
                 }
             }
             Spacer(Modifier.height(12.dp))
-            SkinButton("COLLECT ${formatCoins(amount)}", Modifier.fillMaxWidth(0.84f).height(44.dp), tone = SkinTone.Green, textSize = 17.sp) {
-                if (!alreadyGranted) graph.player.grant(amount)
-                graph.sound.play(Sfx.WinCoins)
-                onDone(amount)
+            if (freeCollect) {
+                SkinButton("COLLECT ${formatCoins(amount)}", Modifier.fillMaxWidth(0.84f).height(44.dp), tone = SkinTone.Green, textSize = 17.sp) {
+                    if (!alreadyGranted) graph.player.grant(amount)
+                    graph.sound.play(Sfx.WinCoins)
+                    onDone(amount)
+                }
+            } else {
+                SkinButton("CLOSE", Modifier.fillMaxWidth(0.84f).height(44.dp), tone = SkinTone.Glass, textSize = 15.sp) { onDone(0L) }
             }
         }
     }
@@ -300,9 +306,9 @@ fun StoreSheet(graph: AppGraph, onClose: () -> Unit) {
                 }
             }
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(top = 14.dp, bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                OfferCard(graph) { bought = Store.WELCOME_OFFER; shower++ }
+                OfferCard(graph) { bought = Store.welcomeOffer(graph.player.level); shower++ }
                 if (tab == 0) {
-                    Store.PACKS.chunked(2).forEach { row ->
+                    Store.packs(graph.player.level).chunked(2).forEach { row ->
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             row.forEach { p -> PackCard(p, Modifier.weight(1f)) { graph.billing.buy(p.id) { graph.player.grant(p.coins); bought = p; shower++ } } }
                         }
@@ -330,7 +336,7 @@ fun StoreSheet(graph: AppGraph, onClose: () -> Unit) {
 
 @Composable
 private fun OfferCard(graph: AppGraph, onBought: () -> Unit) {
-    val p = Store.WELCOME_OFFER
+    val p = Store.welcomeOffer(graph.player.level)
     Box(
         Modifier.fillMaxWidth().height(132.dp)
             .shadow(16.dp, RoundedCornerShape(22.dp), spotColor = Skin.Ruby)
@@ -366,7 +372,7 @@ private fun PackCard(p: CoinPack, modifier: Modifier, onBuy: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
-            CoinStack(2 + Store.PACKS.indexOf(p) * 3, Modifier.size(width = 72.dp, height = 46.dp))
+            CoinStack(2 + Store.PACKS.indexOfFirst { it.id == p.id } * 3, Modifier.size(width = 72.dp, height = 46.dp))
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(formatCompact(p.coins), style = plain(18)); Text(" coins", style = plain(11, Skin.TextSoft))
             }
@@ -524,7 +530,7 @@ fun QuestsDialog(graph: AppGraph, daily: Boolean, onClose: () -> Unit) {
                     // tick: re-read progress whenever the store reports a change
                     val progress = remember(tick, now / 60_000) { p.questProgress(q, daily) }
                     val claimed = remember(tick) { p.isClaimed(q, daily) }
-                    QuestRow(q, progress, claimed) { graph.sound.play(Sfx.Button); claiming = q }
+                    QuestRow(q, progress, claimed, graph.player.level) { graph.sound.play(Sfx.Button); claiming = q }
                 }
             }
             Spacer(Modifier.height(14.dp))
@@ -532,14 +538,14 @@ fun QuestsDialog(graph: AppGraph, daily: Boolean, onClose: () -> Unit) {
         }
     }
     claiming?.let { q ->
-        RewardClaimDialog(graph, q.title, if (daily) "Daily task complete!" else "Mission complete!", q.reward) {
+        RewardClaimDialog(graph, q.title, if (daily) "Daily task complete!" else "Mission complete!", q.reward(graph.player.level)) {
             p.markClaimed(q, daily); claiming = null
         }
     }
 }
 
 @Composable
-private fun QuestRow(q: Quest, progress: Long, claimed: Boolean, onClaim: () -> Unit) {
+private fun QuestRow(q: Quest, progress: Long, claimed: Boolean, level: Int, onClaim: () -> Unit) {
     val done = progress >= q.target
     Row(
         Modifier.fillMaxWidth().background(Color(0x14FFFFFF), RoundedCornerShape(14.dp))
@@ -561,7 +567,7 @@ private fun QuestRow(q: Quest, progress: Long, claimed: Boolean, onClaim: () -> 
                 Text("${formatCompact(progress)} / ${formatCompact(q.target)}", style = plain(10, Skin.TextSoft))
                 Spacer(Modifier.width(10.dp))
                 CoinIcon(Modifier.size(12.dp)); Spacer(Modifier.width(3.dp))
-                Text(formatCompact(q.reward), style = plain(11, Skin.Gold))
+                Text(formatCompact(q.reward(level)), style = plain(11, Skin.Gold))
             }
         }
         Spacer(Modifier.width(10.dp))

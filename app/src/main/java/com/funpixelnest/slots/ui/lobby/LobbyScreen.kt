@@ -316,7 +316,7 @@ private fun FeaturedCarousel(graph: AppGraph, featured: List<ThemeIndexEntry>, i
 
 @Composable
 private fun HeroBanner(graph: AppGraph, entry: ThemeIndexEntry, open: Boolean, onPlay: () -> Unit) {
-    val grand = Economy.TOTAL_BETS[0].toLong() * JackpotTier.GRAND.betMultiple + graph.player.jackpotPool(entry.id, JackpotTier.GRAND)
+    val grand = Economy.unit(graph.player.level) * JackpotTier.GRAND.betMultiple + graph.player.jackpotPool(entry.id, JackpotTier.GRAND)
     val assets = remember(entry.id) { graph.theme(entry.id) }
     val bgKey = assets?.config?.let { it.backgroundPortrait ?: it.background }
     Box(

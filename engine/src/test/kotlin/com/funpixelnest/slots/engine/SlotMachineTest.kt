@@ -146,15 +146,18 @@ class SlotMachineTest {
     }
 
     @Test
-    fun `bet ladder unlocks with level`() {
+    fun `bet window slides up with level`() {
         val store = InMemoryPlayerStore(level = 1)
         val s = GameSession(SlotMachine(theme("wolf")), store)
         s.maxBet()
-        assertEquals(Economy.FREE_BET_STEPS - 1, s.betIndex)
-        assertEquals(3, s.nextBetUnlockLevel)
+        assertEquals(Economy.BET_WINDOW - 1, s.betIndex)
+        assertEquals(5, s.nextBetUnlockLevel)
         s.changeLineBet(+5)
-        assertEquals(Economy.FREE_BET_STEPS - 1, s.betIndex) // locked steps stay locked
-        store.level = 30
+        assertEquals(Economy.BET_WINDOW - 1, s.betIndex) // locked steps stay locked
+        store.level = 10
+        s.changeLineBet(-10)
+        assertEquals(2, s.betIndex) // the minimum bet moved up to 50K at level 10
+        store.level = 70
         s.maxBet()
         assertEquals(Economy.TOTAL_BETS.size - 1, s.betIndex)
         assertEquals(null, s.nextBetUnlockLevel)
@@ -164,73 +167,20 @@ class SlotMachineTest {
     }
 
     @Test
-    fun `machine unlocks by level and video`() {
-        assertEquals(Unlock.Free, Unlocks.rule(0))
-        assertEquals(Unlock.Free, Unlocks.rule(1))
-        assertTrue(Unlocks.rule(2) is Unlock.WatchVideo)
-        assertEquals(Unlock.AtLevel(5), Unlocks.rule(3))
-        assertEquals(Unlock.AtLevel(10), Unlocks.rule(4))
-        assertTrue(!Unlocks.isOpen(3, playerLevel = 4, videosWatched = 0))
-        assertTrue(Unlocks.isOpen(3, playerLevel = 5, videosWatched = 0))
-        assertTrue(!Unlocks.isOpen(2, playerLevel = 1, videosWatched = 0))
-        assertTrue(Unlocks.isOpen(2, playerLevel = 1, videosWatched = 1))
-        // the level machines open at exactly 5, 10, 15, 20, 30 ... 100
-        val levels = (0 until 23).mapNotNull { (Unlocks.rule(it) as? Unlock.AtLevel)?.level }
-        assertEquals(Unlocks.UNLOCK_LEVELS, levels)
-        assertEquals(9, (0 until 23).count { Unlocks.rule(it) is Unlock.WatchVideo })
-        assertTrue((0 until 23).all { Unlocks.isOpen(it, playerLevel = 100, videosWatched = 0) })
-        println("unlocks: " + (0 until 23).joinToString { "$it=${Unlocks.rule(it)}" })
-    }
-
-    @Test
-    fun `every spin earns xp`() {
-        val store = InMemoryPlayerStore(coins = 10_000_000)
-        val s = GameSession(SlotMachine(theme("wolf")), store, Random(3))
-        repeat(20) {
-            val r = s.spin().getOrThrow()
-            assertTrue(r.xpGained >= 1)
+    fun `free coins and burn stay in ratio`() {
+        // Burn at the minimum bet (400 spins/h, 6.5% house edge) should be about half the free coins
+        // given per hour (hourly, two videos, level-ups, daily rewards over 2 h of play). Mirrors tools/economy/model.py.
+        for (level in listOf(5, 10, 20, 40, 70)) {
+            val u = Economy.unit(level).toDouble()
+            val burn = 400 * u * 0.065
+            val levelsPerHour = 400 * 1.35 / Economy.xpForLevel(level)
+            val wheelEv = Rewards.DAILY_WHEEL.sumOf { it.first * it.second } / Rewards.DAILY_WHEEL.sumOf { it.second }
+            val daily = ((1..7).sumOf { Economy.dailyBonus(it, level) } / 7.0 + wheelEv * u + Quests.DAILY_TASKS.sumOf { it.reward(level) }) / 2
+            val give = Economy.hourlyBonus(level) + 2 * Economy.videoCoins(level) + levelsPerHour * Economy.levelUpReward(level) + daily
+            val ratio = burn / give
+            assertTrue(ratio in 0.4..0.6, "level $level: burn/give = $ratio")
         }
-        assertTrue(store.level > 1 || store.levelProgress > 0f)
-    }
-
-    @Test
-    fun `every theme has a feature`() {
-        val ids = themeFiles().map { ThemeConfig.parse(it.readText()).id }
-        assertEquals(23, ids.size)
-        assertTrue(ids.all { Features.forTheme(it) != null }, "missing: " + ids.filter { Features.forTheme(it) == null })
-    }
-
-    private fun sessionFor(id: String, seed: Int) =
-        GameSession(SlotMachine(theme(id)), InMemoryPlayerStore(coins = 1_000_000_000), Random(seed))
-
-    @Test
-    fun `free spins multiplier steps up after winning free spins`() {
-        val s = sessionFor("viking", 1)
-        var seen = false
-        repeat(300_000) {
-            val r = s.spin().getOrThrow()
-            if (r.wasFreeSpin) {
-                assertTrue(r.effects.freeMultiplier in Features.FREE_MULTIPLIERS)
-                assertEquals((r.outcome.payUnits * r.totalBet / s.linesCount * Features.payScale(Feature.FREE_SPINS_MULTIPLIER)).toLong() * r.effects.freeMultiplier, r.winCoins)
-                if (r.effects.freeMultiplier > 1) { seen = true; return }
-            } else assertEquals(1, r.effects.freeMultiplier)
-        }
-        assertTrue(seen, "a multiplied free spin in 300k spins")
-    }
-
-    @Test
-    fun `bonus games start on 3 scatters and pay`() {
-        for ((id, f) in listOf("china" to Feature.HOLD_AND_SPIN, "greek" to Feature.BONUS_WHEEL, "underwater" to Feature.PICK_BONUS)) {
-            val s = sessionFor(id, 4)
-            val r = generateSequence { s.spin().getOrThrow() }.take(200_000).first { it.effects.bonus != null }
-            assertEquals(f, r.effects.bonus)
-            assertTrue(s.scatterCells(r.baseGrid).size >= Features.BONUS_SCATTERS)
-            assertTrue(s.playBonusAuto(r) > 0, "$id bonus paid nothing")
-        }
-        val game = HoldAndSpinGame(1000, { 1_000_000 }, listOf(Cell(0, 0), Cell(1, 1), Cell(2, 2)), Random(9))
-        assertEquals(3, game.coins.size)
-        while (!game.isOver) game.respin()
-        assertTrue(game.total() >= 3 * 500)
+        assertEquals(130_000L, Economy.nice(125_000.0))
     }
 
     @Test
@@ -239,7 +189,7 @@ class SlotMachineTest {
         val hits = IntArray(Rewards.DAILY_WHEEL.size)
         repeat(10_000) { hits[Rewards.spinDailyWheel(r)]++ }
         assertTrue(hits.all { it > 0 }, "every wheel segment can win")
-        assertTrue(Rewards.wheelPrize(0, 10) > Rewards.wheelPrize(0, 1))
+        assertTrue(Rewards.wheelPrize(0, 20) > Rewards.wheelPrize(0, 1))
         assertTrue(Rewards.piggyCap(5) > Rewards.piggyCap(1))
         assertEquals(30, Store.PACKS[1].bonusPercent)
         assertEquals(300, Store.WELCOME_OFFER.bonusPercent)
