@@ -26,8 +26,17 @@ object Economy {
     fun levelForBetStep(index: Int): Int =
         if (index < FREE_BET_STEPS) 1 else 1 + (index - FREE_BET_STEPS + 1) * LEVELS_PER_BET_STEP
 
-    /** XP needed to go from [level] to the next one. */
-    fun xpForLevel(level: Int): Float = 20f + 10f * (level - 1)
+    /**
+     * XP needed to go from [level] to the next one. Levels 1-4 are quick (about 20 spins at the
+     * lowest bet to reach level 5, fewer at higher bets); from level 5 the normal curve applies.
+     */
+    fun xpForLevel(level: Int): Float = when (level) {
+        1 -> 3f
+        2 -> 5f
+        3 -> 8f
+        4 -> 12f
+        else -> 20f + 10f * (level - 1)
+    }
 
     fun levelUpReward(newLevel: Int): Long = 50_000L * newLevel
 
