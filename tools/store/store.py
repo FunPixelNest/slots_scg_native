@@ -152,19 +152,25 @@ def ribbon(txt, y, w=380, size=72):
             f'<text {t} fill="#3a0a00" stroke="#3a0a00" stroke-width="12" stroke-linejoin="round">{txt}</text><text {t} fill="#fff">{txt}</text>')
 
 
-def icon_777():
+def icon_777(layer="all"):
+    """layer: all (store icon), bg (adaptive background), fg (adaptive foreground, transparent)."""
     bulbs = "".join(f'<circle cx="{x}" cy="{y}" r="6" fill="#fff8d0"/>' for x in range(78, 440, 28) for y in (118, 358))
     reels = "".join(
         f'<rect x="{90 + i * 114}" y="150" width="104" height="176" rx="14" fill="url(#reel)" stroke="#2a0a3a" stroke-width="5"/>{seven(142 + i * 114, 290, 150)}'
         for i in range(3))
+    bg = f'<rect width="512" height="512" fill="url(#bg)"/>{rays(256, 230)}'
+    if layer == "bg":
+        return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">{ICON_DEFS}{bg}</svg>'
+    # foreground is shrunk into the adaptive-icon safe zone (inner 66 of 108)
+    wrap = '<g transform="translate(256 256) scale(.64) translate(-256 -256)">' if layer == "fg" else "<g>"
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">{ICON_DEFS}'
-            f'<rect width="512" height="512" fill="url(#bg)"/>{rays(256, 230)}'
+            f'{bg if layer == "all" else ""}{wrap}'
             f'<rect x="56" y="96" width="400" height="284" rx="40" fill="#ffb000" filter="url(#glow)" opacity=".7"/>'
             f'<rect x="56" y="96" width="400" height="284" rx="40" fill="url(#gold)" stroke="#3a0a00" stroke-width="8" filter="url(#drop)"/>'
             f'<rect x="78" y="138" width="356" height="200" rx="24" fill="#1a0a4a" stroke="#3a0a00" stroke-width="5"/>{bulbs}{reels}'
             f'<rect x="78" y="226" width="356" height="8" fill="#ff3a4a" opacity=".85"/>'
             f'{ribbon("SLOTS", 398)}'
-            f'{star(82, 70, 26, "url(#gold)", "#7a3a00", 4)}{star(440, 76, 20, "url(#gold)", "#7a3a00", 4)}</svg>')
+            f'{star(82, 70, 26, "url(#gold)", "#7a3a00", 4)}{star(440, 76, 20, "url(#gold)", "#7a3a00", 4)}</g></svg>')
 
 
 def icon_crown():
@@ -196,7 +202,8 @@ def icon_wild():
             f'{star(70, 72, 24, "url(#gold)", "#7a3a00", 4)}{star(446, 96, 18, "url(#gold)", "#7a3a00", 4)}{star(430, 420, 14, "#fff", "none", 0)}</svg>')
 
 
-ICONS = {"icon_777": icon_777, "icon_crown": icon_crown, "icon_wild": icon_wild}
+ICONS = {"icon_777": icon_777, "icon_crown": icon_crown, "icon_wild": icon_wild,
+         "launcher_bg": lambda: icon_777("bg"), "launcher_fg": lambda: icon_777("fg")}
 
 
 def main(shots_dir, out):
@@ -206,7 +213,7 @@ def main(shots_dir, out):
             open(os.path.join(out, f"{name}_{n:02d}.html"), "w").write(shot(idx, title, sub, syms, shots_dir, w, h, n))
     for name, fn in ICONS.items():
         open(os.path.join(out, f"{name}.html"), "w").write(
-            f'<!doctype html><html><head><meta charset="utf-8"><style>@font-face{{font-family:"Lilita One";src:url(data:font/ttf;base64,{FONT})}}html,body{{margin:0}}svg{{display:block}}</style></head><body>{fn()}</body></html>')
+            f'<!doctype html><html><head><meta charset="utf-8"><style>@font-face{{font-family:"Lilita One";src:url(data:font/ttf;base64,{FONT})}}html,body{{margin:0;background:transparent}}svg{{display:block}}</style></head><body>{fn()}</body></html>')
     print("wrote", len(SHOTS) * 2, "screenshots and", len(ICONS), "icons to", out)
 
 

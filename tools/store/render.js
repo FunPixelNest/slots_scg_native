@@ -5,12 +5,12 @@ const fs = require('fs'), path = require('path');
   const dir = path.resolve(process.argv[2]);
   const b = await chromium.launch();
   for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.html')).sort()) {
-    const [w, h] = f.startsWith('icon') ? [512, 512] : f.startsWith('tablet') ? [1600, 2560] : [1080, 1920];
+    const [w, h] = (f.startsWith('icon') || f.startsWith('launcher')) ? [512, 512] : f.startsWith('tablet') ? [1600, 2560] : [1080, 1920];
     const pg = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
     await pg.goto('file://' + path.join(dir, f));
     await pg.evaluate(() => document.fonts.ready);
     await pg.waitForTimeout(400);
-    await pg.screenshot({ path: path.join(dir, f.replace('.html', '.png')) });
+    await pg.screenshot({ path: path.join(dir, f.replace('.html', '.png')), omitBackground: f.startsWith('launcher_fg') });
     await pg.close();
   }
   await b.close();
